@@ -1,0 +1,88 @@
+# Application settings
+TARGET		:= test/out
+BUILD		:= buildtest
+DATA		:= data
+SOURCES		:= test
+INCLUDES	:= test include
+LIBRARIES	:= 
+FRAMEWORKS	:= 
+LIBDIRS		:= .
+LIBS		:= stdc++
+
+CFLAGS		:= -g -O2 -Wall -c -fPIC
+CXXFLAGS	:= $(CFLAGS)
+CFLAGS		+= --std=gnu99
+LDFLAGS		:= ../libbricks.a
+
+# Generic toolchain settings
+CC			:= clang
+CXX			:= clang
+#CC			:= gcc
+#CXX		:= g++
+LD			:= $(CXX)
+
+LIBDIRS		:= $(foreach dir,$(LIBDIRS),../$(dir))
+LIBS		+= $(LIBRARIES)
+
+LDFLAGS		+= $(foreach dir,$(LIBDIRS),-L$(dir)) \
+				$(foreach lib,$(LIBRARIES),-L../lib/$(lib)) \
+				$(foreach lib,$(LIBS),-l$(lib))
+INCLUDE		:= $(foreach dir,$(INCLUDES),-I../$(dir))
+
+ifneq ($(BUILD),$(notdir $(CURDIR)))
+
+export VPATH	:= $(foreach dir,$(SOURCES),../$(dir)) \
+					$(foreach dir,$(DATA),../$(dir))
+export DEPSDIR	:= ../$(BUILD)
+
+CPPFILES		:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
+CFILES			:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+MMFILES			:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.mm)))
+MFILES			:= $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.m)))
+BINFILES		:= $(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+
+export LD		:= $(LD)
+export OFILES	:= $(addsuffix .o,$(BINFILES)) \
+					$(CPPFILES:.cpp=.o) $(CFILES:.c=.o) $(MFILES:.m=.o) $(MMFILES:.mm=.o)
+export OUTPUT	:= $(CURDIR)/$(TARGET)
+
+.PHONY: $(BUILD) clean bundle install
+
+$(BUILD):
+	@[ -d $@ ] || mkdir -p $@
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile.test
+
+clean:
+	@echo Clean Binaries...
+	@rm -fr $(BUILD) $(OUTPUT) $(OUTPUT).app
+
+run: $(OUTPUT)
+	@$(OUTPUT)
+
+else
+
+DEPENDS	:= $(OFILES:.o=.d)
+$(OUTPUT): $(OFILES) ../libbricks.so ../libbricks.a
+	@echo "[LD]  $(notdir $@)"
+	@$(LD) $(OFILES) $(LDFLAGS) -o $@
+
+%.o : %.cpp
+	@echo "[CXX] $(notdir $<)"
+	@$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) $(INCLUDE) -o $@ $<
+%.o : %.c
+	@echo "[CC]  $(notdir $<)"
+	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) $(INCLUDE) -o $@ $<
+%.o : %.mm
+	@echo "[CXX] $(notdir $<)"
+	@$(CXX) -MMD -MP -MF $(DEPSDIR)/$*.d $(CXXFLAGS) $(INCLUDE) -o $@ $<
+%.o : %.m
+	@echo "[CC]  $(notdir $<)"
+	@$(CC) -MMD -MP -MF $(DEPSDIR)/$*.d $(CFLAGS) $(INCLUDE) -o $@ $<
+
+#%.jpg.o	:	%.jpg
+#	@echo $(notdir $<)
+#	$(bin2o)
+
+-include $(DEPENDS)
+
+endif
