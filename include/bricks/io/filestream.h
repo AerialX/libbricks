@@ -17,7 +17,7 @@ namespace Bricks { namespace IO {
 			FileCreateMode::Enum createmode = FileCreateMode::Create,
 			FileMode::Enum mode = FileMode::ReadWrite,
 			Filesystem* filesystem = NULL
-		) { System = filesystem ?: Filesystem::GetDefault(); System->Open(path, createmode, mode); }
+		) : System(filesystem ?: Filesystem::GetDefault()), Handle(System->Open(path, createmode, mode)) { }
 		size_t Read(void* buffer, size_t size) { return System->Read(Handle, buffer, size); }
 		size_t Write(const void* buffer, size_t size) { return System->Write(Handle, buffer, size); }
 		u64 GetLength();

@@ -1,12 +1,12 @@
 all:
-	@make --no-print-directory -f Makefile.pc
-	@make --no-print-directory -f Makefile.test
+	@$(MAKE) --no-print-directory -f Makefile.pc.mk
+	@$(MAKE) --no-print-directory -C test
 
 clean:
-	@make --no-print-directory -f Makefile.pc clean
-	@make --no-print-directory -f Makefile.test clean
+	@$(MAKE) --no-print-directory -f Makefile.pc.mk clean
+	@$(MAKE) --no-print-directory -C test clean
 
 run: all
-	@make --no-print-directory -f Makefile.test run
+	@$(MAKE) --no-print-directory -C test run
 
 .PHONY: all clean test
