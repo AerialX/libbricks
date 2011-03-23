@@ -4,7 +4,7 @@ DATA		:=	data
 SOURCES		:=	source source/io
 INCLUDES	:=	include
 
-DEFINES		:= -g -O3 -Wall -fPIC
+DEFINES		:= -g -O3 -Wall -fPIC -std=c++0x
 LIBS		:= 
 LDFLAGS		:= -shared
 
