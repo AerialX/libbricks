@@ -9,4 +9,7 @@ clean:
 run: all
 	@$(MAKE) --no-print-directory -C test run
 
-.PHONY: all clean test
+debug: all
+	@$(MAKE) --no-print-directory -C test debug
+
+.PHONY: all clean test run debug

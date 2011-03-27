@@ -8,5 +8,6 @@
 #include "bricks/io/filestream.h"
 
 #include "bricks/io/endian.h"
-#include "bricks/io/reader.h"
+#include "bricks/io/navigator.h"
 
+#include "bricks/io/console.h"

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "bricks/object.h"
-#include "bricks/string.h"
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
 
 namespace Bricks {
 	class Class : public Object
@@ -11,8 +12,7 @@ namespace Bricks {
 
 	public:
 		Class(const Object& object) : type(typeid(object)) { }
-//		const String& GetName() { return type.name(); }
-//		String& GetName() { return Alloc<String>(type.name()).Autorelease(); }
+		const String GetName() { return type.name(); }
 
 		bool operator==(const Class& rhs) { return type == rhs.type; }
 	};

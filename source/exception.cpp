@@ -1,4 +1,4 @@
-#include "bricks/exception.h"
+#include "bricks.h"
 
 #include <errno.h>
 
@@ -9,10 +9,10 @@ namespace Bricks {
 		if (!err)
 			return;
 		switch (err) {
-			case E2BIG:
-				break;
+/*			case E2BIG:
+				break;*/
 			default:
-				throw Exception(String::Format("errno: %d: %s", err, strerror(err)));
+				Throw(ErrnoException, String::Format("errno %d: %s", err, strerror(err)), errno);
 		}
 	}
 }

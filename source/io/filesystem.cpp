@@ -1,5 +1,5 @@
+#include "bricks.h"
 #include "bricks/io/filesystem.h"
-#include "bricks/exception.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -8,48 +8,49 @@
 
 namespace Bricks { namespace IO {
 	static Filesystem* defaultFilesystem = NULL;
-	Filesystem* Filesystem::GetDefault()
+	Filesystem& Filesystem::GetDefault()
 	{
 		if (!defaultFilesystem)
 			//defaultFilesystem = new C89Filesystem();
 			defaultFilesystem = new PosixFilesystem();
-		return defaultFilesystem;
+		return *defaultFilesystem;
 	}
 
 	FileHandle C89Filesystem::Open(
 			const String& path,
-			FileCreateMode::Enum createmode,
-			FileMode::Enum mode)
+			FileOpenMode::Enum createmode,
+			FileMode::Enum mode,
+			FilePermissions::Enum permissions)
 	{
 		const char* cmode = "rb";
 		switch (createmode) {
-			case FileCreateMode::Open:
+			case FileOpenMode::Open:
 				if (mode == FileMode::ReadOnly)
 					cmode = "rb";
 				else
 					cmode = "r+b";
 				break;
-			case FileCreateMode::Create:
+			case FileOpenMode::Create:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					Throw(InvalidArgumentException, "mode");
 				else
 					cmode = "w+b";
 				break;
-			case FileCreateMode::CreateNew:
+			case FileOpenMode::CreateNew:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					Throw(InvalidArgumentException, "mode");
 				else
 					cmode = "w+b";
 				break;
-			case FileCreateMode::Append:
+			case FileOpenMode::Append:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					Throw(InvalidArgumentException, "mode");
 				else
 					cmode = "a+b";
 				break;
-			case FileCreateMode::Truncate:
+			case FileOpenMode::Truncate:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					Throw(InvalidArgumentException, "mode");
 				else
 					cmode = "w+b";
 				break;
@@ -97,7 +98,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 
-	u64 C89Filesystem::Tell(FileHandle fd)
+	u64 C89Filesystem::Tell(FileHandle fd) const
 	{
 		long ret = ftell((FILE*)fd);
 		if (ret < 0)
@@ -118,38 +119,12 @@ namespace Bricks { namespace IO {
 	
 	FileHandle PosixFilesystem::Open(
 			const String& path,
-			FileCreateMode::Enum createmode,
-			FileMode::Enum mode)
+			FileOpenMode::Enum createmode,
+			FileMode::Enum mode,
+			FilePermissions::Enum permissions)
 	{
-		int oflag = 0;
-		switch (createmode) {
-			case FileCreateMode::Open:
-				break;
-			case FileCreateMode::Create:
-				oflag = O_CREAT;
-				break;
-			case FileCreateMode::CreateNew:
-				oflag = O_CREAT | O_EXCL;
-				break;
-			case FileCreateMode::Append:
-				oflag = O_APPEND;
-				break;
-			case FileCreateMode::Truncate:
-				oflag = O_TRUNC;
-				break;
-		}
-		switch (mode) {
-			case FileMode::ReadOnly:
-				oflag |= O_RDONLY;
-				break;
-			case FileMode::WriteOnly:
-				oflag |= O_WRONLY;
-				break;
-			case FileMode::ReadWrite:
-				oflag |= O_RDWR;
-				break;
-		}
-		int ret = open(path.CString(), oflag);
+		int oflag = createmode | mode;
+		int ret = open(path.CString(), oflag, permissions);
 		if (ret < 0)
 			ThrowErrno();
 		return (FileHandle)ret;
@@ -183,7 +158,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 
-	u64 PosixFilesystem::Tell(FileHandle fd)
+	u64 PosixFilesystem::Tell(FileHandle fd) const
 	{
 		off64_t ret = lseek64((int)fd, 0, SEEK_SET);
 		if (ret == (off64_t)-1)
