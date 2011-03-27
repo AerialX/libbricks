@@ -37,6 +37,22 @@ namespace Bricks { namespace Collections {
 
 		friend class ArrayIterator< T >;
 
+		iterator IteratorOfItem(const T& value) {
+			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
+				if (*iter == value)
+					return iter;
+			}
+			return vector.end();
+		}
+		
+		const_iterator IteratorOfItem(const T& value) const {
+			for (const_iterator iter = vector.begin(); iter != vector.end(); iter++) {
+				if (*iter == value)
+					return iter;
+			}
+			return vector.end();
+		}
+
 	public:
 		Array() : Object() { }
 		Array(const Array< T >& array) : Object(), vector(array.vector) { }
@@ -84,22 +100,6 @@ namespace Bricks { namespace Collections {
 		virtual void RemoveItemAt(long index)
 		{
 			vector.erase(vector.begin() + index);
-		}
-
-		iterator IteratorOfItem(const T& value) {
-			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
-				if (*iter == value)
-					return iter;
-			}
-			return vector.end();
-		}
-		
-		const_iterator IteratorOfItem(const T& value) const {
-			for (const_iterator iter = vector.begin(); iter != vector.end(); iter++) {
-				if (*iter == value)
-					return iter;
-			}
-			return vector.end();
 		}
 	};
 } }

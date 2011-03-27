@@ -119,6 +119,6 @@ namespace Bricks { namespace IO {
 		}
 
 		// TODO: Implement a proper TextWriter with encoding support.
-		void WriteLine(const String& string) { WriteString(string); WriteByte('\n'); }
+		void WriteLine(const String& string = String::Empty) { WriteString(string); WriteByte('\n'); }
 	};
 } }

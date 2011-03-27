@@ -26,6 +26,22 @@ namespace Bricks { namespace Collections {
 		typedef typename std::deque<T>::const_iterator const_iterator;
 
 		friend class StackIterator< T >;
+
+		const_iterator IteratorOfItem(const T& value) const {
+			for (const_iterator iter = stack.begin(); iter != stack.end(); iter++) {
+				if (*iter == value)
+					return iter;
+			}
+			return stack.end();
+		}
+		
+		iterator IteratorOfItem(const T& value) {
+			for (iterator iter = stack.begin(); iter != stack.end(); iter++) {
+				if (*iter == value)
+					return iter;
+			}
+			return stack.end();
+		}
 		
 	public:
 		Stack() : Object() { }
@@ -58,22 +74,6 @@ namespace Bricks { namespace Collections {
 				return false;
 			stack.erase(iter);
 			return true;
-		}
-
-		const_iterator IteratorOfItem(const T& value) const {
-			for (const_iterator iter = stack.begin(); iter != stack.end(); iter++) {
-				if (*iter == value)
-					return iter;
-			}
-			return stack.end();
-		}
-		
-		iterator IteratorOfItem(const T& value) {
-			for (iterator iter = stack.begin(); iter != stack.end(); iter++) {
-				if (*iter == value)
-					return iter;
-			}
-			return stack.end();
 		}
 	};
 	
