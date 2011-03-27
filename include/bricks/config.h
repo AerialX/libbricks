@@ -2,7 +2,7 @@
 
 /* Configuration */
 
-/* BRICKS_CONFIG_RTTI: Enables RTTI typeinfo for object.GetClass() and more helpful GetDebugString() */
+/* BRICKS_CONFIG_RTTI: Enables RTTI typeinfo for object.GetClass() and a more helpful GetDebugString() */
 #define BRICKS_CONFIG_RTTI
 
 /* BRICKS_CONFIG_CPP0X: Enables C++0x features, like lambdas and variadic templates for Alloc<Type>() */
