@@ -10,5 +10,8 @@ LDFLAGS		:= -L../.. -lbricks
 
 export LD_LIBRARY_PATH	:= ../
 
--include ../../common.mk
--include ../../../common.mk
+ifeq ($(BUILD),$(notdir $(CURDIR)))
+include ../../common.mk
+else
+include ../common.mk
+endif

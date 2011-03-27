@@ -10,5 +10,8 @@ LDFLAGS		:= -shared
 
 MAKENAME	:= Makefile.pc.mk
 
--include ../common.mk
--include ../../common.mk
+ifeq ($(BUILD),$(notdir $(CURDIR)))
+include ../common.mk
+else
+include ./common.mk
+endif
