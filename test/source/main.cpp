@@ -79,7 +79,8 @@ void testCollections()
 	dict->Add(1, "one");
 	dict->Add(2, "two");
 	dict->Add(3, "three");
-	foreach (auto item, *dict)
+	Pair<int, String> item; // Must be declared outside of the foreach due to a preprocessor limitation
+	foreach (item, *dict)
 		Console::Default.Out->WriteLine(String::Format("%d - %s", item.GetKey(), item.GetValue().CString()).CString());
 	Console::Default.Out->WriteLine(String::Format("Item at key 1: %s", dict->GetItem(1).CString()).CString());
 	dict->Release();

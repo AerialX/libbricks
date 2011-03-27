@@ -7,7 +7,7 @@ namespace Bricks { namespace Collections { namespace Internal {
 	{
 		mutable bool state;
 		operator bool() const { return state; }
-		IteratorTypeBase() : state(false) { }
+		IteratorTypeBase() : state(true) { }
 	};
 	template<typename T>
 	struct IteratorType : public IteratorTypeBase
@@ -23,7 +23,7 @@ namespace Bricks { namespace Collections { namespace Internal {
 #define foreach_container Bricks::Collections::Internal::IteratorContainer
 #define foreach_iterator(list) ((list).GetIterator())
 #define foreach_basetype const Bricks::Collections::Internal::IteratorTypeBase&
-#define foreach(val, list) for (foreach_basetype iter = foreach_container(foreach_iterator(list)); foreach_container(foreach_iterator(list), iter).MoveNext(); iter.state = false) for (val = foreach_container(foreach_iterator(list), iter).GetCurrent(); !iter.state; iter.state = true)
+#define foreach(val, list) for (foreach_basetype iter = foreach_container(foreach_iterator(list)); foreach_container(foreach_iterator(list), iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = foreach_container(foreach_iterator(list), iter).GetCurrent(); !iter.state; iter.state = true)
 
 namespace Bricks { namespace Collections {
 	class InvalidIteratorException : public Exception
