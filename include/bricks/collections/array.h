@@ -61,9 +61,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array() : Object(), allocated(0), count(0), data(NULL) { }
-		Array(const Array< T >& array) : Object(), allocated(0), count(0), data(NULL) { AddItems(array); }
-		Array(const Collection< T >& collection) : Object(), allocated(0), count(0), data(NULL) { AddItems(collection); }
+		Array() : allocated(0), count(0), data(NULL) { }
+		Array(const Array< T >& array) : allocated(0), count(0), data(NULL) { AddItems(array); }
+		Array(const Collection< T >& collection) : allocated(0), count(0), data(NULL) { AddItems(collection); }
 		virtual ~Array() { if (data) delete[] data; }
 
 		// Iterator

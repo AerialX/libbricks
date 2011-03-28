@@ -30,9 +30,9 @@ namespace Bricks { namespace Collections {
 		friend class StackIterator< T >;
 		
 	public:
-		Stack() : Object(), count(0), front(NULL) { }
-		Stack(const Stack< T >& stack) : Object(), count(0), front(NULL) { AddItems(stack); }
-		Stack(const Collection< T >& collection) : Object(), count(0), front(NULL) { AddItems(collection); }
+		Stack() : count(0), front(NULL) { }
+		Stack(const Stack< T >& stack) : count(0), front(NULL) { AddItems(stack); }
+		Stack(const Collection< T >& collection) : count(0), front(NULL) { AddItems(collection); }
 		virtual ~Stack() { Clear(); }
 
 		void Push(const T& value) { front = new StackNode(value, front); count++; }

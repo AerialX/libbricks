@@ -19,9 +19,9 @@ namespace Bricks { namespace Collections {
 		TValue value;
 
 	public:
-		Pair() : Object() { }
-		Pair(const TKey& key, const TValue& value) : Object(), key(key), value(value) { }
-		Pair(typename std::map< TKey, TValue >::const_iterator iter) : Object(), key(iter->first), value(iter->second) { }
+		Pair() { }
+		Pair(const TKey& key, const TValue& value) : key(key), value(value) { }
+		Pair(typename std::map< TKey, TValue >::const_iterator iter) : key(iter->first), value(iter->second) { }
 
 		TKey& GetKey() { return key; }
 		const TKey& GetKey() const { return key; }
@@ -59,9 +59,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Dictionary() : Object() { }
-		Dictionary(const Dictionary< TKey, TValue >& dictionary) : Object(), map(dictionary.map) { }
-		Dictionary(const Collection< Pair< TKey, TValue > >& collection) : Object() { AddItems(collection); }
+		Dictionary() { }
+		Dictionary(const Dictionary< TKey, TValue >& dictionary) : map(dictionary.map) { }
+		Dictionary(const Collection< Pair< TKey, TValue > >& collection) { AddItems(collection); }
 		virtual ~Dictionary() { }
 
 		TValue& GetItem(const TKey& key) { return map[key]; }
@@ -99,7 +99,7 @@ namespace Bricks { namespace Collections {
 		typename std::map< TKey, TValue >::iterator position;
 		typename std::map< TKey, TValue >::iterator end;
 		mutable Pair< TKey, TValue > current;
-		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : Object(), first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
+		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
 
 		friend class Dictionary< TKey, TValue >;
 

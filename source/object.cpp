@@ -32,7 +32,7 @@ namespace Bricks {
 	}
 
 	ObjectPool::ObjectPool() :
-		Object(), objects(Alloc(Stack< AutoPointer<Object> >))
+		objects(Alloc(Stack< AutoPointer<Object> >))
 	{
 		BRICKS_FEATURE_LOG("Installing Pool: %p", this);
 		GetThreadPools().Push(self);

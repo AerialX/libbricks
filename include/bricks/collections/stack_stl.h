@@ -44,9 +44,9 @@ namespace Bricks { namespace Collections {
 		}
 		
 	public:
-		Stack() : Object() { }
-		Stack(const Stack< T >& stack) : Object(), stack(stack.stack) { }
-		Stack(const Collection< T >& collection) : Object() { AddItems(collection); }
+		Stack() { }
+		Stack(const Stack< T >& stack) : stack(stack.stack) { }
+		Stack(const Collection< T >& collection) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 
@@ -84,7 +84,7 @@ namespace Bricks { namespace Collections {
 		bool first;
 		typename Stack< T >::iterator position;
 		typename Stack< T >::iterator end;
-		StackIterator(Stack< T >& stack) : Object(), first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
+		StackIterator(Stack< T >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
 
 		friend class Stack< T >;
 

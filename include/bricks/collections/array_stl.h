@@ -54,9 +54,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array() : Object() { }
-		Array(const Array< T >& array) : Object(), vector(array.vector) { }
-		Array(const Collection< T >& collection) : Object() { AddItems(collection); }
+		Array() { }
+		Array(const Array< T >& array) : vector(array.vector) { }
+		Array(const Collection< T >& collection) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator
