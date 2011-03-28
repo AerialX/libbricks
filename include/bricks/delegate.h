@@ -4,13 +4,24 @@
 #include "bricks/collections.h"
 #include "bricks/collections/stack.h"
 
+#ifndef BRICKS_CONFIG_CPP0X
+
+// TODO: Use non-variadic templates to implement Delegates and remove this limitation.
+#error libbricks must be configured with C++0x support to use Delegates and Events.
+
+#else
+
+#include <functional>
+
+#endif
+
 namespace Bricks {
 	template<typename F> class Delegate;
 	template<typename R, typename... Args> class Delegate<R(Args...)> : public Object
 	{
 	public:
 		virtual R operator()(Args...) const = 0;
-		R Call(Args... args) { return self(args...); }
+		R Call(Args... args) const { return self(args...); }
 	};
 
 	template<typename F> class FunctionDelegate;
@@ -62,6 +73,16 @@ namespace Bricks {
 		R operator ()(Args... args) const { return function(args...); }
 	};
 
+#ifdef BRICKS_CONFIG_CPP0X
+	template<typename F> class StandardDelegate;
+	template<typename R, typename... Args> class StandardDelegate<R(Args...)> : public FunctorDelegate<std::function<R(Args...)>, R(Args...)>
+	{
+	public:
+		StandardDelegate(const std::function<R(Args...)>& function) : FunctorDelegate<std::function<R(Args...)>, R(Args...)>(function) { }
+		StandardDelegate(const StandardDelegate& function) : FunctorDelegate<std::function<R(Args...)>, R(Args...)>(function) { }
+	};
+#endif
+
 	template<typename F> class Event;
 	template<typename R, typename... Args> class Event<R(Args...)> : public Delegate<void(Args...)>
 	{
@@ -78,6 +99,6 @@ namespace Bricks {
 		Event& operator +=(Delegate<R(Args...)>& delegate) { list->AddItem(delegate); return self; }
 		Event& operator -=(const Delegate<R(Args...)>& delegate) { list->RemoveItem(delegate); return self; }
 
-		void operator ()(Args... args) const { foreach (const EventItem& item, *list) (*item)(args...); }
+		void operator ()(Args... args) const { foreach (const EventItem& item, *list) item->Call(args...); }
 	};
 }
