@@ -2,10 +2,11 @@ Delegates and Events
  - Remove reliance on variadic templates
 
 Filesystem
- - Stat
+ - Stat / FileInfo
  - Directory Iteration
- - Delete
+ - Delete Recursive
 
 IO
  - Text{Reader,Writer}
  - Network
+ - Console, it was hacked together *really* badly.
