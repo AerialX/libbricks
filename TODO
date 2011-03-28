@@ -1,5 +1,5 @@
 Delegates and Events
- - Lambdas
+ - Remove reliance on variadic templates
 
 Filesystem
  - Stat
