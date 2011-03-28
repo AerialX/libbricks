@@ -102,3 +102,12 @@ namespace Bricks {
 		void operator ()(Args... args) const { foreach (const EventItem& item, *list) item->Call(args...); }
 	};
 }
+
+namespace Bricks { namespace Collections {
+	template<typename T> inline void Iterable< T >::Iterate(Delegate<bool(T&)>& delegate) {
+		foreach (T& t, self) {
+			if (!delegate(t))
+				break;
+		}
+	}
+} }

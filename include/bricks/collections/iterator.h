@@ -2,6 +2,10 @@
 
 #include "bricks/collections.h"
 
+namespace Bricks {
+	template<typename F> class Delegate;
+}
+
 namespace Bricks { namespace Collections { namespace Internal {
 	struct IteratorTypeBase
 	{
@@ -48,5 +52,7 @@ namespace Bricks { namespace Collections {
 	{
 	public:
 		virtual Iterator< T >& GetIterator() const = 0;
+
+		void Iterate(Delegate<bool(T&)>& delegate);
 	};
 } }
