@@ -1,10 +1,12 @@
 #include "bricks.h"
 #include "bricks/io/filesystem.h"
+#include "bricks/io/filestream.h"
 
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 namespace Bricks { namespace IO {
 	static Filesystem* defaultFilesystem = NULL;
@@ -182,5 +184,80 @@ namespace Bricks { namespace IO {
 	{
 		if (ftruncate64((int)fd, length))
 			ThrowErrno();
+	}
+	
+	FileHandle PosixFilesystem::OpenDirectory(const String& path)
+	{
+		DIR* dir = opendir(path.CString());
+		if (!dir)
+			ThrowErrno();
+		return (FileHandle)dir;
+	}
+	
+	Pointer<FileNode> PosixFilesystem::ReadDirectory(FileHandle fd)
+	{
+		errno = 0;
+		struct dirent* dir = readdir((DIR*)fd);
+		if (!dir) {
+			ThrowErrno();
+			return NULL;
+		}
+		return AutoAlloc(FilesystemNode, *dir);
+	}
+	
+	size_t PosixFilesystem::TellDirectory(FileHandle fd)
+	{
+		long ret = telldir((DIR*)fd);
+		if (ret < 0)
+			ThrowErrno();
+		return ret;
+	}
+
+	void PosixFilesystem::SeekDirectory(FileHandle fd, size_t offset)
+	{
+		seekdir((DIR*)fd, offset);
+	}
+
+	void PosixFilesystem::CloseDirectory(FileHandle fd)
+	{
+		if (closedir((DIR*)fd))
+			ThrowErrno();
+	}
+
+	FileInfo& PosixFilesystem::StatFile(const String& path)
+	{
+		struct stat st;
+		if (stat(path.CString(), &st))
+			ThrowErrno();
+		if (S_ISDIR(st.st_mode))
+			Throw(InvalidArgumentException); // FIXME: Should be an io exception
+		return AutoAlloc(FileInfo, st);
+	}
+
+	DirectoryInfo& PosixFilesystem::StatDirectory(const String& path)
+	{
+		struct stat st;
+		if (stat(path.CString(), &st))
+			ThrowErrno();
+		if (!S_ISDIR(st.st_mode))
+			Throw(InvalidArgumentException); // FIXME: Should be an io exception
+		return AutoAlloc(DirectoryInfo, st);
+	}
+
+	void PosixFilesystem::DeleteFile(const String& path)
+	{
+		unlink(path.CString());
+	}
+
+	void PosixFilesystem::DeleteDirectory(const String& path, bool recursive)
+	{
+		if (recursive)
+			Throw(NotImplementedException);
+		rmdir(path.CString());
+	}
+	
+	Stream& FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
+	{
+		return AutoAlloc(FileStream, GetFullName(), createmode, mode, permissions, filesystem);
 	}
 } }

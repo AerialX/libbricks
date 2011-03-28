@@ -4,7 +4,7 @@
 #include "bricks/io/stream.h"
 
 namespace Bricks { namespace IO {
-	class FileStream : public Object, public Stream
+	class FileStream : public Stream
 	{
 	protected:
 		AutoPointer<Filesystem> System;

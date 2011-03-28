@@ -26,7 +26,7 @@ namespace Bricks {
 		CopyPointer<String> Argument;
 
 	public:
-		InvalidArgumentException(const String& argument, const String& message = String::Empty) : Exception(message), Argument(argument) { }
+		InvalidArgumentException(const String& argument = String::Empty, const String& message = String::Empty) : Exception(message), Argument(argument) { }
 
 		const String& GetArgument() const { return *Argument; }
 	};

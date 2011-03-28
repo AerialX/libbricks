@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Bricks { namespace IO {
-	class Substream : public Object, public Stream
+	class Substream : public Stream
 	{
 	private:
 		AutoPointer<Stream> stream;

@@ -123,6 +123,7 @@ namespace Bricks {
 	{
 #define BRICKS_COPY_POINTER(t) (static_cast<const Copyable*>(t)->Copy< T >())
 	public:
+		CopyPointer() : AutoPointer< T >() { }
 		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&*t), false) { }
 		CopyPointer(const Pointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&*t), false) { }
 		CopyPointer(const T* t) : AutoPointer< T >(BRICKS_COPY_POINTER(t), false) { }

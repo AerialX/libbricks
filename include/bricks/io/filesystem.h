@@ -1,54 +1,14 @@
 #pragma once
 
 #include "bricks.h"
+#include "bricks/io/types.h"
+#include "bricks/io/filenode.h"
+#include "bricks/io/fileinfo.h"
 
 #include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
 
 namespace Bricks { namespace IO {
 	typedef size_t FileHandle;
-
-	namespace FileMode { enum Enum {
-		ReadOnly = O_RDONLY,
-		WriteOnly = O_WRONLY,
-		ReadWrite = O_RDWR
-	}; }
-
-	namespace FileOpenMode { enum Enum {
-		Open		= 0,
-		Create		= O_CREAT | O_TRUNC,
-		CreateNew	= O_CREAT | O_EXCL,
-		Append		= O_APPEND,
-		Truncate	= O_TRUNC
-	}; }
-
-	namespace FilePermissions { enum Enum {
-		OwnerAll		= S_IRWXU,
-		OwnerRead		= S_IRUSR,
-		OwnerWrite		= S_IWUSR,
-		OwnerReadWrite	= OwnerRead | OwnerWrite,
-		OwnerExecute	= S_IXUSR,
-		GroupAll		= S_IRWXG,
-		GroupRead		= S_IRGRP,
-		GroupWrite		= S_IWGRP,
-		GroupReadWrite	= GroupRead | GroupWrite,
-		GroupExecute	= S_IXGRP,
-		OtherAll		= S_IRWXO,
-		OtherRead		= S_IROTH,
-		OtherWrite		= S_IWOTH,
-		OtherReadWrite	= OtherRead | OtherWrite,
-		OtherExecute	= S_IXOTH,
-		SetUserID		= S_ISUID,
-		SetGroupID		= S_ISGID,
-		Sticky			= S_ISVTX
-	}; }
-
-	namespace SeekType { enum Enum {
-		Beginning = SEEK_SET,
-		Current = SEEK_CUR,
-		End = SEEK_END
-	}; }
 
 	class Filesystem : public Object
 	{
@@ -77,9 +37,17 @@ namespace Bricks { namespace IO {
 		virtual void Truncate(FileHandle fd, u64 length) = 0;
 		virtual void Close(FileHandle fd) = 0;
 
-		//FileInfo Stat(const String& path) const = 0;
-		//FileInfo Stat(FileHandle fd) const = 0;
-		//diriter stuff
+		virtual FileHandle OpenDirectory(const String& path) = 0;
+		virtual Pointer<FileNode> ReadDirectory(FileHandle fd) = 0;
+		virtual size_t TellDirectory(FileHandle fd) = 0;
+		virtual void SeekDirectory(FileHandle fd, size_t offset) = 0;
+		virtual void CloseDirectory(FileHandle fd) = 0;
+		
+		virtual FileInfo& StatFile(const String& path) = 0;
+		virtual DirectoryInfo& StatDirectory(const String& path) = 0;
+
+		virtual void DeleteFile(const String& path) = 0;
+		virtual void DeleteDirectory(const String& path, bool recursive) = 0;
 	};
 
 	class C89Filesystem : public Filesystem
@@ -132,5 +100,73 @@ namespace Bricks { namespace IO {
 		void Flush(FileHandle fd);
 		void Close(FileHandle fd);
 		void Truncate(FileHandle fd, u64 length);
+		
+		FileHandle OpenDirectory(const String& path);
+		Pointer<FileNode> ReadDirectory(FileHandle fd);
+		size_t TellDirectory(FileHandle fd);
+		void SeekDirectory(FileHandle fd, size_t offset);
+		void CloseDirectory(FileHandle fd);
+		
+		FileInfo& StatFile(const String& path);
+		DirectoryInfo& StatDirectory(const String& path);
+
+		void DeleteFile(const String& path);
+		void DeleteDirectory(const String& path, bool recursive);
+	};
+
+	class FilesystemNode : public FileNode
+	{
+	private:
+		AutoPointer<Filesystem> filesystem;
+
+		static NodeType::Enum GetStatType(mode_t mode) {
+			if (S_ISREG(mode))
+				return NodeType::File;
+			if (S_ISDIR(mode))
+				return NodeType::Directory;
+			if (S_ISCHR(mode))
+				return NodeType::CharacterDevice;
+			if (S_ISBLK(mode))
+				return NodeType::BlockDevice;
+			if (S_ISFIFO(mode))
+				return NodeType::FIFO;
+			if (S_ISLNK(mode))
+				return NodeType::SymbolicLink;
+			if (S_ISSOCK(mode))
+				return NodeType::Socket;
+			return NodeType::Unknown;
+		}
+
+		static NodeType::Enum GetDirType(int type) {
+			return (NodeType::Enum)type;
+		}
+
+	public:
+		FilesystemNode(const struct stat& st, const String& path, Pointer<Filesystem> filesystem = NULL) :
+			FileNode(GetStatType(st.st_mode), path), // TODO: FilePath::GetLeaf(path), FilePath::GetDirectory(path)
+			filesystem(filesystem ?: &Filesystem::GetDefault())
+		{
+
+		}
+
+		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
+			FileNode(GetDirType(dir.d_type), dir.d_name),
+			filesystem(filesystem ?: &Filesystem::GetDefault())
+		{
+
+		}
+		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
+			filesystem(filesystem ?: &Filesystem::GetDefault())
+		{
+			Throw(NotImplementedException);
+//			self = filesystem->Stat(path);
+		}
+
+		const String& GetFullName() const { Throw(NotImplementedException); }
+		Pointer<FileNode> GetParent() const { Throw(NotImplementedException); }
+		u64 GetSize() const { Throw(NotImplementedException); }
+		Stream& OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
+
+		Bricks::Collections::Iterator<FileNode>& GetIterator() const { Throw(NotImplementedException); }
 	};
 } }
