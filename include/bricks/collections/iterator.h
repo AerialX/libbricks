@@ -53,6 +53,6 @@ namespace Bricks { namespace Collections {
 	public:
 		virtual Iterator< T >& GetIterator() const = 0;
 
-		void Iterate(Delegate<bool(T&)>& delegate);
+		void Iterate(const Delegate<bool(T&)>& delegate);
 	};
 } }

@@ -20,24 +20,21 @@ namespace Bricks {
 	template<typename R, typename... Args> class Delegate<R(Args...)> : public Object
 	{
 	public:
-		virtual R operator()(Args...) const = 0;
-		R Call(Args... args) const { return self(args...); }
-	};
-
-	template<typename F> class FunctionDelegate;
-	template<typename R, typename... Args> class FunctionDelegate<R(Args...)> : public Delegate<R(Args...)>
-	{
-	public:
-		typedef R (*Function)(Args...);
-
+#ifdef BRICKS_CONFIG_CPP0X
+		typedef std::function<R(Args...)> Function;
+#else
+		typedef R(*Function)(Args...);
+#endif
 	private:
 		Function function;
 
 	public:
-		FunctionDelegate(Function function) : function(function) { }
-		FunctionDelegate(const FunctionDelegate& function) : function(function.function) { }
+		Delegate() { }
+		Delegate(Function function) : function(function) { }
+		virtual ~Delegate() { }
 
-		R operator ()(Args... args) const { return function(args...); }
+		virtual R operator()(Args... args) const { return function(args...); }
+		R Call(Args... args) const { return self(args...); }
 	};
 
 	template<typename C, typename F> class MethodDelegate;
@@ -52,36 +49,10 @@ namespace Bricks {
 
 	public:
 		MethodDelegate(C& pointer, Function function) : pointer(pointer), function(function) { }
-		MethodDelegate(const MethodDelegate& function) : pointer(function.pointer), function(function.function) { }
+		virtual ~MethodDelegate() { }
 
-		R operator()(Args... args) const { return (pointer->*function)(args...); }
+		virtual R operator()(Args... args) const { return (pointer->*function)(args...); }
 	};
-	
-	template<typename C, typename F> class FunctorDelegate;
-	template<typename C, typename R, typename... Args> class FunctorDelegate<C, R(Args...)> : public Delegate<R(Args...)>
-	{
-	public:
-		typedef C Function;
-
-	private:
-		Function function;
-
-	public:
-		FunctorDelegate(const Function& function) : function(function) { }
-		FunctorDelegate(const FunctorDelegate& function) : function(function.function) { }
-
-		R operator ()(Args... args) const { return function(args...); }
-	};
-
-#ifdef BRICKS_CONFIG_CPP0X
-	template<typename F> class StandardDelegate;
-	template<typename R, typename... Args> class StandardDelegate<R(Args...)> : public FunctorDelegate<std::function<R(Args...)>, R(Args...)>
-	{
-	public:
-		StandardDelegate(const std::function<R(Args...)>& function) : FunctorDelegate<std::function<R(Args...)>, R(Args...)>(function) { }
-		StandardDelegate(const StandardDelegate& function) : FunctorDelegate<std::function<R(Args...)>, R(Args...)>(function) { }
-	};
-#endif
 
 	template<typename F> class Event;
 	template<typename R, typename... Args> class Event<R(Args...)> : public Delegate<void(Args...)>
@@ -104,7 +75,7 @@ namespace Bricks {
 }
 
 namespace Bricks { namespace Collections {
-	template<typename T> inline void Iterable< T >::Iterate(Delegate<bool(T&)>& delegate) {
+	template<typename T> inline void Iterable< T >::Iterate(const Delegate<bool(T&)>& delegate) {
 		foreach (T& t, self) {
 			if (!delegate(t))
 				break;

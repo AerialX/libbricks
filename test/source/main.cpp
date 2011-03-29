@@ -72,8 +72,7 @@ void testFilesystem()
 	Console::Default.Out->WriteLine(" --- Directory Iteration Test --- ");
 	Console::Default.Out->WriteLine("Listing contents of current directory...");
 	Pointer<FileNode> node = AutoAlloc<FilesystemNode>("."); // current dir
-	// Whee lambda iteration
-	node->Iterate(AutoAlloc<StandardDelegate<bool(FileNode&)>>([](const FileNode& subnode) -> bool {
+	node->Iterate(Delegate<bool(FileNode&)>([](FileNode& subnode) -> bool { // Whee lambda iteration
 		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
 		return true; // returning false is like break;ing out of the loop.
 	}));
