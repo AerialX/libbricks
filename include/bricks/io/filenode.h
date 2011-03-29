@@ -6,9 +6,10 @@
 #include "bricks/collections.h"
 #include "bricks/io/types.h"
 #include "bricks/io/stream.h"
+#include "bricks/io/filepath.h"
 
 namespace Bricks { namespace IO {
-	namespace NodeType { enum Enum {
+	namespace FileType { enum Enum {
 		Unknown = DT_UNKNOWN,
 		File = DT_REG,
 		Directory = DT_DIR,
@@ -18,21 +19,39 @@ namespace Bricks { namespace IO {
 		SymbolicLink = DT_LNK,
 		Socket = DT_SOCK
 	}; }
+	
+	static inline FileType::Enum FileStatType(mode_t mode) {
+		if (S_ISREG(mode))
+			return FileType::File;
+		if (S_ISDIR(mode))
+			return FileType::Directory;
+		if (S_ISCHR(mode))
+			return FileType::CharacterDevice;
+		if (S_ISBLK(mode))
+			return FileType::BlockDevice;
+		if (S_ISFIFO(mode))
+			return FileType::FIFO;
+		if (S_ISLNK(mode))
+			return FileType::SymbolicLink;
+		if (S_ISSOCK(mode))
+			return FileType::Socket;
+		return FileType::Unknown;
+	}
 
 	class FileNode : public Object, public Bricks::Collections::Iterable<FileNode>
 	{
 	private:
-		NodeType::Enum type;
-		CopyPointer<String> name;
+		FileType::Enum type;
+		CopyPointer<FilePath> path;
 
 	public:
-		FileNode() : type(NodeType::Unknown) { }
-		FileNode(NodeType::Enum type, const String& name) : type(type), name(name) { }
+		FileNode() : type(FileType::Unknown) { }
+		FileNode(FileType::Enum type, const String& path) : type(type), path(path) { }
 		virtual ~FileNode() { }
 
-		virtual NodeType::Enum GetType() const { return type; }
-		virtual const String& GetName() const { return *name; }
-		virtual const String& GetFullName() const = 0;
+		virtual FileType::Enum GetType() const { return type; }
+		virtual const String& GetName() const { return FilePath(*path).GetFileName(); }
+		virtual const String& GetFullName() const { if (!FilePath(*path).IsPathRooted()) Throw(NotSupportedException); return *path; }
 		virtual Pointer<FileNode> GetParent() const = 0;
 		virtual u64 GetSize() const = 0;
 		virtual Stream& OpenStream(

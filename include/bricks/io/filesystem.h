@@ -3,11 +3,12 @@
 #include "bricks.h"
 #include "bricks/io/types.h"
 #include "bricks/io/filenode.h"
-#include "bricks/io/fileinfo.h"
 
 #include <stdio.h>
 
 namespace Bricks { namespace IO {
+	class FileInfo;
+
 	typedef size_t FileHandle;
 
 	class Filesystem : public Object
@@ -43,11 +44,16 @@ namespace Bricks { namespace IO {
 		virtual void SeekDirectory(FileHandle fd, size_t offset) = 0;
 		virtual void CloseDirectory(FileHandle fd) = 0;
 		
-		virtual FileInfo& StatFile(const String& path) = 0;
-		virtual DirectoryInfo& StatDirectory(const String& path) = 0;
+		virtual FileInfo& Stat(const String& path) const = 0;
+
+		virtual bool IsFile(const String& path) const = 0;
+		virtual bool IsDirectory(const String& path) const = 0;
+		virtual bool Exists(const String& path) const = 0;
 
 		virtual void DeleteFile(const String& path) = 0;
 		virtual void DeleteDirectory(const String& path, bool recursive) = 0;
+
+		virtual const String& GetCurrentDirectory() const = 0;
 	};
 
 	class C89Filesystem : public Filesystem
@@ -107,66 +113,106 @@ namespace Bricks { namespace IO {
 		void SeekDirectory(FileHandle fd, size_t offset);
 		void CloseDirectory(FileHandle fd);
 		
-		FileInfo& StatFile(const String& path);
-		DirectoryInfo& StatDirectory(const String& path);
+		FileInfo& Stat(const String& path) const;
+
+		bool IsFile(const String& path) const;
+		bool IsDirectory(const String& path) const;
+		bool Exists(const String& path) const;
 
 		void DeleteFile(const String& path);
 		void DeleteDirectory(const String& path, bool recursive);
+
+		const String& GetCurrentDirectory() const;
+	};
+	
+	class FileInfo : public Object
+	{
+	private:
+		struct stat st;
+		AutoPointer<FilePath> path;
+		AutoPointer<Filesystem> filesystem;
+
+	public:
+		FileInfo(struct stat& st, const String& path, Pointer<Filesystem> filesystem) :
+			st(st), path(Alloc(FilePath, path), false), filesystem(filesystem)
+		{ }
+		virtual ~FileInfo() { }
+
+		dev_t GetDeviceID() const { return st.st_dev; }
+		ino_t GetInode() const { return st.st_ino; }
+		nlink_t GetLinkCount() const { return st.st_nlink; }
+		uid_t GetUserID() const { return st.st_uid; }
+		gid_t GetGroupID() const { return st.st_gid; }
+		dev_t GetSpecialDeviceID() const { return st.st_rdev; }
+		off_t GetSize() const { return st.st_size; }
+		blksize_t GetBlockSize() const { return st.st_blksize; }
+		blkcnt_t GetBlockCount() const { return st.st_blocks; }
+		time_t GetAccessTime() const { return st.st_atime; }
+		time_t GetModifiedTime() const { return st.st_mtime; }
+		time_t GetChangeTime() const { return st.st_ctime; }
+		FileType::Enum GetFileType() const { return FileStatType(st.st_mode); }
+		const FilePath& GetFilePath() const { return *path; }
+
+		FileInfo& GetParent() const { return filesystem->Stat(path->GetDirectory()); }
+		Filesystem& GetFilesystem() const { return const_cast<Filesystem&>(*filesystem); }
 	};
 
+	class FilesystemNodeIterator;
 	class FilesystemNode : public FileNode
 	{
 	private:
 		AutoPointer<Filesystem> filesystem;
+		u64 size;
 
-		static NodeType::Enum GetStatType(mode_t mode) {
-			if (S_ISREG(mode))
-				return NodeType::File;
-			if (S_ISDIR(mode))
-				return NodeType::Directory;
-			if (S_ISCHR(mode))
-				return NodeType::CharacterDevice;
-			if (S_ISBLK(mode))
-				return NodeType::BlockDevice;
-			if (S_ISFIFO(mode))
-				return NodeType::FIFO;
-			if (S_ISLNK(mode))
-				return NodeType::SymbolicLink;
-			if (S_ISSOCK(mode))
-				return NodeType::Socket;
-			return NodeType::Unknown;
+		static FileType::Enum GetDirType(int type) {
+			return (FileType::Enum)type;
 		}
 
-		static NodeType::Enum GetDirType(int type) {
-			return (NodeType::Enum)type;
-		}
+		friend class FilesystemNodeIterator;
 
 	public:
-		FilesystemNode(const struct stat& st, const String& path, Pointer<Filesystem> filesystem = NULL) :
-			FileNode(GetStatType(st.st_mode), path), // TODO: FilePath::GetLeaf(path), FilePath::GetDirectory(path)
-			filesystem(filesystem ?: &Filesystem::GetDefault())
-		{
-
+		FilesystemNode(const FileInfo& info) : FileNode(info.GetFileType(), info.GetFilePath()), filesystem(info.GetFilesystem()) {
+			size = info.GetSize();
 		}
 
 		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
 			FileNode(GetDirType(dir.d_type), dir.d_name),
 			filesystem(filesystem ?: &Filesystem::GetDefault())
 		{
-
+			size = -1;
 		}
+
 		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
 			filesystem(filesystem ?: &Filesystem::GetDefault())
 		{
-			Throw(NotImplementedException);
-//			self = filesystem->Stat(path);
+			self = this->filesystem->Stat(path);
 		}
 
-		const String& GetFullName() const { Throw(NotImplementedException); }
-		Pointer<FileNode> GetParent() const { Throw(NotImplementedException); }
-		u64 GetSize() const { Throw(NotImplementedException); }
+		Pointer<FileNode> GetParent() const { return AutoAlloc(FilesystemNode, FilePath(GetFullName()).GetDirectory(), filesystem); }
+		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; Throw(NotSupportedException); }
 		Stream& OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
 
-		Bricks::Collections::Iterator<FileNode>& GetIterator() const { Throw(NotImplementedException); }
+		Bricks::Collections::Iterator<FileNode>& GetIterator() const;
 	};
+
+	class FilesystemNodeIterator : public Object, public Bricks::Collections::Iterator<FileNode>
+	{
+	private:
+		AutoPointer<Filesystem> filesystem;
+		FileHandle dir;
+		AutoPointer<FileNode> current;
+
+		FilesystemNodeIterator(const FilesystemNode& node) :
+			filesystem(node.filesystem), dir(filesystem->OpenDirectory(node.GetFullName())) { }
+
+		friend class FilesystemNode;
+
+	public:
+		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
+
+		FileNode& GetCurrent() const { if (!current) Throw(Bricks::Collections::InvalidIteratorException); return const_cast<FileNode&>(*current); }
+		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
+	};
+	
+	inline Bricks::Collections::Iterator<FileNode>& FilesystemNode::GetIterator() const { return AutoAlloc(FilesystemNodeIterator, self); }
 } }

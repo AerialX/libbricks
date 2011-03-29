@@ -6,6 +6,7 @@
 #include "bricks/io/stream.h"
 #include "bricks/io/substream.h"
 #include "bricks/io/filestream.h"
+#include "bricks/io/filepath.h"
 
 #include "bricks/io/endian.h"
 #include "bricks/io/navigator.h"

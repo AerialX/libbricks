@@ -8,13 +8,13 @@ namespace Bricks { namespace IO {
 	class EndOfStreamException : public Exception
 	{
 	public:
-		EndOfStreamException(String& message = String::Empty) : Exception(message) { }
+		EndOfStreamException(const String& message = String::Empty) : Exception(message) { }
 	};
 	
 	class StreamException : public Exception
 	{
 	public:
-		StreamException(String& message = String::Empty) : Exception(message) { }
+		StreamException(const String& message = String::Empty) : Exception(message) { }
 	};
 	
 	class StreamNavigator : public Object

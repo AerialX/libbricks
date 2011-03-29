@@ -1,6 +1,7 @@
 #include "bricks.h"
 #include "bricks/io/filesystem.h"
 #include "bricks/io/filestream.h"
+#include "bricks/io/filepath.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -9,6 +10,8 @@
 #include <errno.h>
 
 namespace Bricks { namespace IO {
+	const String FilePath::DirectorySeparators = String("/\\");
+
 	static Filesystem* defaultFilesystem = NULL;
 	Filesystem& Filesystem::GetDefault()
 	{
@@ -126,7 +129,7 @@ namespace Bricks { namespace IO {
 			FilePermissions::Enum permissions)
 	{
 		int oflag = createmode | mode;
-		int ret = open(path.CString(), oflag, permissions);
+		int ret = open(path.CString(), oflag, permissions); // FIXME: On Windows, oflag | O_BINARY
 		if (ret < 0)
 			ThrowErrno();
 		return (FileHandle)ret;
@@ -202,6 +205,8 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 			return NULL;
 		}
+		if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, ".."))
+			return ReadDirectory(fd); // Not interested in this crap
 		return AutoAlloc(FilesystemNode, *dir);
 	}
 	
@@ -224,24 +229,38 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 
-	FileInfo& PosixFilesystem::StatFile(const String& path)
+	FileInfo& PosixFilesystem::Stat(const String& path) const
 	{
 		struct stat st;
 		if (stat(path.CString(), &st))
 			ThrowErrno();
-		if (S_ISDIR(st.st_mode))
-			Throw(InvalidArgumentException); // FIXME: Should be an io exception
-		return AutoAlloc(FileInfo, st);
+		return AutoAlloc(FileInfo, st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
+	}
+	
+	bool PosixFilesystem::IsFile(const String& path) const
+	{
+		struct stat st;
+		return !stat(path.CString(), &st) && S_ISREG(st.st_mode);
 	}
 
-	DirectoryInfo& PosixFilesystem::StatDirectory(const String& path)
+	bool PosixFilesystem::IsDirectory(const String& path) const
 	{
 		struct stat st;
-		if (stat(path.CString(), &st))
+		return !stat(path.CString(), &st) && S_ISDIR(st.st_mode);
+	}
+
+	bool PosixFilesystem::Exists(const String& path) const
+	{
+		struct stat st;
+		return !stat(path.CString(), &st);
+	}
+
+	const String& PosixFilesystem::GetCurrentDirectory() const
+	{
+		char buffer[PATH_MAX];
+		if (!getcwd(buffer, sizeof(buffer)))
 			ThrowErrno();
-		if (!S_ISDIR(st.st_mode))
-			Throw(InvalidArgumentException); // FIXME: Should be an io exception
-		return AutoAlloc(DirectoryInfo, st);
+		return AutoAlloc(String, buffer);
 	}
 
 	void PosixFilesystem::DeleteFile(const String& path)

@@ -5,6 +5,7 @@
 #include <bricks/collections.h>
 #include <bricks/collections/array.h>
 #include <bricks/collections/dictionary.h>
+#include <bricks/delegate.h>
 
 using namespace Bricks;
 using namespace Bricks::IO;
@@ -58,6 +59,24 @@ void testFilesystem()
 	Console::Default.Out->WriteLine(String::Format("Success! Read back 0x%08x, \"%s\", and 0x%04x from file.", num, str->CString(), num2));
 
 	// rstream and reader are both Released() when this returns thanks to the ObjectPool.
+
+	Console::Default.Out->WriteLine(" --- File Path Test --- ");
+	Console::Default.Out->WriteLine("Creating FilePath, should be /test/lol/sup");
+	Pointer<FilePath> path = AutoAlloc<FilePath>("lol");
+	*path = path->Combine("sup");
+	*path = path->RootPath("/test");
+	assert(!path->Compare("/test/lol/sup"));
+	Console::Default.Out->WriteLine(String::Format("Result: %s, filename is %s", path->CString(), path->GetFileName().CString()));
+	Console::Default.Out->WriteLine(String::Format("Directory is: %s", path->GetDirectory().CString()));
+
+	Console::Default.Out->WriteLine(" --- Directory Iteration Test --- ");
+	Console::Default.Out->WriteLine("Listing contents of current directory...");
+	Pointer<FileNode> node = AutoAlloc<FilesystemNode>("."); // current dir
+	// Whee lambda iteration
+	node->Iterate(AutoAlloc<StandardDelegate<bool(FileNode&)>>([](const FileNode& subnode) -> bool {
+		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
+		return true; // returning false is like break;ing out of the loop.
+	}));
 }
 
 void testCollections()
