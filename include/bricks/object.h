@@ -56,13 +56,6 @@ namespace Bricks {
 //		virtual int GetHash() const;
 	};
 
-	class Copyable
-	{
-	public:
-		virtual Object& Copy() const = 0;
-		template<typename T> T& Copy() const { return static_cast<T&>(Copy()); }
-	};
-
 	template<typename T> class Pointer
 	{
 	private:
@@ -88,7 +81,7 @@ namespace Bricks {
 		Pointer< T >& operator=(const Pointer< T >& t) { value = t.value; return self; }
 		Pointer< T >& operator=(T* t) { value = t; return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
-		T* operator->() { return value; }
+		T* operator->() { return &*self; }
 		const T* operator->() const { return value; }
 		T& operator*();
 		const T& operator*() const;
@@ -112,26 +105,28 @@ namespace Bricks {
 		AutoPointer(const Pointer< T >& t) : Pointer< T >(t) { Retain(); }
 		AutoPointer(T* t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		~AutoPointer() { Release(); }
+		virtual ~AutoPointer() { Release(); }
 		
-		AutoPointer< T >& operator=(const AutoPointer<T>& t) { if (this == &t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
-		AutoPointer< T >& operator=(T* t) { if (&dynamic_cast<Object&>(*self) == dynamic_cast<Object*>(t)) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
-		AutoPointer< T >& operator=(T& t) { if (&dynamic_cast<Object&>(*self) == &dynamic_cast<Object&>(t)) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
+		AutoPointer< T >& operator=(const Pointer< T >& t) { if (this == &t || (T*)self == (T*)t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
+		AutoPointer< T >& operator=(const AutoPointer< T >& t) { return this->operator=(static_cast<const Pointer< T >&>(t)); }
+		AutoPointer< T >& operator=(T* t) { if ((T*)self == t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
+		AutoPointer< T >& operator=(T& t) { if ((T*)self == &t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
 	};
 
 	template<typename T> class CopyPointer : public AutoPointer< T >
 	{
-#define BRICKS_COPY_POINTER(t) (static_cast<const Copyable*>(t)->Copy< T >())
+#define BRICKS_COPY_POINTER(t) ((t) ? &(t)->Copy() : NULL)
 	public:
 		CopyPointer() : AutoPointer< T >() { }
-		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&*t), false) { }
-		CopyPointer(const Pointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&*t), false) { }
+		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER((T*)t), false) { }
+		CopyPointer(const Pointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER((T*)t), false) { }
 		CopyPointer(const T* t) : AutoPointer< T >(BRICKS_COPY_POINTER(t), false) { }
 		CopyPointer(const T& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&t), false) { }
 		
-		CopyPointer< T >& operator=(const Pointer<T>& t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER(&*t)); return self; }
+		CopyPointer< T >& operator=(const Pointer< T >& t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER((T*)t)); return self; }
+		CopyPointer< T >& operator=(const CopyPointer< T >& t) { return this->operator=(static_cast<const Pointer< T >&>(t)); }
 		CopyPointer< T >& operator=(const T* t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER(t)); return self; }
-		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER(&*t)); return self; }
+		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER(&t)); return self; }
 	};
 
 #ifdef BRICKS_CONFIG_CPP0X
@@ -150,11 +145,7 @@ namespace Bricks {
 #define Alloc(T, ...) (static_cast<T&>(Bricks::Object::AllocInternal(*new T(__VA_ARGS__))))
 #define AutoAlloc(T, ...) (static_cast<Object&>(Alloc(T, __VA_ARGS__)).Autorelease< T >())
 
-	template<typename T> class CopyableConstructor : public Copyable
-	{
-	public:
-		virtual Object& Copy() const { return Alloc(T, static_cast<const T&>(self)); }
-	};
+#define BRICKS_COPY_CONSTRUCTOR(T) T& Copy() const { return Alloc(T, self); }
 }
 
 #include "bricks/objectpool.h"

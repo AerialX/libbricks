@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 namespace Bricks {
-	String String::Empty = String();
+	const String String::Empty = String();
 
 	String& String::Format(const char* format, ...)
 	{

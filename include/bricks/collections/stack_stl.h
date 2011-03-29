@@ -12,7 +12,7 @@ namespace Bricks { namespace Collections {
 	class StackEmptyException : public Exception
 	{
 	public:
-		StackEmptyException(String& message = String::Empty) : Exception(message) { }
+		StackEmptyException(const String& message = String::Empty) : Exception(message) { }
 	};
 
 	template<typename T> class StackIterator;

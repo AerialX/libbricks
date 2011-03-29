@@ -33,7 +33,7 @@ namespace Bricks { namespace Collections {
 	class InvalidIteratorException : public Exception
 	{
 	public:
-		InvalidIteratorException(String& message = String::Empty) : Exception(message) { }
+		InvalidIteratorException(const String& message = String::Empty) : Exception(message) { }
 	};
 
 	template<typename T> class Collection;

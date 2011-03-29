@@ -9,13 +9,16 @@
 #include <stdio.h>
 
 namespace Bricks {
-	class String : public Object, public CopyableConstructor<String>
+	// TODO: Iterable<char>
+	class String : public Object
 	{
 		public:
 			static const size_t npos = -1;
-			static String Empty;
+			static const String Empty;
 
 			static String& Format(const char* format, ...);
+
+			BRICKS_COPY_CONSTRUCTOR(String);
 
 		protected:
 			char* buffer;
@@ -25,13 +28,20 @@ namespace Bricks {
 				if (buffer)
 					free(buffer);
 				if (len == npos)
-					len = strlen(string);
+					len = string ? strlen(string) : 0;
 				buffer = (char*)malloc(len + 1);
 				if (buffer) {
 					if (len && string)
 						strncpy(buffer, string, len);
 					buffer[len] = '\0';
 				}
+			}
+
+			size_t ConvertStrChr(const char* ptr) const
+			{
+				if (!ptr)
+					return npos;
+				return ptr - buffer;
 			}
 		public:
 			String() : buffer(NULL) { Construct(""); }
@@ -41,7 +51,7 @@ namespace Bricks {
 
 			~String() { free(buffer); buffer = NULL; }
 
-			String& GetDebugString() const { return Format("\"%s\" [%d]", static_cast<const Copyable&>(self).Copy<String>().CString(), GetReferenceCount()); }
+			String& GetDebugString() const { return Format("\"%s\" [%d]", CString(), GetReferenceCount()); }
 
 			String& operator =(const String& string)
 			{
@@ -75,6 +85,7 @@ namespace Bricks {
 			const char* CString() const { return buffer; }
 
 			char& operator [](size_t index) { return buffer[index]; }
+			const char& operator [](size_t index) const { return buffer[index]; }
 
 			size_t GetSize() const { return strlen(buffer); }
 			size_t GetLength() const { return strlen(buffer); } // TODO: UTF8
@@ -86,6 +97,33 @@ namespace Bricks {
 			int Compare(const char* string, size_t len) const { return strncmp(buffer, string, len); }
 			int Compare(size_t off1, const char* string, size_t len) const { return strncmp(buffer + off1, string, len); }
 
-			String& Substring(size_t off = 0, size_t len = npos) const { return AutoAlloc(String, buffer + off, len); }
+			String& Substring(size_t off = 0, size_t len = npos) const { return AutoAlloc(String, buffer + (off == npos ? 0 : off), len); }
+
+			size_t FirstIndexOf(char chr, size_t off = 0) const { return ConvertStrChr(strchr(CString() + off, chr)); }
+			size_t LastIndexOf(char chr, size_t off = 0) const { return ConvertStrChr(strrchr(CString() + off, chr)); }
+			
+			size_t FirstIndexOf(const String& string, size_t off = 0) const {
+				size_t count = string.GetSize();
+				size_t firstindex = count;
+				for (size_t i = 0; i < count; i++) {
+					size_t index = FirstIndexOf(string[i], off);
+					if (index != npos && index < firstindex)
+						firstindex = index;
+				}
+				return firstindex == count ? npos : firstindex;
+			}
+			size_t LastIndexOf(const String& string, size_t off = 0) const {
+				size_t count = string.GetSize();
+				size_t firstindex = 0;
+				bool found = false;
+				for (size_t i = 0; i < count; i++) {
+					size_t index = LastIndexOf(string[i], off);
+					if (index != npos && index > firstindex) {
+						firstindex = index;
+						found = true;
+					}
+				}
+				return found ? firstindex : npos;
+			}
 	};
 }
