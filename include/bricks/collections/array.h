@@ -1,8 +1,12 @@
 #pragma once
 
+#ifndef BRICKS_CONFIG_STL
+#error libbricks must be configured to use the STL
+#endif
+
 #include "bricks/collections.h"
 
-#ifndef BRICKS_CONFIG_STL
+#include <vector>
 
 namespace Bricks { namespace Collections {
 	template<typename T> class Array;
@@ -11,112 +15,91 @@ namespace Bricks { namespace Collections {
 	class ArrayIterator : public Object, public Iterator< T >
 	{
 	private:
-		Pointer< const Array< T > > array;
-		T* position;
-		T* end;
-		ArrayIterator(const Array< T >& array) : array(array), position(array.data - 1), end(array.data + array.count) { }
+		bool first;
+		typename Array< T >::iterator position;
+		typename Array< T >::iterator end;
+		ArrayIterator(Array< T >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
 
 		friend class Array< T >;
 
 	public:
-		virtual T& GetCurrent() const { if (position < array->data || position >= end) Throw(InvalidIteratorException); return *position; }
-		virtual bool MoveNext() { return ++position < end; }
+		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 
 	template<typename T>
 	class Array : public Object, public List< T >
 	{
 	private:
-		long allocated;
-		long count;
-		T* data;
+		typename std::vector<T> vector;
+		typedef typename std::vector<T>::iterator iterator;
+		typedef typename std::vector<T>::const_iterator const_iterator;
 
 		friend class ArrayIterator< T >;
 
-		void Allocate(long size) {
-			if (allocated >= size)
-				return;
-			allocated = size;
-			T* old = data;
-			data = new T[allocated];
-			for (long i = 0; old && i < count; i++)
-				data[i] = old[i];
-			if (old)
-				delete[] old;
+		iterator IteratorOfItem(const T& value) {
+			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
+				if (*iter == value)
+					return iter;
+			}
+			return vector.end();
 		}
 		
-		void Shift(long source, long dest, long size)
-		{
-			for (long i = 0; i < size; i++) {
-				data[dest + i] = data[source + i];
-				data[source + i] = T();
+		const_iterator IteratorOfItem(const T& value) const {
+			for (const_iterator iter = vector.begin(); iter != vector.end(); iter++) {
+				if (*iter == value)
+					return iter;
 			}
-		}
-		void ShiftReverse(long source, long dest, long size)
-		{
-			for (long i = size - 1; i >= 0; i--) {
-				data[dest + i] = data[source + i];
-				data[source + i] = T();
-			}
+			return vector.end();
 		}
 
 	public:
-		Array() : allocated(0), count(0), data(NULL) { }
-		Array(const Array< T >& array) : allocated(0), count(0), data(NULL) { AddItems(array); }
-		Array(const Collection< T >& collection) : allocated(0), count(0), data(NULL) { AddItems(collection); }
-		virtual ~Array() { if (data) delete[] data; }
+		Array() { }
+		Array(const Array< T >& array) : vector(array.vector) { }
+		Array(const Collection< T >& collection) { AddItems(collection); }
+		virtual ~Array() { }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return AutoAlloc(ArrayIterator< T >, self); }
+		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T >(const_cast<Array< T >&>(self)); }
 
 		// Collection
-		virtual long GetCount() const { return count; };
+		virtual long GetCount() const { return vector.size(); };
 
-		virtual bool ContainsItem(const T& value) const { return IndexOfItem(value) >= 0; }
+		virtual bool ContainsItem(const T& value) const { return IteratorOfItem(value) != vector.end(); }
 
-		virtual void AddItem(const T& value) { Allocate(count + 1); data[count++] = value; }
+		virtual void AddItem(const T& value) { vector.push_back(value); }
 		virtual void AddItems(Iterable< T >& values) { foreach (T& item, values) AddItem(item); }
-		virtual void AddItems(Collection< T >& values) {
-			Allocate(count + values.GetCount());
-			foreach (T& item, values) {
-				data[count] = item;
-				count++;
-			}
-		}
+		virtual void AddItems(Collection< T >& values) { AddItems(static_cast<Iterable< T >&>(values)); }
 		virtual bool RemoveItem(const T& value)
 		{
-			long index = IndexOfItem(value);
-			if (index < 0)
+			iterator iter = IteratorOfItem(value);
+			if (iter == vector.end())
 				return false;
-			RemoveItemAt(index);
+			vector.erase(iter);
 			return true;
 		}
 
-		virtual void Clear() { foreach (T& item, self) item = T(); count = 0; }
+		virtual void Clear() { vector.clear(); }
 
 		// List
-		virtual void SetItem(long index, const T& value) { data[index] = value; }
-		virtual T& GetItem(long index) { return data[index]; }
-		virtual const T& GetItem(long index) const { return data[index]; }
-		virtual long IndexOfItem(const T& value) const { for (long i = 0; i < count; i++) { if (data[i] == value) return i; } return -1; }
+		virtual void SetItem(long index, const T& value) { vector[index] = value; }
+		virtual T& GetItem(long index) { return vector[index]; }
+		virtual const T& GetItem(long index) const { return vector[index]; }
+		virtual long IndexOfItem(const T& value) const {
+			const_iterator iter = IteratorOfItem(value);
+			if (iter == vector.end())
+				return -1;
+			return iter - vector.begin();
+		}
 
 		virtual void InsertItem(long index, const T& value)
 		{
-			Allocate(count + 1);
-			ShiftReverse(index, index + 1, count - index);
-			count++;
+			vector.insert(vector.begin() + index, value);
 		}
 
 		virtual void RemoveItemAt(long index)
 		{
-			Shift(index + 1, index, count - index - 1);
-			count--;
+			vector.erase(vector.begin() + index);
 		}
 	};
 } }
-
-#else
-
-#include "bricks/collections/array_stl.h"
-
-#endif

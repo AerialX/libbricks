@@ -1,7 +1,8 @@
 #pragma once
 
-#include "bricks/io/filesystem.h"
-#include "bricks/io/stream.h"
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
 
 namespace Bricks { namespace IO {
 	class FileStream : public Stream
@@ -21,7 +22,7 @@ namespace Bricks { namespace IO {
 		FileStream(FileHandle handle, Pointer<Filesystem> filesystem = NULL) : System(filesystem ?: Pointer<Filesystem>(Filesystem::GetDefault())), Handle(handle) { }
 		size_t Read(void* buffer, size_t size) { return System->Read(Handle, buffer, size); }
 		size_t Write(const void* buffer, size_t size) { return System->Write(Handle, buffer, size); }
-		u64 GetLength() const { Throw(NotImplementedException); }
+		u64 GetLength() const { throw NotImplementedException(); }
 		void SetLength(u64 length) { System->Truncate(Handle, length); }
 		u64 GetPosition() const { return System->Tell(Handle); }
 		void SetPosition(u64 position) { Seek(position, SeekType::Beginning); }

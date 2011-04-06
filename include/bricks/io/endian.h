@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
+
 #ifdef __GLIBC__
 #include <endian.h>
 #if __BYTE_ORDER == __LITTLE_ENDIAN
@@ -58,111 +62,43 @@ namespace Bricks { namespace IO {
 	}
 	static inline bool IsBigEndian() { return !IsLittleEndian(); }
 
-	inline u16 EndianConvertBE16(const void* data) {
-		const u16* const src = reinterpret_cast<const u16* const>(data);
-		if (IsBigEndian())
-			return *src;
-		return BRICKS_ENDIAN_SWAP16(*src);
+#define BRICKS_ENDIAN_CONVERT(bits) \
+	inline u##bits EndianConvertBE##bits(const void* data) { \
+		const u##bits* const src = reinterpret_cast<const u##bits* const>(data); \
+		if (IsBigEndian()) \
+			return *src; \
+		return BRICKS_ENDIAN_SWAP##bits(*src); \
+	} \
+	inline u##bits EndianConvertLE##bits(const void* data) { \
+		const u##bits* const src = reinterpret_cast<const u##bits* const>(data); \
+		if (IsLittleEndian()) \
+			return *src; \
+		return BRICKS_ENDIAN_SWAP##bits(*src); \
+	} \
+	template<typename T> \
+	inline T EndianConvert##bits(Endian::Enum endianness, const void* data) { \
+		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian())) \
+			return EndianConvertBE##bits(data); \
+		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian())) \
+			return EndianConvertLE##bits(data); \
+		throw InvalidArgumentException("endianness"); \
+	} \
+	inline void EndianConvertBE##bits(void* dest, u##bits value) { \
+		*reinterpret_cast<u##bits*>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
+	} \
+	inline void EndianConvertLE##bits(void* dest, u##bits value) { \
+		*reinterpret_cast<u##bits*>(dest) = IsLittleEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
+	} \
+	inline void EndianConvert##bits(Endian::Enum endianness, void* data, u##bits value) { \
+		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian())) \
+			return EndianConvertBE##bits(data, value); \
+		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian())) \
+			return EndianConvertLE##bits(data, value); \
+		throw InvalidArgumentException("endianness"); \
 	}
 
-	inline u32 EndianConvertBE32(const void* data) {
-		const u32* const src = reinterpret_cast<const u32* const>(data);
-		if (IsBigEndian())
-			return *src;
-		return BRICKS_ENDIAN_SWAP32(*src);
-	}
+BRICKS_ENDIAN_CONVERT(16)
+BRICKS_ENDIAN_CONVERT(32)
+BRICKS_ENDIAN_CONVERT(64)
 
-	inline u64 EndianConvertBE64(const void* data) {
-		const u64* const src = reinterpret_cast<const u64* const>(data);
-		if (IsBigEndian())
-			return *src;
-		return BRICKS_ENDIAN_SWAP64(*src);
-	}
-
-	inline u16 EndianConvertLE16(const void* data) {
-		const u16* const src = reinterpret_cast<const u16* const>(data);
-		if (IsLittleEndian())
-			return *src;
-		return BRICKS_ENDIAN_SWAP16(*src);
-	}
-
-	inline u32 EndianConvertLE32(const void* data) {
-		const u32* const src = reinterpret_cast<const u32* const>(data);
-		if (IsLittleEndian())
-			return *src;
-		return BRICKS_ENDIAN_SWAP32(*src);
-	}
-
-	inline u64 EndianConvertLE64(const void* data) {
-		const u64* const src = reinterpret_cast<const u64* const>(data);
-		if (IsLittleEndian())
-			return *src;
-		return BRICKS_ENDIAN_SWAP64(*src);
-	}
-	
-	template<typename T>
-	inline T EndianConvert16(Endian::Enum endianness, const void* data) {
-		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian()))
-			return EndianConvertBE16(data);
-		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian()))
-			return EndianConvertLE16(data);
-		Throw(InvalidArgumentException, "endianness");
-	}
-	template<typename T>
-	inline T EndianConvert32(Endian::Enum endianness, const void* data) {
-		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian()))
-			return EndianConvertBE32(data);
-		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian()))
-			return EndianConvertLE32(data);
-		Throw(InvalidArgumentException, "endianness");
-	}
-	template<typename T>
-	inline T EndianConvert64(Endian::Enum endianness, const void* data) {
-		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian()))
-			return EndianConvertBE64(data);
-		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian()))
-			return EndianConvertLE64(data);
-		Throw(InvalidArgumentException, "endianness");
-	}
-
-	inline void EndianConvertBE16(void* dest, u16 value) {
-		*reinterpret_cast<u16*>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP16(value);
-	}
-	inline void EndianConvertBE32(void* dest, u32 value) {
-		*reinterpret_cast<u32*>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP32(value);
-	}
-	inline void EndianConvertBE64(void* dest, u64 value) {
-		*reinterpret_cast<u64*>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP64(value);
-	}
-	inline void EndianConvertLE16(void* dest, u16 value) {
-		*reinterpret_cast<u16*>(dest) = IsLittleEndian() ? value : BRICKS_ENDIAN_SWAP16(value);
-	}
-	inline void EndianConvertLE32(void* dest, u32 value) {
-		*reinterpret_cast<u32*>(dest) = IsLittleEndian() ? value : BRICKS_ENDIAN_SWAP32(value);
-	}
-	inline void EndianConvertLE64(void* dest, u64 value) {
-		*reinterpret_cast<u64*>(dest) = IsLittleEndian() ? value : BRICKS_ENDIAN_SWAP64(value);
-	}
-
-	inline void EndianConvert16(Endian::Enum endianness, void* data, u16 value) {
-		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian()))
-			return EndianConvertBE16(data, value);
-		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian()))
-			return EndianConvertLE16(data, value);
-		Throw(InvalidArgumentException, "endianness");
-	}
-	inline void EndianConvert32(Endian::Enum endianness, void* data, u32 value) {
-		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian()))
-			return EndianConvertBE32(data, value);
-		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian()))
-			return EndianConvertLE32(data, value);
-		Throw(InvalidArgumentException, "endianness");
-	}
-	inline void EndianConvert64(Endian::Enum endianness, void* data, u64 value) {
-		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian()))
-			return EndianConvertBE64(data, value);
-		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian()))
-			return EndianConvertLE64(data, value);
-		Throw(InvalidArgumentException, "endianness");
-	}
 } }

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "bricks.h"
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
 
 namespace Bricks { namespace IO {
 	class Stream : public Object

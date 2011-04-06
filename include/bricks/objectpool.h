@@ -25,4 +25,9 @@ namespace Bricks {
 		Release();
 		return self;
 	}
+
+	inline void Object::InternalAutorelease()
+	{
+		ObjectPool::GetCurrentPool().AddObject(AutoPointer<Object>(self, false));
+	}
 }

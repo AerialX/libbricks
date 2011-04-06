@@ -13,15 +13,15 @@ namespace Bricks {
 #ifdef _GNU_SOURCE
 		char* temp = NULL;
 		if (vasprintf(&temp, format, args) < 0)
-			Throw(OutOfMemoryException);
-		String& ret = AutoAlloc(String, temp);
+			throw OutOfMemoryException();
+		String& ret = autoalloc String(temp);
 		free(temp);
 #else
 		size_t size = strlen(format) * 4;
 		char* temp = new char[size];
 		vsnprintf(temp, size, format, args);
 		temp[size - 1] = '\0';
-		String& ret = AutoAlloc(String, temp);
+		String& ret = autoalloc String(temp);
 		delete[] temp;
 #endif
 		va_end(args);

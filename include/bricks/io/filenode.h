@@ -1,12 +1,13 @@
 #pragma once
 
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
+
 #include <dirent.h>
 #include <sys/stat.h>
 
 #include "bricks/collections.h"
-#include "bricks/io/types.h"
-#include "bricks/io/stream.h"
-#include "bricks/io/filepath.h"
 
 namespace Bricks { namespace IO {
 	namespace FileType { enum Enum {
@@ -46,12 +47,12 @@ namespace Bricks { namespace IO {
 
 	public:
 		FileNode() : type(FileType::Unknown) { }
-		FileNode(FileType::Enum type, const String& path) : type(type), path(path) { }
+		FileNode(FileType::Enum type, const String& path) : type(type), path(autoalloc FilePath(path)) { }
 		virtual ~FileNode() { }
 
 		virtual FileType::Enum GetType() const { return type; }
 		virtual const String& GetName() const { return FilePath(*path).GetFileName(); }
-		virtual const String& GetFullName() const { if (!FilePath(*path).IsPathRooted()) Throw(NotSupportedException); return *path; }
+		virtual const String& GetFullName() const { if (!FilePath(*path).IsPathRooted()) throw NotSupportedException(); return *path; }
 		virtual Pointer<FileNode> GetParent() const = 0;
 		virtual u64 GetSize() const = 0;
 		virtual Stream& OpenStream(

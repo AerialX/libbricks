@@ -16,13 +16,13 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T>
 	struct IteratorType : public IteratorTypeBase
 	{
-		const T value;
-		IteratorType(T const &value) : IteratorTypeBase(), value(value) { }
+		const T* value;
+		IteratorType(const T* value) : IteratorTypeBase(), value(value) { }
 	};
 	template<typename T>
-	inline IteratorType<T*> IteratorContainer(T& t) { return IteratorType<T*>(&t); }
+	inline IteratorType<T> IteratorContainer(T& t) { return IteratorType<T>(&t); }
 	template<typename T>
-	inline T& IteratorContainer(const T& dummy, const IteratorTypeBase& t) { return *const_cast<T*&>(static_cast<const IteratorType<T*>&>(t).value); }
+	inline T& IteratorContainer(const T& dummy, const IteratorTypeBase& t) { return *const_cast<T*>(static_cast<const IteratorType<T>&>(t).value); }
 } } }
 #define foreach_container Bricks::Collections::Internal::IteratorContainer
 #define foreach_iterator(list) ((list).GetIterator())
@@ -44,7 +44,7 @@ namespace Bricks { namespace Collections {
 	public:
 		virtual T& GetCurrent() const = 0;
 		virtual bool MoveNext() = 0;
-		virtual Collection< T >& GetAllObjects() { Throw(NotImplementedException); };
+		virtual Collection< T >& GetAllObjects() { throw NotImplementedException(); };
 	};
 
 	template<typename T>

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "bricks/object.h"
-
 namespace Bricks { namespace Collections {
 	template<typename T>
 	class Collection : public Iterable< T >

@@ -11,24 +11,28 @@
 #endif
 
 #define self (*this)
-#define id Pointer<Object>
 #define nil NULL
+#define autoalloc *new(Bricks::Auto)
+#define alloc *new
 
 namespace Bricks {
 	class Class;
 	class String;
 
+	struct ObjectAlloc { };
+	extern ObjectAlloc Auto;
+
 	class Object
 	{
 	private:
-		int referenceCount;
+		u32 referenceCount;
 
-#ifdef BRICKS_CONFIG_CPP0X
-		template<typename T, typename... Args> friend T& Alloc(Args... args);
-#endif
+		void InternalAutorelease();
+
+		static void* mallocthrowable(size_t size);
 
 	public:
-		Object() : referenceCount(-0x40000000) { }
+		Object() : referenceCount(1) { }
 
 #ifdef BRICKS_CONFIG_RTTI
 		Class& GetClass() const;
@@ -37,21 +41,25 @@ namespace Bricks {
 #endif
 
 		Object& Autorelease();
-		Object& Retain() { if (referenceCount > 0) referenceCount++; BRICKS_FEATURE_LOG_HEAVY("+%p [%d]", this, referenceCount); return self; }
-		void Release() { BRICKS_FEATURE_LOG_HEAVY("-%p [%d]", this, referenceCount - 1); if (referenceCount > 0 && !--referenceCount) delete this; }
+		Object& Retain() { referenceCount++; BRICKS_FEATURE_LOG_HEAVY("+%p [%d]", this, referenceCount); return self; }
+		void Release() { BRICKS_FEATURE_LOG_HEAVY("-%p [%d]", this, referenceCount - 1); if (!--referenceCount) delete this; }
 		int GetReferenceCount() const { return referenceCount; }
 		template<typename T> T& Autorelease() { return static_cast<T&>(Autorelease()); }
 		template<typename T> T& Retain() { return static_cast<T&>(Retain()); }
-		const Object& Autorelease() const { return const_cast<Object*>(this)->Autorelease(); }
-		const Object& Retain() const { return const_cast<Object*>(this)->Retain(); }
-		void Release() const { const_cast<Object*>(this)->Release(); }
 		virtual ~Object() { }
 
 		virtual bool operator==(const Object& rhs) const { return this == &rhs; }
-		virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
-		
-		static Object& AllocInternal(Object& object) { object.referenceCount = 1; return object; }
-		
+		virtual bool operator!=(const Object& rhs) const { return this != &rhs; }
+
+		void* operator new(size_t size, const ObjectAlloc& dummy) {
+			Object* obj = reinterpret_cast<Object*>(mallocthrowable(size));
+			obj->referenceCount = UINT32_MAX / 2;
+			obj->InternalAutorelease();
+			return obj;
+		}
+		void* operator new(size_t size) { return mallocthrowable(size); }
+		void operator delete(void* data) { free(data); }
+
 		virtual String& GetDebugString() const;
 //		virtual int GetHash() const;
 	};
@@ -60,7 +68,7 @@ namespace Bricks {
 	{
 	private:
 		T* value;
-
+	
 	public:
 		static Pointer< T > Null;
 		virtual ~Pointer() { }
@@ -71,18 +79,12 @@ namespace Bricks {
 		Pointer(T& t) : value(&t) { }
 
 		bool operator==(const Pointer< T >& t) { return t.value == value; }
-		bool operator!=(const Pointer< T >& t) const { return !operator==(t); }
-/*		bool operator==(const T* t) const { return t == value; }
-		bool operator!=(const T* t) const { return !operator==(t); }
-		bool operator==(const Pointer< T >& t) { return (value && t.value) ? (*t.value == *value) : false; }
-		bool operator!=(const Object& t) const { return !operator==(t); }
-		bool operator==(const Object& t) { return value ? t == *value : false; }*/
+		bool operator!=(const Pointer< T >& t) const { return t.value != value; }
 
-		Pointer< T >& operator=(const Pointer< T >& t) { value = t.value; return self; }
-		Pointer< T >& operator=(T* t) { value = t; return self; }
+		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
 		T* operator->() { return &*self; }
-		const T* operator->() const { return value; }
+		const T* operator->() const { return &*self; }
 		T& operator*();
 		const T& operator*() const;
 		explicit operator T*() { return value; }
@@ -90,6 +92,8 @@ namespace Bricks {
 		operator T&() { return *self; }
 		operator T&() const { return *self; }
 		operator bool() const { return value; }
+
+		void Swap(const Pointer< T >& t) { value = t.value; }
 	};
 	template<typename T> Pointer< T > Pointer< T >::Null = Pointer< T >(NULL);
 
@@ -100,52 +104,34 @@ namespace Bricks {
 		void Release() { if (self) dynamic_cast<Object*>(static_cast<T*>(self))->Release(); }
 
 	public:
-		AutoPointer() : Pointer< T >() { }
-		AutoPointer(const AutoPointer< T >& t) : Pointer< T >(t) { Retain(); }
-		AutoPointer(const Pointer< T >& t) : Pointer< T >(t) { Retain(); }
+		AutoPointer() { }
+		AutoPointer(const AutoPointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(T* t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		virtual ~AutoPointer() { Release(); }
-		
-		AutoPointer< T >& operator=(const Pointer< T >& t) { if (this == &t || (T*)self == (T*)t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
-		AutoPointer< T >& operator=(const AutoPointer< T >& t) { return this->operator=(static_cast<const Pointer< T >&>(t)); }
-		AutoPointer< T >& operator=(T* t) { if ((T*)self == t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
-		AutoPointer< T >& operator=(T& t) { if ((T*)self == &t) return self; Release(); Pointer< T >::operator=(t); Retain(); return self; }
+
+		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
+		AutoPointer< T >& operator=(const AutoPointer< T >& t) { Swap(t); return self; }
+
+		void Swap(const Pointer< T >& t, bool retain = true) { if (static_cast<T*>(self) == static_cast<T*>(t)) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
 	};
 
 	template<typename T> class CopyPointer : public AutoPointer< T >
 	{
 #define BRICKS_COPY_POINTER(t) ((t) ? &(t)->Copy() : NULL)
 	public:
-		CopyPointer() : AutoPointer< T >() { }
-		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER((T*)t), false) { }
-		CopyPointer(const Pointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER((T*)t), false) { }
+		CopyPointer() { }
+		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(static_cast<T*>(t)), false) { }
 		CopyPointer(const T* t) : AutoPointer< T >(BRICKS_COPY_POINTER(t), false) { }
 		CopyPointer(const T& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&t), false) { }
 		
-		CopyPointer< T >& operator=(const Pointer< T >& t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER((T*)t)); return self; }
-		CopyPointer< T >& operator=(const CopyPointer< T >& t) { return this->operator=(static_cast<const Pointer< T >&>(t)); }
-		CopyPointer< T >& operator=(const T* t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER(t)); return self; }
-		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::operator=(BRICKS_COPY_POINTER(&t)); return self; }
+		CopyPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
+		CopyPointer< T >& operator=(const CopyPointer< T >& t) { Swap(t); return self; }
+
+		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(static_cast<T*>(t))); }
 	};
 
-#ifdef BRICKS_CONFIG_CPP0X
-	template<typename T, typename... Args> T& Alloc(Args... args)
-	{
-		T* object = new T(args...);
-		object->referenceCount = 1;
-		return *object;
-	}
-
-	template<typename T, typename... Args> T& AutoAlloc(Args... args)
-	{
-		return static_cast<Object&>(Alloc< T >(args...)).Autorelease< T >();
-	}
-#endif
-#define Alloc(T, ...) (static_cast<T&>(Bricks::Object::AllocInternal(*new T(__VA_ARGS__))))
-#define AutoAlloc(T, ...) (static_cast<Object&>(Alloc(T, __VA_ARGS__)).Autorelease< T >())
-
-#define BRICKS_COPY_CONSTRUCTOR(T) T& Copy() const { return Alloc(T, self); }
+#define BRICKS_COPY_CONSTRUCTOR(T) T& Copy() const { return alloc T(self); }
 }
 
 #include "bricks/objectpool.h"
@@ -160,11 +146,21 @@ namespace Bricks {
 		ObjectPoolLeakException() { }
 	};
 
-	template<typename T> inline T& Pointer< T >::operator*() { if (!value) Throw(NullReferenceException); return *value; }
-	template<typename T> inline const T& Pointer< T >::operator*() const { if (!value) Throw(NullReferenceException); return *value; }
+	template<typename T> inline T& Pointer< T >::operator*() { if (!value) throw NullReferenceException(); return *value; }
+	template<typename T> inline const T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
 #ifdef BRICKS_CONFIG_RTTI
 	inline String& Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetClass().GetName().CString(), this, referenceCount); }
 #else
 	inline String& Object::GetDebugString() const { return String::Format("<%p> [%d]", this, referenceCount); }
 #endif
+
+	typedef Pointer<Object> id;
+	
+	inline void* Object::mallocthrowable(size_t size)
+	{
+		void* data = malloc(size);
+		if (!data)
+			throw OutOfMemoryException();
+		return data;
+	}
 }

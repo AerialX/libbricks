@@ -1,7 +1,4 @@
-#include "bricks.h"
-#include "bricks/io/filesystem.h"
-#include "bricks/io/filestream.h"
-#include "bricks/io/filepath.h"
+#include "bricks/io.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -37,25 +34,25 @@ namespace Bricks { namespace IO {
 				break;
 			case FileOpenMode::Create:
 				if (mode == FileMode::ReadOnly)
-					Throw(InvalidArgumentException, "mode");
+					throw InvalidArgumentException("mode");
 				else
 					cmode = "w+b";
 				break;
 			case FileOpenMode::CreateNew:
 				if (mode == FileMode::ReadOnly)
-					Throw(InvalidArgumentException, "mode");
+					throw InvalidArgumentException("mode");
 				else
 					cmode = "w+b";
 				break;
 			case FileOpenMode::Append:
 				if (mode == FileMode::ReadOnly)
-					Throw(InvalidArgumentException, "mode");
+					throw InvalidArgumentException("mode");
 				else
 					cmode = "a+b";
 				break;
 			case FileOpenMode::Truncate:
 				if (mode == FileMode::ReadOnly)
-					Throw(InvalidArgumentException, "mode");
+					throw InvalidArgumentException("mode");
 				else
 					cmode = "w+b";
 				break;
@@ -207,7 +204,7 @@ namespace Bricks { namespace IO {
 		}
 		if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, ".."))
 			return ReadDirectory(fd); // Not interested in this crap
-		return AutoAlloc(FilesystemNode, *dir);
+		return autoalloc FilesystemNode(*dir);
 	}
 	
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
@@ -234,7 +231,7 @@ namespace Bricks { namespace IO {
 		struct stat st;
 		if (stat(path.CString(), &st))
 			ThrowErrno();
-		return AutoAlloc(FileInfo, st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
+		return autoalloc FileInfo(st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
 	}
 	
 	bool PosixFilesystem::IsFile(const String& path) const
@@ -260,7 +257,7 @@ namespace Bricks { namespace IO {
 		char buffer[PATH_MAX];
 		if (!getcwd(buffer, sizeof(buffer)))
 			ThrowErrno();
-		return AutoAlloc(String, buffer);
+		return autoalloc String(buffer);
 	}
 
 	void PosixFilesystem::DeleteFile(const String& path)
@@ -271,12 +268,12 @@ namespace Bricks { namespace IO {
 	void PosixFilesystem::DeleteDirectory(const String& path, bool recursive)
 	{
 		if (recursive)
-			Throw(NotImplementedException);
+			throw NotImplementedException();
 		rmdir(path.CString());
 	}
 	
 	Stream& FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
 	{
-		return AutoAlloc(FileStream, GetFullName(), createmode, mode, permissions, filesystem);
+		return autoalloc FileStream(GetFullName(), createmode, mode, permissions, filesystem);
 	}
 } }

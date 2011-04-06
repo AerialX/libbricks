@@ -1,8 +1,8 @@
 #pragma once
 
-#include "bricks.h"
-#include "bricks/io/types.h"
-#include "bricks/io/filenode.h"
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
 
 #include <stdio.h>
 
@@ -134,7 +134,7 @@ namespace Bricks { namespace IO {
 
 	public:
 		FileInfo(struct stat& st, const String& path, Pointer<Filesystem> filesystem) :
-			st(st), path(Alloc(FilePath, path), false), filesystem(filesystem)
+			st(st), path(alloc FilePath(path), false), filesystem(filesystem)
 		{ }
 		virtual ~FileInfo() { }
 
@@ -177,19 +177,19 @@ namespace Bricks { namespace IO {
 
 		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
 			FileNode(GetDirType(dir.d_type), dir.d_name),
-			filesystem(filesystem ?: &Filesystem::GetDefault())
+			filesystem(*(static_cast<Filesystem*>(filesystem) ?: &Filesystem::GetDefault()))
 		{
 			size = -1;
 		}
 
 		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
-			filesystem(filesystem ?: &Filesystem::GetDefault())
+			filesystem(*(static_cast<Filesystem*>(filesystem) ?: &Filesystem::GetDefault()))
 		{
 			self = this->filesystem->Stat(path);
 		}
 
-		Pointer<FileNode> GetParent() const { return AutoAlloc(FilesystemNode, FilePath(GetFullName()).GetDirectory(), filesystem); }
-		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; Throw(NotSupportedException); }
+		Pointer<FileNode> GetParent() const { return autoalloc FilesystemNode(FilePath(GetFullName()).GetDirectory(), filesystem); }
+		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; throw NotSupportedException(); }
 		Stream& OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
 
 		Bricks::Collections::Iterator<FileNode>& GetIterator() const;
@@ -210,9 +210,9 @@ namespace Bricks { namespace IO {
 	public:
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
-		FileNode& GetCurrent() const { if (!current) Throw(Bricks::Collections::InvalidIteratorException); return const_cast<FileNode&>(*current); }
+		FileNode& GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return const_cast<FileNode&>(*current); }
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	
-	inline Bricks::Collections::Iterator<FileNode>& FilesystemNode::GetIterator() const { return AutoAlloc(FilesystemNodeIterator, self); }
+	inline Bricks::Collections::Iterator<FileNode>& FilesystemNode::GetIterator() const { return autoalloc FilesystemNodeIterator(self); }
 } }

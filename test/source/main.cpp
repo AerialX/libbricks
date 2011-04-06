@@ -2,6 +2,7 @@
 
 #include <bricks.h>
 #include <bricks/io.h>
+#include <bricks/io/console.h>
 #include <bricks/collections.h>
 #include <bricks/collections/array.h>
 #include <bricks/collections/dictionary.h>
@@ -28,11 +29,9 @@ void testFilesystem()
 
 	Console::Default.Out->WriteLine("Writing test.bin...");
 
-	// C++0x Alloc<>() syntax
-	FileStream& stream = Alloc<FileStream>("test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
+	FileStream& stream = alloc FileStream("test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
 
-	// Portable Alloc() syntax
-	StreamWriter& writer = Alloc(StreamWriter, stream, Endian::BigEndian);
+	StreamWriter& writer = alloc StreamWriter(stream, Endian::BigEndian);
 	writer.WriteInt32(0x1337BAAD);
 	writer.WriteString("ohai");
 	writer.WriteByte('\0');
@@ -46,8 +45,8 @@ void testFilesystem()
 	Console::Default.Out->WriteLine("Reading test.bin...");
 
 	// Reseatable and nullable type
-	Pointer<FileStream> rstream = AutoAlloc<FileStream>("test.bin", FileOpenMode::Open, FileMode::ReadOnly);
-	Pointer<StreamReader> reader = AutoAlloc(StreamReader, rstream, Endian::LittleEndian);
+	Pointer<FileStream> rstream = autoalloc FileStream("test.bin", FileOpenMode::Open, FileMode::ReadOnly);
+	Pointer<StreamReader> reader = autoalloc StreamReader(rstream, Endian::LittleEndian);
 	u32 num = reader->ReadInt32(Endian::BigEndian);
 	assert(num == 0x1337BAAD);
 	Pointer<String> str = reader->ReadString();
@@ -62,7 +61,7 @@ void testFilesystem()
 
 	Console::Default.Out->WriteLine(" --- File Path Test --- ");
 	Console::Default.Out->WriteLine("Creating FilePath, should be /test/lol/sup");
-	Pointer<FilePath> path = AutoAlloc<FilePath>("lol");
+	Pointer<FilePath> path = autoalloc FilePath("lol");
 	*path = path->Combine("sup");
 	*path = path->RootPath("/test");
 	assert(!path->Compare("/test/lol/sup"));
@@ -71,8 +70,8 @@ void testFilesystem()
 
 	Console::Default.Out->WriteLine(" --- Directory Iteration Test --- ");
 	Console::Default.Out->WriteLine("Listing contents of current directory...");
-	Pointer<FileNode> node = AutoAlloc<FilesystemNode>("."); // current dir
-	node->Iterate(Delegate<bool(FileNode&)>([](FileNode& subnode) -> bool { // Whee lambda iteration
+	Pointer<FileNode> node = autoalloc FilesystemNode("."); // current dir
+	node->Iterate(FunctionDelegate<bool(FileNode&)>([](FileNode& subnode) -> bool { // Whee lambda iteration
 		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
 		return true; // returning false is like break;ing out of the loop.
 	}));
@@ -85,7 +84,7 @@ void testCollections()
 	
 	Console::Default.Out->WriteLine(" ==== Collection Tests ==== ");
 	Console::Default.Out->WriteLine(" --- 3 Item Array Test --- ");
-	Pointer<Array<int> > array = AutoAlloc(Array<int>);
+	Pointer<Array<int> > array = autoalloc Array<int>();
 	array->AddItem(5);
 	array->AddItem(3);
 	array->AddItem(7);
@@ -93,7 +92,7 @@ void testCollections()
 		Console::Default.Out->WriteLine(String::Format("Array Item: %d", item).CString());
 
 	Console::Default.Out->WriteLine(" --- <int, String> Dictionary Test --- ");
-	Pointer<Dictionary<int, String> > dict = Alloc<Dictionary<int, String> >();
+	Pointer<Dictionary<int, String> > dict = new Dictionary<int, String>();
 	dict->Add(1, "one");
 	dict->Add(2, "two");
 	dict->Add(3, "three");

@@ -14,5 +14,8 @@ namespace Bricks { namespace Collections {
 
 		virtual void InsertItem(long index, const T& value) = 0;
 		virtual void RemoveItemAt(long index) = 0;
+
+		virtual T& operator[](long index) { return GetItem(index); }
+		virtual const T& operator[](long index) const { return GetItem(index); }
 	};
 } }

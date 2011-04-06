@@ -8,7 +8,7 @@ namespace Bricks { namespace IO {
 	class Console : public Object
 	{
 	protected:
-		Console(Stream& in, Stream& out, Stream& error) : In(Alloc(StreamReader, in)), Out(Alloc(StreamWriter, out)), Error(Alloc(StreamWriter, error)) { }
+		Console(Stream& in, Stream& out, Stream& error) : In(alloc StreamReader(in), false), Out(alloc StreamWriter(out), false), Error(alloc StreamWriter(error), false) { }
 
 	public:
 		static Console& Default;
@@ -24,9 +24,9 @@ namespace Bricks { namespace IO {
 	{
 	public:
 		StandardConsole() : Console(
-				*AutoPointer<FileStream>(Alloc(FileStream, STDIN_FILENO), false),
-				*AutoPointer<FileStream>(Alloc(FileStream, STDOUT_FILENO), false),
-				*AutoPointer<FileStream>(Alloc(FileStream, STDERR_FILENO), false)
+				*AutoPointer<FileStream>(alloc FileStream(STDIN_FILENO), false),
+				*AutoPointer<FileStream>(alloc FileStream(STDOUT_FILENO), false),
+				*AutoPointer<FileStream>(alloc FileStream(STDERR_FILENO), false)
 		) { }
 	};
 } }

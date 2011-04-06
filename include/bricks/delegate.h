@@ -5,19 +5,26 @@
 #include "bricks/collections/stack.h"
 
 #ifndef BRICKS_CONFIG_CPP0X
-
 // TODO: Use non-variadic templates to implement Delegates and remove this limitation.
 #error libbricks must be configured with C++0x support to use Delegates and Events.
-
 #else
-
 #include <functional>
-
 #endif
 
 namespace Bricks {
 	template<typename F> class Delegate;
 	template<typename R, typename... Args> class Delegate<R(Args...)> : public Object
+	{
+	public:
+		Delegate() { }
+		virtual ~Delegate() { }
+
+		virtual R operator ()(Args... args) const = 0;
+		R Call(Args... args) const { return self(args...); }
+	};
+	
+	template<typename F> class FunctionDelegate;
+	template<typename R, typename... Args> class FunctionDelegate<R(Args...)> : public Delegate<R(Args...)>
 	{
 	public:
 #ifdef BRICKS_CONFIG_CPP0X
@@ -29,12 +36,10 @@ namespace Bricks {
 		Function function;
 
 	public:
-		Delegate() { }
-		Delegate(Function function) : function(function) { }
-		virtual ~Delegate() { }
+		FunctionDelegate() { }
+		FunctionDelegate(Function function) : function(function) { }
 
-		virtual R operator()(Args... args) const { return function(args...); }
-		R Call(Args... args) const { return self(args...); }
+		R operator ()(Args... args) const { if (!function) throw InvalidArgumentException(); return function(args...); }
 	};
 
 	template<typename C, typename F> class MethodDelegate;
@@ -49,9 +54,8 @@ namespace Bricks {
 
 	public:
 		MethodDelegate(C& pointer, Function function) : pointer(pointer), function(function) { }
-		virtual ~MethodDelegate() { }
 
-		virtual R operator()(Args... args) const { return (pointer->*function)(args...); }
+		R operator ()(Args... args) const { return (pointer->*function)(args...); }
 	};
 
 	template<typename F> class Event;
@@ -61,16 +65,15 @@ namespace Bricks {
 		typedef AutoPointer<Delegate<R(Args...)> > EventItem;
 
 	private:
-		Pointer<Collections::Collection<EventItem> > list;
+		AutoPointer<Collections::Collection<EventItem>> list;
 
 	public:
-		Event() : list(Alloc(Collections::Stack<EventItem>)) { }
-		virtual ~Event() { list->Release(); }
+		Event() : list(alloc Collections::Stack<EventItem>(), false) { }
 
-		Event& operator +=(Delegate<R(Args...)>& delegate) { list->AddItem(delegate); return self; }
-		Event& operator -=(const Delegate<R(Args...)>& delegate) { list->RemoveItem(delegate); return self; }
+		Event& operator +=(Delegate<R(Args...)>* delegate) { list->AddItem(delegate); return self; }
+		Event& operator -=(const Delegate<R(Args...)>* delegate) { list->RemoveItem(delegate); return self; }
 
-		void operator ()(Args... args) const { foreach (const EventItem& item, *list) item->Call(args...); }
+		void operator ()(Args... args) const { foreach (const EventItem& item, list) item->Call(args...); }
 	};
 }
 

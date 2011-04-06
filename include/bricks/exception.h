@@ -55,18 +55,16 @@ namespace Bricks {
 		OutOfMemoryException(const String& message = String::Empty) : Exception(message) { }
 	};
 
+	class FormatException : public Exception
+	{
+	public:
+		FormatException(const String& message = String::Empty) : Exception(message) { }
+	};
+
 	class ErrnoException : public Exception
 	{
 	public:
 		int Value;
 		ErrnoException(const String& message = String::Empty, int value = 0) : Exception(message), Value(value) { }
 	};
-
-#ifdef BRICKS_CONFIG_CPP0X
-	template<typename T, typename... Args> BRICKS_FEATURE_NORETURN void Throw(Args... args)
-	{
-		throw T(args...);
-	}
-#endif
-#define Throw(T, ...) do { throw T(__VA_ARGS__); } while (false)
 }

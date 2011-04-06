@@ -5,23 +5,24 @@
 using namespace Bricks::Collections;
 
 namespace Bricks {
+	ObjectAlloc Auto;
 #ifdef BRICKS_CONFIG_RTTI
 	Class& Object::GetClass() const
 	{
-		return AutoAlloc(Class, self);
+		return autoalloc Class(self);
 	}
 #endif
 
 	// TODO: Make this thread-safe
 	typedef Stack< Pointer< ObjectPool > > PoolStack;
-	static Pointer<PoolStack> pools = Alloc(PoolStack);
+	static Pointer<PoolStack> pools = alloc PoolStack();
 	static PoolStack& GetThreadPools() { return *pools; }
 
 	ObjectPool& ObjectPool::GetCurrentPool()
 	{
 		PoolStack& pools = GetThreadPools();
 		if (!pools.GetCount())
-			throw Alloc(ObjectPoolLeakException);
+			throw ObjectPoolLeakException();
 		return *pools.Peek();
 	}
 
@@ -32,7 +33,7 @@ namespace Bricks {
 	}
 
 	ObjectPool::ObjectPool() :
-		objects(Alloc(Stack< AutoPointer<Object> >))
+		objects(alloc Stack< AutoPointer<Object> >())
 	{
 		BRICKS_FEATURE_LOG("Installing Pool: %p", this);
 		GetThreadPools().Push(self);

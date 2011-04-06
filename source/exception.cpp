@@ -12,7 +12,7 @@ namespace Bricks {
 /*			case E2BIG:
 				break;*/
 			default:
-				Throw(ErrnoException, String::Format("errno %d: %s", err, strerror(err)), errno);
+				throw ErrnoException(String::Format("errno %d: %s", err, strerror(err)), errno);
 		}
 	}
 }

@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef BRICKS_HEADER_BRICKS
+#error Use bricks.h
+#endif
+
 namespace Bricks { namespace IO {
 	class Substream : public Stream
 	{
