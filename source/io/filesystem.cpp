@@ -5,6 +5,13 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <limits.h>
+
+#ifdef __APPLE__
+#define off64_t off_t
+#define lseek64 lseek
+#define ftruncate64 ftruncate
+#endif
 
 namespace Bricks { namespace IO {
 	const String FilePath::DirectorySeparators = String("/\\");
