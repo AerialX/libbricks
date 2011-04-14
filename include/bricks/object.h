@@ -87,8 +87,10 @@ namespace Bricks {
 		const T* operator->() const { return &*self; }
 		T& operator*();
 		const T& operator*() const;
-		explicit operator T*() { return value; }
+#ifdef BRICKS_CONFIG_CPP0X
 		explicit operator T*() const { return value; }
+#endif
+		T* GetValue() const { return value; }
 		operator T&() { return *self; }
 		operator T&() const { return *self; }
 		operator bool() const { return value; }
@@ -100,8 +102,8 @@ namespace Bricks {
 	template<typename T> class AutoPointer : public Pointer< T >
 	{
 	private:
-		void Retain() { if (self) dynamic_cast<Object*>(static_cast<T*>(self))->Retain(); }
-		void Release() { if (self) dynamic_cast<Object*>(static_cast<T*>(self))->Release(); }
+		void Retain() { if (self) dynamic_cast<Object*>(this->GetValue())->Retain(); }
+		void Release() { if (self) dynamic_cast<Object*>(this->GetValue())->Release(); }
 
 	public:
 		AutoPointer() { }
@@ -113,7 +115,7 @@ namespace Bricks {
 		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		AutoPointer< T >& operator=(const AutoPointer< T >& t) { Swap(t); return self; }
 
-		void Swap(const Pointer< T >& t, bool retain = true) { if (static_cast<T*>(self) == static_cast<T*>(t)) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
+		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
 	};
 
 	template<typename T> class CopyPointer : public AutoPointer< T >
@@ -121,14 +123,14 @@ namespace Bricks {
 #define BRICKS_COPY_POINTER(t) ((t) ? &(t)->Copy() : NULL)
 	public:
 		CopyPointer() { }
-		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(static_cast<T*>(t)), false) { }
+		CopyPointer(const CopyPointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(t.GetValue()), false) { }
 		CopyPointer(const T* t) : AutoPointer< T >(BRICKS_COPY_POINTER(t), false) { }
 		CopyPointer(const T& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&t), false) { }
 		
 		CopyPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		CopyPointer< T >& operator=(const CopyPointer< T >& t) { Swap(t); return self; }
 
-		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(static_cast<T*>(t))); }
+		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue())); }
 	};
 
 #define BRICKS_COPY_CONSTRUCTOR(T) T& Copy() const { return alloc T(self); }

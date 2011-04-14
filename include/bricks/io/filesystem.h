@@ -177,13 +177,13 @@ namespace Bricks { namespace IO {
 
 		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
 			FileNode(GetDirType(dir.d_type), dir.d_name),
-			filesystem(*(static_cast<Filesystem*>(filesystem) ?: &Filesystem::GetDefault()))
+			filesystem(*(filesystem ? filesystem.GetValue() : &Filesystem::GetDefault()))
 		{
 			size = -1;
 		}
 
 		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
-			filesystem(*(static_cast<Filesystem*>(filesystem) ?: &Filesystem::GetDefault()))
+			filesystem(*(filesystem ? filesystem.GetValue() : &Filesystem::GetDefault()))
 		{
 			self = this->filesystem->Stat(path);
 		}
