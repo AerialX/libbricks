@@ -33,7 +33,7 @@
 
 namespace Bricks {
 	template<typename F> class Delegate;
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES> class Delegate<R(BRICKS_DELEGATE_TYPES)> : public Object
+	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Delegate<R(BRICKS_DELEGATE_TYPES)> : public Object
 	{
 	public:
 		Delegate() { }
@@ -63,7 +63,7 @@ namespace Bricks {
 	};
 
 	template<typename C, typename F> class MethodDelegate;
-	template<typename C, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES> class MethodDelegate<C, R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
+	template<typename C, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodDelegate<C, R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
 	{
 	public:
 		typedef R (C::*Function)(BRICKS_DELEGATE_TYPES);
@@ -79,13 +79,13 @@ namespace Bricks {
 	};
 
 	template<typename F> class Event;
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES> class Event<R(BRICKS_DELEGATE_TYPES)> : public Delegate<void(BRICKS_DELEGATE_TYPES)>
+	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Event<R(BRICKS_DELEGATE_TYPES)> : public Delegate<void(BRICKS_DELEGATE_TYPES)>
 	{
 	public:
 		typedef AutoPointer<Delegate<R(BRICKS_DELEGATE_TYPES)> > EventItem;
 
 	private:
-		AutoPointer<Collections::Collection<EventItem>> list;
+		AutoPointer<Collections::Collection<EventItem> > list;
 
 	public:
 		Event() : list(alloc Collections::Stack<EventItem>(), false) { }
