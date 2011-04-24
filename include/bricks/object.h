@@ -53,7 +53,7 @@ namespace Bricks {
 
 		void* operator new(size_t size, const ObjectAlloc& dummy) {
 			Object* obj = reinterpret_cast<Object*>(mallocthrowable(size));
-			obj->referenceCount = UINT32_MAX / 2;
+			obj->referenceCount = 0x80000000;
 			obj->InternalAutorelease();
 			return obj;
 		}
