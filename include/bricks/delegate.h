@@ -58,11 +58,8 @@ namespace Bricks {
 	template<typename R, typename... Args> class FunctionDelegate<R(Args...)> : public Delegate<R(Args...)>
 	{
 	public:
-#ifdef BRICKS_CONFIG_CPP0X
 		typedef std::function<R(Args...)> Function;
-#else
-		typedef R(*Function)(Args...);
-#endif
+
 	private:
 		Function function;
 
@@ -96,7 +93,7 @@ namespace Bricks {
 		typedef AutoPointer<Delegate<R(Args...)> > EventItem;
 
 	private:
-		AutoPointer<Collections::Collection<EventItem>> list;
+		AutoPointer<Collections::Collection<EventItem> > list;
 
 	public:
 		Event() : list(alloc Collections::Stack<EventItem>(), false) { }

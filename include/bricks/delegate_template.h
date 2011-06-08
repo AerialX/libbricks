@@ -44,14 +44,11 @@ namespace Bricks {
 	};
 	
 	template<typename F> class FunctionDelegate;
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES> class FunctionDelegate<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
+	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class FunctionDelegate<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
 	{
 	public:
-#ifdef BRICKS_CONFIG_CPP0X
-		typedef std::function<R(BRICKS_DELEGATE_TYPES)> Function;
-#else
 		typedef R(*Function)(BRICKS_DELEGATE_TYPES);
-#endif
+
 	private:
 		Function function;
 
