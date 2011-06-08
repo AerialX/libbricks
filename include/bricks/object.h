@@ -11,7 +11,6 @@
 #endif
 
 #define self (*this)
-#define nil NULL
 #define autoalloc *new(Bricks::Auto)
 #define alloc *new
 
@@ -156,7 +155,7 @@ namespace Bricks {
 	inline String& Object::GetDebugString() const { return String::Format("<%p> [%d]", this, referenceCount); }
 #endif
 
-	typedef Pointer<Object> id;
+	typedef Pointer<Object> any;
 	
 	inline void* Object::mallocthrowable(size_t size)
 	{

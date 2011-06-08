@@ -48,6 +48,12 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_GCC_4_3
 #endif
 #endif
+#ifdef __OBJC__
+#define BRICKS_FEATURE_OBJC
+#endif
+#ifdef __APPLE__
+#define BRICKS_FEATURE_APPLE
+#endif
 
 #ifdef BRICKS_FEATURE_GCC
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
