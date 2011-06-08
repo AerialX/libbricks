@@ -1,4 +1,5 @@
 *.so
+*.a
 build/
 test/test
 test/test.bin

@@ -1,4 +1,5 @@
 TARGET		:=	libbricks.so
+ATARGET		:=	libbricks.a
 BUILD		:=	build
 DATA		:=	data
 SOURCES		:=	source source/io
