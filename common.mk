@@ -11,7 +11,6 @@ LD			:= $(CXX)
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 
-export OUTPUT	:=	../$(TARGET)
 export VPATH	:=	$(foreach dir,$(SOURCES),../$(dir)) \
 					$(foreach dir,$(DATA),../$(dir))
 export DEPSDIR	:=	../$(BUILD)
@@ -25,6 +24,9 @@ export OFILES	:=	$(addsuffix .o,$(BINFILES))	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
 export INCLUDE	:=	$(foreach dir,$(INCLUDES), -I../$(dir))
 
 export OUTPUT	:=	$(CURDIR)/$(TARGET)
+ifneq ($(ATARGET),)
+export AOUTPUT	:=	$(CURDIR)/$(ATARGET)
+endif
 
 .PHONY: $(BUILD) clean
 
@@ -38,7 +40,7 @@ $(BUILD):
 
 clean:
 	@echo "[RM]  $(notdir $(OUTPUT))"
-	@rm -fr $(BUILD) $(OUTPUT)
+	@rm -fr $(BUILD) $(OUTPUT) $(AOUTPUT)
 
 run: $(BUILD)
 	@$(OUTPUT)
@@ -50,9 +52,15 @@ else
 
 DEPENDS	:=	$(OFILES:.o=.d)
 
-$(OUTPUT): $(OFILES)
+$(OUTPUT): $(OFILES) $(AOUTPUT)
 	@echo "[LD]  $(notdir $@)"
 	@$(LD) $(LDFLAGS) $(OFILES) -o $(OUTPUT)
+
+ifneq ($(AOUTPUT),)
+$(AOUTPUT): $(OFILES)
+	@echo "[AR]  $(notdir $@)"
+	@$(AR) -rs $@ $(OFILES)
+endif
 
 %.o : %.cpp
 	@echo "[CXX] $(notdir $<)"
