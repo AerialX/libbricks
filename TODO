@@ -8,3 +8,6 @@ IO
  - Text{Reader,Writer}
  - Network
  - Console, it was hacked together *really* badly.
+
+Collections
+ - Custom list comparison operator
