@@ -1,5 +1,5 @@
 Delegates and Events
- - Remove reliance on variadic templates
+ - Do them better.
 
 Filesystem
  - Delete Recursive
@@ -8,6 +8,3 @@ IO
  - Text{Reader,Writer}
  - Network
  - Console, it was hacked together *really* badly.
-
-Collections
- - Custom list comparison operator

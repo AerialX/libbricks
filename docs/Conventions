@@ -5,6 +5,7 @@ Random Usage Notes
  - Objects on stack / member variables are fine, Release()ing them is a no-op (Not really, but current implementation requires you to release/retain 2^31 times to break it). In fact, ObjectPools are often used on the stack RIAA style.
  - Use of new on objects isn't suggested, but it works fine. Either call the destructor manually or Release() them.
  - Set up constructors and destructors like normal. Use alloc or autoalloc as necessary to create objects (same syntax as C++ new).
+ - Prefer operator overloading (==, >, <, etc) over equivalents such as EqualTo()
 
 Naming Conventions
 ==================
