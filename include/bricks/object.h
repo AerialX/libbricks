@@ -82,10 +82,8 @@ namespace Bricks {
 
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
-		T* operator->() { return &*self; }
-		const T* operator->() const { return &*self; }
-		T& operator*();
-		const T& operator*() const;
+		T* operator->() const { return &*self; }
+		T& operator*() const;
 #ifdef BRICKS_CONFIG_CPP0X
 		explicit operator T*() const { return value; }
 #endif
@@ -147,8 +145,7 @@ namespace Bricks {
 		ObjectPoolLeakException() { }
 	};
 
-	template<typename T> inline T& Pointer< T >::operator*() { if (!value) throw NullReferenceException(); return *value; }
-	template<typename T> inline const T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
+	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
 #ifdef BRICKS_CONFIG_RTTI
 	inline String& Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetClass().GetName().CString(), this, referenceCount); }
 #else
