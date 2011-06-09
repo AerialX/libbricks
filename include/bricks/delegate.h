@@ -50,8 +50,8 @@ namespace Bricks {
 		Delegate() { }
 		virtual ~Delegate() { }
 
-		virtual R operator ()(Args... args) const = 0;
-		R Call(Args... args) const { return self(args...); }
+		virtual R operator ()(Args... args) = 0;
+		R Call(Args... args) { return self(args...); }
 	};
 	
 	template<typename F> class FunctionDelegate;
@@ -67,7 +67,7 @@ namespace Bricks {
 		FunctionDelegate() { }
 		FunctionDelegate(Function function) : function(function) { }
 
-		R operator ()(Args... args) const { if (!function) throw InvalidArgumentException(); return function(args...); }
+		R operator ()(Args... args) { if (!function) throw InvalidArgumentException(); return function(args...); }
 	};
 
 	template<typename C, typename F> class MethodDelegate;
@@ -83,7 +83,7 @@ namespace Bricks {
 	public:
 		MethodDelegate(C& pointer, Function function) : pointer(pointer), function(function) { }
 
-		R operator ()(Args... args) const { return (pointer->*function)(args...); }
+		R operator ()(Args... args) { return (pointer->*function)(args...); }
 	};
 
 	template<typename F> class Event;
@@ -101,7 +101,7 @@ namespace Bricks {
 		Event& operator +=(Delegate<R(Args...)>* delegate) { list->AddItem(delegate); return self; }
 		Event& operator -=(const Delegate<R(Args...)>* delegate) { list->RemoveItem(delegate); return self; }
 
-		void operator ()(Args... args) const { foreach (const EventItem& item, list) item->Call(args...); }
+		void operator ()(Args... args) { foreach (const EventItem& item, list) item->Call(args...); }
 	};
 }
 #endif

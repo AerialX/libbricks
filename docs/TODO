@@ -1,5 +1,6 @@
 Delegates and Events
  - Do them better.
+ - Resync the C++0x version to the teplate version.
 
 Filesystem
  - Delete Recursive

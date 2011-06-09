@@ -37,12 +37,11 @@ namespace Bricks {
 	{
 	public:
 		Delegate() { }
-		virtual ~Delegate() { }
 
-		virtual R operator ()(BRICKS_DELEGATE_TYPES) const = 0;
-		R Call(BRICKS_DELEGATE_TYPES_NAMES) const { return self(BRICKS_DELEGATE_ARGS); }
+		virtual R operator ()(BRICKS_DELEGATE_TYPES) = 0;
+		R Call(BRICKS_DELEGATE_TYPES_NAMES) { return self(BRICKS_DELEGATE_ARGS); }
 	};
-	
+
 	template<typename F> class FunctionDelegate;
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class FunctionDelegate<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
 	{
@@ -56,7 +55,23 @@ namespace Bricks {
 		FunctionDelegate() { }
 		FunctionDelegate(Function function) : function(function) { }
 
-		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) const { if (!function) throw InvalidArgumentException(); return function(BRICKS_DELEGATE_ARGS); }
+		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { if (!function) throw InvalidArgumentException(); return function(BRICKS_DELEGATE_ARGS); }
+	};
+
+	template<typename F, typename T> class FunctorDelegate;
+	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES, typename T > class FunctorDelegate<R(BRICKS_DELEGATE_TYPES), T> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
+	{
+	public:
+		typedef T Function;
+
+	private:
+		Function function;
+
+	public:
+		FunctorDelegate() { }
+		FunctorDelegate(const Function& function) : function(function) { }
+
+		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return function(BRICKS_DELEGATE_ARGS); }
 	};
 
 	template<typename C, typename F> class MethodDelegate;
@@ -72,7 +87,7 @@ namespace Bricks {
 	public:
 		MethodDelegate(C& pointer, Function function) : pointer(pointer), function(function) { }
 
-		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) const { return (pointer->*function)(BRICKS_DELEGATE_ARGS); }
+		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return (pointer->*function)(BRICKS_DELEGATE_ARGS); }
 	};
 
 	template<typename F> class Event;
@@ -90,7 +105,7 @@ namespace Bricks {
 		Event& operator +=(Delegate<R(BRICKS_DELEGATE_TYPES)>* delegate) { list->AddItem(delegate); return self; }
 		Event& operator -=(const Delegate<R(BRICKS_DELEGATE_TYPES)>* delegate) { list->RemoveItem(delegate); return self; }
 
-		void operator ()(BRICKS_DELEGATE_TYPES_NAMES) const { foreach (const EventItem& item, list) item->Call(BRICKS_DELEGATE_ARGS); }
+		void operator ()(BRICKS_DELEGATE_TYPES_NAMES) { foreach (const EventItem& item, list) item->Call(BRICKS_DELEGATE_ARGS); }
 	};
 }
 
