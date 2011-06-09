@@ -5,6 +5,7 @@
 #endif
 
 #include "bricks/collections.h"
+#include "bricks/collections/comparison.h"
 
 #include <map>
 
@@ -32,22 +33,30 @@ namespace Bricks { namespace Collections {
 		void SetValue(const TValue& value) { this->value = value; if (pointer) *pointer = value; }
 	};
 
-	template<typename TKey, typename TValue>
+	template<typename TKey, typename TValue, typename CKey = OperatorValueComparison< TKey >, typename CValue = OperatorEqualityComparison< TValue > >
 	class Dictionary : public Object, public Collection< Pair<TKey, TValue> >
 	{
 	private:
-		typename std::map< TKey, TValue > map;
+		struct StlCompare {
+			AutoPointer< CKey > comparison;
+			StlCompare(Pointer< CKey > comparison) : comparison(comparison) { }
+			bool operator ()(TKey v1, TKey v2) const { return comparison->Compare(v1, v2) == ComparisonResult::Less; }
+		};
+		StlCompare keycomparison;
+		AutoPointer< CValue > comparison;
+
+		typename std::map< TKey, TValue, StlCompare > map;
 		typedef Pair< TKey, TValue > mapitem;
-		typedef Dictionary< TKey, TValue > dicttype;
+		typedef Dictionary< TKey, TValue, CKey, CValue > dicttype;
 		typedef DictionaryIterator< TKey, TValue > dictiter;
-		typedef typename std::map< TKey, TValue >::iterator iterator;
-		typedef typename std::map< TKey, TValue >::const_iterator const_iterator;
+		typedef typename std::map< TKey, TValue, StlCompare >::iterator iterator;
+		typedef typename std::map< TKey, TValue, StlCompare >::const_iterator const_iterator;
 
 		friend class DictionaryIterator< TKey, TValue >;
 
 		iterator IteratorOfValue(const TValue& value) {
 			for (iterator iter = map.begin(); iter != map.end(); iter++) {
-				if (iter->second == value)
+				if (!comparison->Compare(iter->second, value))
 					return iter;
 			}
 			return map.end();
@@ -55,16 +64,16 @@ namespace Bricks { namespace Collections {
 
 		const_iterator IteratorOfValue(const TValue& value) const {
 			for (const_iterator iter = map.begin(); iter != map.end(); iter++) {
-				if (iter->second == value)
+				if (!comparison->Compare(iter->second, value))
 					return iter;
 			}
 			return map.end();
 		}
 
 	public:
-		Dictionary() { }
-		Dictionary(const Dictionary< TKey, TValue >& dictionary) : map(dictionary.map) { }
-		Dictionary(const Collection< Pair< TKey, TValue > >& collection) { AddItems(collection); }
+		Dictionary(Pointer< CKey > keycomparison = autoalloc CKey(), Pointer< CValue > comparison = autoalloc CValue()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
+		Dictionary(const Dictionary< TKey, TValue >& dictionary) : keycomparison(dictionary.keycomparison), comparison(dictionary.comparison), map(dictionary.map) { }
+		Dictionary(const Collection< Pair< TKey, TValue > >& collection, Pointer< CKey > keycomparison = autoalloc CKey(), Pointer< CValue > comparison = autoalloc CValue()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
 		virtual ~Dictionary() { }
 
 		TValue& GetItem(const TKey& key) { return map[key]; }
@@ -82,7 +91,7 @@ namespace Bricks { namespace Collections {
 		// Collections
 		long GetCount() const { return map.size(); }
 
-		bool ContainsItem(const Pair< TKey, TValue >& value) const { const_iterator iter = map.find(value.GetKey()); return iter != map.end() && iter->second == value.GetValue(); }
+		bool ContainsItem(const Pair< TKey, TValue >& value) const { const_iterator iter = map.find(value.GetKey()); return iter != map.end() && !comparison->Compare(iter->second, value.GetValue()); }
 
 		void AddItem(const Pair< TKey, TValue >& value) { map[value.GetKey()] = value.GetValue(); }
 		void AddItems(Iterable< Pair< TKey, TValue> >& values) { foreach (const mapitem& value, values) AddItem(value); }

@@ -5,6 +5,7 @@
 #endif
 
 #include "bricks/collections.h"
+#include "bricks/collections/comparison.h"
 
 #include <deque>
 
@@ -17,19 +18,20 @@ namespace Bricks { namespace Collections {
 
 	template<typename T> class StackIterator;
 
-	template<typename T>
+	template<typename T, typename C = OperatorEqualityComparison< T > >
 	class Stack : public Object, public Collection< T >
 	{
 	private:
-		typename std::deque<T> stack;
-		typedef typename std::deque<T>::iterator iterator;
-		typedef typename std::deque<T>::const_iterator const_iterator;
+		AutoPointer< C > comparison;
+		typename std::deque< T > stack;
+		typedef typename std::deque< T >::iterator iterator;
+		typedef typename std::deque< T >::const_iterator const_iterator;
 
 		friend class StackIterator< T >;
 
 		const_iterator IteratorOfItem(const T& value) const {
 			for (const_iterator iter = stack.begin(); iter != stack.end(); iter++) {
-				if (*iter == value)
+				if (!comparison->Compare(*iter, value))
 					return iter;
 			}
 			return stack.end();
@@ -37,16 +39,16 @@ namespace Bricks { namespace Collections {
 		
 		iterator IteratorOfItem(const T& value) {
 			for (iterator iter = stack.begin(); iter != stack.end(); iter++) {
-				if (*iter == value)
+				if (!comparison->Compare(*iter, value))
 					return iter;
 			}
 			return stack.end();
 		}
 		
 	public:
-		Stack() { }
-		Stack(const Stack< T >& stack) : stack(stack.stack) { }
-		Stack(const Collection< T >& collection) { AddItems(collection); }
+		Stack(Pointer< C > comparison = autoalloc C()) : comparison(comparison) { }
+		Stack(const Stack< T, C >& stack, Pointer< C > comparison = autoalloc C()) : comparison(comparison), stack(stack.stack) { }
+		Stack(const Collection< T >& collection, Pointer< C > comparison = autoalloc C()) : comparison(comparison) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 

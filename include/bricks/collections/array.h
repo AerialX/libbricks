@@ -5,11 +5,12 @@
 #endif
 
 #include "bricks/collections.h"
+#include "bricks/collections/comparison.h"
 
 #include <vector>
 
 namespace Bricks { namespace Collections {
-	template<typename T> class Array;
+	template<typename T, typename C = OperatorEqualityComparison< T > > class Array;
 
 	template<typename T>
 	class ArrayIterator : public Object, public Iterator< T >
@@ -27,19 +28,21 @@ namespace Bricks { namespace Collections {
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 
-	template<typename T>
+	template<typename T, typename C >
 	class Array : public Object, public List< T >
 	{
 	private:
-		typename std::vector<T> vector;
-		typedef typename std::vector<T>::iterator iterator;
-		typedef typename std::vector<T>::const_iterator const_iterator;
+		AutoPointer< C > comparison;
+
+		typename std::vector< T > vector;
+		typedef typename std::vector< T >::iterator iterator;
+		typedef typename std::vector< T >::const_iterator const_iterator;
 
 		friend class ArrayIterator< T >;
 
 		iterator IteratorOfItem(const T& value) {
 			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
-				if (*iter == value)
+				if (!comparison->Compare(*iter, value))
 					return iter;
 			}
 			return vector.end();
@@ -47,20 +50,20 @@ namespace Bricks { namespace Collections {
 		
 		const_iterator IteratorOfItem(const T& value) const {
 			for (const_iterator iter = vector.begin(); iter != vector.end(); iter++) {
-				if (*iter == value)
+				if (!comparison->Compare(*iter, value))
 					return iter;
 			}
 			return vector.end();
 		}
 
 	public:
-		Array() { }
-		Array(const Array< T >& array) : vector(array.vector) { }
-		Array(const Collection< T >& collection) { AddItems(collection); }
+		Array(Pointer< C > comparison = autoalloc C()) : comparison(comparison) { }
+		Array(const Array< T, C >& array, Pointer< C > comparison = autoalloc C()) : comparison(comparison), vector(array.vector) { }
+		Array(const Collection< T >& collection, Pointer< C > comparison = autoalloc C()) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T >(const_cast<Array< T >&>(self)); }
+		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T >(const_cast<Array< T, C >&>(self)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); };
