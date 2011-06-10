@@ -33,21 +33,21 @@ namespace Bricks { namespace Collections {
 		void SetValue(const TValue& value) { this->value = value; if (pointer) *pointer = value; }
 	};
 
-	template<typename TKey, typename TValue, typename CKey = OperatorValueComparison< TKey >, typename CValue = OperatorEqualityComparison< TValue > >
-	class Dictionary : public Object, public Collection< Pair<TKey, TValue> >
+	template<typename TKey, typename TValue>
+	class Dictionary : public Object, public Collection< Pair< TKey, TValue > >
 	{
 	private:
 		struct StlCompare {
-			AutoPointer< CKey > comparison;
-			StlCompare(Pointer< CKey > comparison) : comparison(comparison) { }
+			AutoPointer< ValueComparison< TKey > > comparison;
+			StlCompare(Pointer< ValueComparison< TKey > > comparison) : comparison(comparison) { }
 			bool operator ()(TKey v1, TKey v2) const { return comparison->Compare(v1, v2) == ComparisonResult::Less; }
 		};
 		StlCompare keycomparison;
-		AutoPointer< CValue > comparison;
+		AutoPointer< ValueComparison< TValue > > comparison;
 
 		typename std::map< TKey, TValue, StlCompare > map;
 		typedef Pair< TKey, TValue > mapitem;
-		typedef Dictionary< TKey, TValue, CKey, CValue > dicttype;
+		typedef Dictionary< TKey, TValue > dicttype;
 		typedef DictionaryIterator< TKey, TValue > dictiter;
 		typedef typename std::map< TKey, TValue, StlCompare >::iterator iterator;
 		typedef typename std::map< TKey, TValue, StlCompare >::const_iterator const_iterator;
@@ -71,9 +71,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Dictionary(Pointer< CKey > keycomparison = autoalloc CKey(), Pointer< CValue > comparison = autoalloc CValue()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
+		Dictionary(Pointer< ValueComparison< TKey > > keycomparison = autoalloc OperatorValueComparison< TKey >(), Pointer< ValueComparison< TValue > > comparison = autoalloc OperatorEqualityComparison< TValue >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
 		Dictionary(const Dictionary< TKey, TValue >& dictionary) : keycomparison(dictionary.keycomparison), comparison(dictionary.comparison), map(dictionary.map) { }
-		Dictionary(const Collection< Pair< TKey, TValue > >& collection, Pointer< CKey > keycomparison = autoalloc CKey(), Pointer< CValue > comparison = autoalloc CValue()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
+		Dictionary(const Collection< Pair< TKey, TValue > >& collection, Pointer< ValueComparison< TKey > > keycomparison = autoalloc OperatorValueComparison< TKey >(), Pointer< ValueComparison< TValue > > comparison = autoalloc OperatorEqualityComparison< TValue >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
 		virtual ~Dictionary() { }
 
 		TValue& GetItem(const TKey& key) { return map[key]; }

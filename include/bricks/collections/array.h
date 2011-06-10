@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace Bricks { namespace Collections {
-	template<typename T, typename C = OperatorEqualityComparison< T > > class Array;
+	template<typename T> class Array;
 
 	template<typename T>
 	class ArrayIterator : public Object, public Iterator< T >
@@ -28,11 +28,11 @@ namespace Bricks { namespace Collections {
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 
-	template<typename T, typename C >
+	template<typename T >
 	class Array : public Object, public List< T >
 	{
 	private:
-		AutoPointer< C > comparison;
+		AutoPointer< ValueComparison< T > > comparison;
 
 		typename std::vector< T > vector;
 		typedef typename std::vector< T >::iterator iterator;
@@ -57,13 +57,13 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array(Pointer< C > comparison = autoalloc C()) : comparison(comparison) { }
-		Array(const Array< T, C >& array, Pointer< C > comparison = autoalloc C()) : comparison(comparison), vector(array.vector) { }
-		Array(const Collection< T >& collection, Pointer< C > comparison = autoalloc C()) : comparison(comparison) { AddItems(collection); }
+		Array(Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison) { }
+		Array(const Array< T >& array, Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison), vector(array.vector) { }
+		Array(const Collection< T >& collection, Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T >(const_cast<Array< T, C >&>(self)); }
+		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T >(const_cast<Array< T >&>(self)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); };

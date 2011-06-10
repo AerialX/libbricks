@@ -14,8 +14,9 @@ namespace Bricks {
 #endif
 
 	// TODO: Make this thread-safe
-	typedef Stack< Pointer< ObjectPool > > PoolStack;
-	static Pointer<PoolStack> pools = alloc PoolStack();
+	typedef Stack< Pointer<ObjectPool> > PoolStack;
+	static Pointer< OperatorEqualityComparison< Pointer<ObjectPool> > > PoolComparison = alloc OperatorEqualityComparison< Pointer<ObjectPool> >();
+	static Pointer<PoolStack> pools = alloc PoolStack(PoolComparison);
 	static PoolStack& GetThreadPools() { return *pools; }
 
 	ObjectPool& ObjectPool::GetCurrentPool()
@@ -33,7 +34,7 @@ namespace Bricks {
 	}
 
 	ObjectPool::ObjectPool() :
-		objects(alloc Stack< AutoPointer<Object> >())
+		objects(alloc Stack< AutoPointer<Object> >(NULL))
 	{
 		BRICKS_FEATURE_LOG("Installing Pool: %p", this);
 		GetThreadPools().Push(self);

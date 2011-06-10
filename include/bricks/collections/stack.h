@@ -18,11 +18,11 @@ namespace Bricks { namespace Collections {
 
 	template<typename T> class StackIterator;
 
-	template<typename T, typename C = OperatorEqualityComparison< T > >
+	template<typename T>
 	class Stack : public Object, public Collection< T >
 	{
 	private:
-		AutoPointer< C > comparison;
+		AutoPointer< ValueComparison< T > > comparison;
 		typename std::deque< T > stack;
 		typedef typename std::deque< T >::iterator iterator;
 		typedef typename std::deque< T >::const_iterator const_iterator;
@@ -46,9 +46,9 @@ namespace Bricks { namespace Collections {
 		}
 		
 	public:
-		Stack(Pointer< C > comparison = autoalloc C()) : comparison(comparison) { }
-		Stack(const Stack< T, C >& stack, Pointer< C > comparison = autoalloc C()) : comparison(comparison), stack(stack.stack) { }
-		Stack(const Collection< T >& collection, Pointer< C > comparison = autoalloc C()) : comparison(comparison) { AddItems(collection); }
+		Stack(Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison) { }
+		Stack(const Stack< T >& stack, Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison), stack(stack.stack) { }
+		Stack(const Collection< T >& collection, Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 
