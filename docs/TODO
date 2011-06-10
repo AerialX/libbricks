@@ -9,3 +9,10 @@ IO
  - Text{Reader,Writer}
  - Network
  - Console, it was hacked together *really* badly.
+
+Threading
+ - Create a ThreadLocalStorage pointer class.
+
+Misc
+ - Make everything public virtual inheritance
+ - Fix autoalloc, it's broken if the first base class isn't Object
