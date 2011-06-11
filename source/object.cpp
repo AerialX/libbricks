@@ -47,3 +47,8 @@ namespace Bricks {
 		dynamic_cast<Object&>(objects).Release();
 	}
 }
+
+extern "C" __attribute__((weak)) const char* _NSPrintForDebugger(Bricks::Object* object)
+{
+	return object->GetDebugString().CString();
+}
