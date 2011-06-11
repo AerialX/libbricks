@@ -13,7 +13,7 @@ namespace Bricks { namespace Collections {
 	template<typename T> class Array;
 
 	template<typename T>
-	class ArrayIterator : public Object, public Iterator< T >
+	class ArrayIterator : public virtual Object, public Iterator< T >
 	{
 	private:
 		bool first;
@@ -29,7 +29,7 @@ namespace Bricks { namespace Collections {
 	};
 
 	template<typename T >
-	class Array : public Object, public List< T >
+	class Array : public virtual Object, public List< T >
 	{
 	private:
 		AutoPointer< ValueComparison< T > > comparison;

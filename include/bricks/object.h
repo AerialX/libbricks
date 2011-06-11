@@ -144,10 +144,10 @@ namespace Bricks {
 #include "bricks/exception.h"
 
 namespace Bricks {
-	class ObjectPoolLeakException : public Object
+	class ObjectPoolLeakException : public Exception
 	{
 	public:
-		ObjectPoolLeakException() { }
+		ObjectPoolLeakException(const String& message = String::Empty) : Exception(message) { }
 	};
 
 	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }

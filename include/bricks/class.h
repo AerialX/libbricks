@@ -5,7 +5,7 @@
 #endif
 
 namespace Bricks {
-	class Class : public Object
+	class Class : public virtual Object
 	{
 	private:
 		const std::type_info& type;

@@ -10,7 +10,7 @@
 
 namespace Bricks {
 	// TODO: Iterable<char>
-	class String : public Object
+	class String : public virtual Object
 	{
 		public:
 			static const size_t npos = -1;

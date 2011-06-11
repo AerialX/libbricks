@@ -1,6 +1,6 @@
 Delegates and Events
  - Do them better.
- - Resync the C++0x version to the teplate version.
+ - Resync the C++0x version to the template version.
 
 Filesystem
  - Delete Recursive
@@ -14,5 +14,4 @@ Threading
  - TLS doesn't destruct thread data, add a static Thread::ThreadDestroyed event and such.
 
 Misc
- - Make everything public virtual inheritance
  - Fix autoalloc, it's broken if the first base class isn't Object

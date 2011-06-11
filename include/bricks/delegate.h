@@ -44,7 +44,7 @@
 
 namespace Bricks {
 	template<typename F> class Delegate;
-	template<typename R, typename... Args> class Delegate<R(Args...)> : public Object
+	template<typename R, typename... Args> class Delegate<R(Args...)> : public virtual Object
 	{
 	public:
 		Delegate() { }

@@ -33,7 +33,7 @@
 
 namespace Bricks {
 	template<typename F> class Delegate;
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Delegate<R(BRICKS_DELEGATE_TYPES)> : public Object
+	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Delegate<R(BRICKS_DELEGATE_TYPES)> : public virtual Object
 	{
 	public:
 		Delegate() { }

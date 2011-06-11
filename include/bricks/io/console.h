@@ -5,7 +5,7 @@
 #include <unistd.h>
 
 namespace Bricks { namespace IO {
-	class Console : public Object
+	class Console : public virtual Object
 	{
 	protected:
 		Console(Stream& in, Stream& out, Stream& error) : In(alloc StreamReader(in), false), Out(alloc StreamWriter(out), false), Error(alloc StreamWriter(error), false) { }

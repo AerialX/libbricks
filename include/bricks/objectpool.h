@@ -5,7 +5,7 @@
 namespace Bricks {
 	namespace Collections { template<typename T> class Collection; }
 
-	class ObjectPool : public Object
+	class ObjectPool : public virtual Object
 	{
 	private:
 		Collections::Collection< AutoPointer<Object> >& objects;

@@ -7,7 +7,7 @@
 namespace Bricks {
 	void ThrowErrno();
 
-	class Exception : public Object
+	class Exception : public virtual Object
 	{
 	protected:
 		CopyPointer<String> Message;

@@ -19,14 +19,14 @@ namespace Bricks { namespace Collections {
 	};
 
 	template<typename T>
-	class OperatorValueComparison : public Object, public ValueComparison<T>
+	class OperatorValueComparison : public virtual Object, public ValueComparison<T>
 	{
 	public:
 		ComparisonResult::Enum Compare(T v1, T v2) { if (v1 > v2) return ComparisonResult::Greater; else if (v1 < v2) return ComparisonResult::Less; return ComparisonResult::Equal; }
 	};
 
 	template<typename T>
-	class OperatorEqualityComparison : public Object, public ValueComparison<T>
+	class OperatorEqualityComparison : public virtual Object, public ValueComparison<T>
 	{
 	public:
 		ComparisonResult::Enum Compare(T v1, T v2) { if (v1 == v2) return ComparisonResult::Equal; return ComparisonResult::Less; }

@@ -5,7 +5,7 @@
 #endif
 
 namespace Bricks { namespace IO {
-	class Stream : public Object
+	class Stream : public virtual Object
 	{
 	public:
 		virtual size_t Read(void* buffer, size_t size) = 0;

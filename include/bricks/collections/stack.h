@@ -19,7 +19,7 @@ namespace Bricks { namespace Collections {
 	template<typename T> class StackIterator;
 
 	template<typename T>
-	class Stack : public Object, public Collection< T >
+	class Stack : public virtual Object, public Collection< T >
 	{
 	private:
 		AutoPointer< ValueComparison< T > > comparison;
@@ -80,7 +80,7 @@ namespace Bricks { namespace Collections {
 	};
 	
 	template<typename T>
-	class StackIterator : public Object, public Iterator< T >
+	class StackIterator : public virtual Object, public Iterator< T >
 	{
 	private:
 		bool first;

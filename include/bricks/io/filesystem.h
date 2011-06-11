@@ -11,7 +11,7 @@ namespace Bricks { namespace IO {
 
 	typedef size_t FileHandle;
 
-	class Filesystem : public Object
+	class Filesystem : public virtual Object
 	{
 	public:
 		static Filesystem& GetDefault();
@@ -125,7 +125,7 @@ namespace Bricks { namespace IO {
 		const String& GetCurrentDirectory() const;
 	};
 	
-	class FileInfo : public Object
+	class FileInfo : public virtual Object
 	{
 	private:
 		struct stat st;
@@ -195,7 +195,7 @@ namespace Bricks { namespace IO {
 		Bricks::Collections::Iterator<FileNode>& GetIterator() const;
 	};
 
-	class FilesystemNodeIterator : public Object, public Bricks::Collections::Iterator<FileNode>
+	class FilesystemNodeIterator : public virtual Object, public Bricks::Collections::Iterator<FileNode>
 	{
 	private:
 		AutoPointer<Filesystem> filesystem;
