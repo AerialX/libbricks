@@ -106,6 +106,7 @@ namespace Bricks {
 		AutoPointer() { }
 		AutoPointer(const AutoPointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(const Pointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
+		template<typename T2> AutoPointer(const Pointer< T2 >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		virtual ~AutoPointer() { Release(); }
 
 		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
@@ -123,6 +124,7 @@ namespace Bricks {
 		CopyPointer(const Pointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(t.GetValue()), false) { }
 		CopyPointer(const T* t) : AutoPointer< T >(BRICKS_COPY_POINTER(t), false) { }
 		CopyPointer(const T& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&t), false) { }
+		template<typename T2> CopyPointer(const Pointer< T2 >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(t.GetValue()), false) { }
 		
 		CopyPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		CopyPointer< T >& operator=(const CopyPointer< T >& t) { Swap(t); return self; }
