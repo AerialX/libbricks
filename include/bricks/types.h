@@ -55,19 +55,23 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_APPLE
 #endif
 
+/* Attributes */
 #ifdef BRICKS_FEATURE_GCC
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
 #define BRICKS_FEATURE_CONSTRUCTOR(function) __attribute__((constructor))
+#define BRICKS_FEATURE_TLS __thread
 #else
 struct BRICKS_FEATURE_CONSTRUCTOR { BRICKS_FEATURE_CONSTRUCTOR(void (*function)()) { function(); } };
 #define BRICKS_FEATURE_CONSTRUCTOR(function) void function(); static BRICKS_FEATURE_CONSTRUCTOR constructor_##function(function);
 #ifdef BRICKS_FEATURE_VCPP
 #define BRICKS_FEATURE_NORETURN __declspec(noreturn)
+#define BRICKS_FEATURE_TLS __declspec(thread)
 #else
 #define BRICKS_FEATURE_NORETURN
 #endif
 #endif
 
+/* Logging */
 #ifdef BRICKS_CONFIG_LOGGING
 #include <stdio.h>
 #define BRICKS_FEATURE_LOG(...) if (true) { fprintf(stderr, "[BRICKS] " __VA_ARGS__); fprintf(stderr, "\n"); fflush(stderr); } else (void)0

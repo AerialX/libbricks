@@ -1,8 +1,10 @@
 #include "bricks.h"
 #include "bricks/collections/array.h"
 #include "bricks/collections/stack.h"
+#include "bricks/threading/threadlocalstorage.h"
 
 using namespace Bricks::Collections;
+using namespace Bricks::Threading;
 
 namespace Bricks {
 	ObjectAlloc Auto;
@@ -13,11 +15,9 @@ namespace Bricks {
 	}
 #endif
 
-	// TODO: Make this thread-safe
 	typedef Stack< Pointer<ObjectPool> > PoolStack;
-	static Pointer< OperatorEqualityComparison< Pointer<ObjectPool> > > PoolComparison = alloc OperatorEqualityComparison< Pointer<ObjectPool> >();
-	static Pointer<PoolStack> pools = alloc PoolStack(PoolComparison);
-	static PoolStack& GetThreadPools() { return *pools; }
+	static ThreadLocalStorage<PoolStack> pools;
+	static PoolStack& GetThreadPools() { if (!pools.HasValue()) pools.SetValue(AutoPointer<PoolStack>(alloc PoolStack(), false)); return pools.GetValue(); }
 
 	ObjectPool& ObjectPool::GetCurrentPool()
 	{
