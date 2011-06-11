@@ -57,9 +57,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array(Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison) { }
-		Array(const Array< T >& array, Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison), vector(array.vector) { }
-		Array(const Collection< T >& collection, Pointer< ValueComparison< T > > comparison = autoalloc OperatorEqualityComparison< T >()) : comparison(comparison) { AddItems(collection); }
+		Array(const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { }
+		Array(const Array< T >& array, const Pointer< ValueComparison< T > >& comparison = NULL) : comparison(comparison ?: array.comparison), vector(array.vector) { }
+		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator

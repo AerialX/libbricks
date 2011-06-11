@@ -71,12 +71,13 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Dictionary(Pointer< ValueComparison< TKey > > keycomparison = autoalloc OperatorValueComparison< TKey >(), Pointer< ValueComparison< TValue > > comparison = autoalloc OperatorEqualityComparison< TValue >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
-		Dictionary(const Dictionary< TKey, TValue >& dictionary) : keycomparison(dictionary.keycomparison), comparison(dictionary.comparison), map(dictionary.map) { }
-		Dictionary(const Collection< Pair< TKey, TValue > >& collection, Pointer< ValueComparison< TKey > > keycomparison = autoalloc OperatorValueComparison< TKey >(), Pointer< ValueComparison< TValue > > comparison = autoalloc OperatorEqualityComparison< TValue >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
+		Dictionary(const Pointer< ValueComparison< TKey > >& keycomparison = AutoPointer< ValueComparison< TKey > >(alloc OperatorValueComparison< TKey >(), false), const Pointer< ValueComparison< TValue > >& comparison = AutoPointer< ValueComparison< TValue> >(alloc OperatorEqualityComparison< TValue >(), false)) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
+		Dictionary(const Dictionary< TKey, TValue >& dictionary, const Pointer< ValueComparison< TKey > >& keycomparison = NULL, const Pointer< ValueComparison< TValue > >& comparison = NULL) : keycomparison(keycomparison ?: dictionary.keycomparison), comparison(comparison ?: dictionary.comparison), map(dictionary.map) { }
+		Dictionary(const Collection< Pair< TKey, TValue > >& collection, const Pointer< ValueComparison< TKey > >& keycomparison = AutoPointer< ValueComparison< TKey > >(alloc OperatorValueComparison< TKey >(), false), const Pointer< ValueComparison< TValue > >& comparison = AutoPointer< ValueComparison< TValue> >(alloc OperatorEqualityComparison< TValue >(), false)) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
 		virtual ~Dictionary() { }
 
-		TValue& GetItem(const TKey& key) { return map[key]; }
+		TValue& GetItem(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter != map.end()) return iter->second; return map[key] = value; }
+		TValue& GetItem(const TKey& key) { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
 		const TValue& GetItem(const TKey& key) const { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
 		const Collection<const TValue&>& GetValues() const;
 		const Collection<const TKey&>& GetKeys() const;
@@ -85,6 +86,7 @@ namespace Bricks { namespace Collections {
 		bool ContainsValue(const TValue& value) const { return IteratorOfValue(value) != map.end(); }
 
 		void Add(const TKey& key, const TValue& value) { map[key] = value; }
+		void Set(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); iter->second = value; }
 		bool RemoveKey(const TKey& key) { return map.erase(key); }
 		bool RemoveValue(const TValue& value) { iterator iter = IteratorOfValue(value); if (iter == map.end()) return false; map.erase(iter); return true; }
 		
