@@ -36,7 +36,7 @@ endif
 
 $(BUILD):
 	@[ -d $@ ] || mkdir -p $@
-	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/$(MAKENAME) -j4
+	@make --no-print-directory -C $(BUILD) -f $(CURDIR)/$(MAKENAME) -j8
 
 clean:
 	@echo "[RM]  $(notdir $(OUTPUT))"
