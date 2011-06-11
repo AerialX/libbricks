@@ -13,6 +13,7 @@ namespace Bricks { namespace Collections {
 		virtual void AddItems(Iterable< T >& values) = 0;
 		virtual void AddItems(Collection< T >& values) = 0;
 		virtual bool RemoveItem(const T& value) = 0;
+		virtual void RemoveItems(const T& value) { while (RemoveItem(value)) ; }
 		virtual void Clear() = 0;
 	};
 } }

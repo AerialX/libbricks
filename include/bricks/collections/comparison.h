@@ -15,20 +15,20 @@ namespace Bricks { namespace Collections {
 	class ValueComparison
 	{
 	public:
-		virtual ComparisonResult::Enum Compare(T v1, T v2) = 0;
+		virtual ComparisonResult::Enum Compare(const T& v1, const T& v2) = 0;
 	};
 
 	template<typename T>
 	class OperatorValueComparison : public virtual Object, public ValueComparison<T>
 	{
 	public:
-		ComparisonResult::Enum Compare(T v1, T v2) { if (v1 > v2) return ComparisonResult::Greater; else if (v1 < v2) return ComparisonResult::Less; return ComparisonResult::Equal; }
+		ComparisonResult::Enum Compare(const T& v1, const T& v2) { if (v1 > v2) return ComparisonResult::Greater; else if (v1 < v2) return ComparisonResult::Less; return ComparisonResult::Equal; }
 	};
 
 	template<typename T>
 	class OperatorEqualityComparison : public virtual Object, public ValueComparison<T>
 	{
 	public:
-		ComparisonResult::Enum Compare(T v1, T v2) { if (v1 == v2) return ComparisonResult::Equal; return ComparisonResult::Less; }
+		ComparisonResult::Enum Compare(const T& v1, const T& v2) { if (v1 == v2) return ComparisonResult::Equal; return ComparisonResult::Less; }
 	};
 } }
