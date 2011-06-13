@@ -34,7 +34,7 @@ namespace Bricks { namespace Collections {
 	};
 
 	template<typename TKey, typename TValue>
-	class Dictionary : public virtual Object, public Collection< Pair< TKey, TValue > >
+	class Dictionary : public Collection< Pair< TKey, TValue > >
 	{
 	private:
 		struct StlCompare {
@@ -109,7 +109,7 @@ namespace Bricks { namespace Collections {
 	};
 	
 	template<typename TKey, typename TValue>
-	class DictionaryIterator : public virtual Object, public Iterator< Pair< TKey, TValue > >
+	class DictionaryIterator : public Iterator< Pair< TKey, TValue > >
 	{
 	private:
 		bool first;

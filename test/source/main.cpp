@@ -12,7 +12,7 @@ using namespace Bricks;
 using namespace Bricks::IO;
 using namespace Bricks::Collections;
 
-void testFilesystem()
+static void testFilesystem()
 {
 	// Can't rely on a single ObjectPool in main or nothing will ever be released!
 	ObjectPool pool;
@@ -85,7 +85,7 @@ void testFilesystem()
 #endif
 }
 
-void testCollections()
+static void testCollections()
 {
 	// Can't rely on a single ObjectPool in main or nothing will ever be released!
 	ObjectPool pool;
@@ -111,6 +111,20 @@ void testCollections()
 	dict->Release();
 }
 
+static void testObjects()
+{
+	Console::Default.Out->WriteLine(" ==== Object Tests ==== ");
+	// Can't rely on a single ObjectPool in main or nothing will ever be released!
+	ObjectPool pool;
+
+	// Here we are adding an object to the ObjectPool, but then retaining it and never letting go.
+	// This is a memory leak.
+	Console::Default.Out->WriteLine(" --- Memory Leak Test --- ");
+	Console::Default.Out->WriteLine("#define BRICKS_CONFIG_LOGGING and BRICKS_CONFIG_LOGGING_MEMLEAK in config.h to see the leak report.");
+	Object& object = autoalloc Object();
+	object.Retain();
+}
+
 int main(int argc, const char* argv[])
 {
 	// Install a global ObjectPool for autorelease.
@@ -125,6 +139,9 @@ int main(int argc, const char* argv[])
 	Console::Default.Out->WriteLine();
 
 	testCollections();
+	Console::Default.Out->WriteLine();
+
+	testObjects();
 
 	return 0;
 }

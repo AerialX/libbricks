@@ -59,10 +59,13 @@ typedef volatile double		vf64;
 #ifdef BRICKS_FEATURE_GCC
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
 #define BRICKS_FEATURE_CONSTRUCTOR(function) __attribute__((constructor))
+#define BRICKS_FEATURE_DESTRUCTOR(function) __attribute__((destructor))
 #define BRICKS_FEATURE_TLS __thread
 #else
 struct BRICKS_FEATURE_CONSTRUCTOR { BRICKS_FEATURE_CONSTRUCTOR(void (*function)()) { function(); } };
+struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR(void (*function)()) : function(function) { } ~BRICKS_FEATURE_DESTRUCTOR() { function(); } };
 #define BRICKS_FEATURE_CONSTRUCTOR(function) void function(); static BRICKS_FEATURE_CONSTRUCTOR constructor_##function(function);
+#define BRICKS_FEATURE_DESTRUCTOR(function) void function(); static BRICKS_FEATURE_DESTRUCTOR constructor_##function(function);
 #ifdef BRICKS_FEATURE_VCPP
 #define BRICKS_FEATURE_NORETURN __declspec(noreturn)
 #define BRICKS_FEATURE_TLS __declspec(thread)
@@ -74,7 +77,7 @@ struct BRICKS_FEATURE_CONSTRUCTOR { BRICKS_FEATURE_CONSTRUCTOR(void (*function)(
 /* Logging */
 #ifdef BRICKS_CONFIG_LOGGING
 #include <stdio.h>
-#define BRICKS_FEATURE_LOG(...) if (true) { fprintf(stderr, "[BRICKS] " __VA_ARGS__); fprintf(stderr, "\n"); fflush(stderr); } else (void)0
+#define BRICKS_FEATURE_LOG(...) do { fprintf(stderr, "[BRICKS] " __VA_ARGS__); fprintf(stderr, "\n"); fflush(stderr); } while (false)
 #else
 #define BRICKS_FEATURE_LOG(...)
 #endif

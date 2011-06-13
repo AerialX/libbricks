@@ -11,8 +11,12 @@
 /* BRICKS_CONFIG_LOGGING: Logs various information about libbricks to stderr */
 //#define BRICKS_CONFIG_LOGGING
 
-/* BRICKS_CONFIG_LOGGING_HEAVY: A lot more logging. */
+/* BRICKS_CONFIG_LOGGING_HEAVY: A lot more logging. Requires BRICKS_CONFIG_LOGGING. */
 //#define BRICKS_CONFIG_LOGGING_HEAVY
+
+/* BRICKS_CONFIG_LOGGING_MEMLEAK: Report any unreleased objects at program termination. Requires BRICKS_CONFIG_LOGGING.*/
+//#define BRICKS_CONFIG_LOGGING_MEMLEAK
 
 /* BRICKS_CONFIG_STL: Use the STL internally in collections. */
 #define BRICKS_CONFIG_STL
+

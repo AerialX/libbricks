@@ -16,13 +16,13 @@
 namespace Bricks { namespace IO {
 	const String FilePath::DirectorySeparators = String("/\\");
 
-	static Filesystem* defaultFilesystem = NULL;
-	Filesystem& Filesystem::GetDefault()
+	static Pointer<Filesystem> defaultFilesystem = NULL;
+	const Pointer<Filesystem>& Filesystem::GetDefault()
 	{
 		if (!defaultFilesystem)
-			//defaultFilesystem = new C89Filesystem();
-			defaultFilesystem = new PosixFilesystem();
-		return *defaultFilesystem;
+			//defaultFilesystem = globalalloc C89Filesystem();
+			defaultFilesystem = globalalloc PosixFilesystem();
+		return defaultFilesystem;
 	}
 
 	FileHandle C89Filesystem::Open(

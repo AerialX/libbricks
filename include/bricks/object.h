@@ -11,27 +11,60 @@
 #endif
 
 #define self (*this)
-#define autoalloc *new(Bricks::Auto)
+#define autoalloc *new(Bricks::Internal::Auto)
+#define globalalloc *new(Bricks::Internal::Global)
 #define alloc *new
 
 namespace Bricks {
 	class Class;
 	class String;
+	class Object;
 
-	struct ObjectAlloc { };
-	extern ObjectAlloc Auto;
+	namespace Internal {
+		struct ObjectAlloc { };
+		extern ObjectAlloc Auto;
+		struct ObjectGlobalAlloc { };
+		extern ObjectGlobalAlloc Global;
+
+		class ReferenceCounter
+		{
+		private:
+			u32 referenceCount;
+			ReferenceCounter() : referenceCount(1) { }
+			ReferenceCounter(const ReferenceCounter& count) : referenceCount(count.referenceCount) { }
+			ReferenceCounter& operator =(const ReferenceCounter& count) { return self; }
+			u32 operator ++(int) { return referenceCount++; }
+			u32 operator ++() { return ++referenceCount; }
+			u32 operator --() { return --referenceCount; }
+			u32 operator --(int) { return referenceCount--; }
+			operator u32() const { return referenceCount; }
+			friend class Bricks::Object;
+		};
+	}
 
 	class Object
 	{
 	private:
-		u32 referenceCount;
+		Internal::ReferenceCounter referenceCount;
 
-		void InternalAutorelease();
+		static bool InternalAutorelease();
+		static void InternalAutorelease(bool value);
+#ifdef BRICKS_CONFIG_LOGGING_MEMLEAK
+		static void ReportObject(Object* object, bool status);
+		static void ReportObject(bool status);
+#define BRICKS_FEATURE_LOGGING_MEMLEAK() ReportObject(this, true)
+#define BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY() do { if (referenceCount == 1) ReportObject(this, false); } while (false)
+#define BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE() ReportObject(true)
+#else
+#define BRICKS_FEATURE_LOGGING_MEMLEAK()
+#define BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY()
+#define BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE()
+#endif
 
 		static void* mallocthrowable(size_t size);
 
 	public:
-		Object() : referenceCount(1) { }
+		Object() { BRICKS_FEATURE_LOGGING_MEMLEAK(); if (InternalAutorelease()) Autorelease(); }
 
 #ifdef BRICKS_CONFIG_RTTI
 		Class& GetClass() const;
@@ -40,8 +73,8 @@ namespace Bricks {
 #endif
 
 		Object& Autorelease();
-		Object& Retain() { referenceCount++; BRICKS_FEATURE_LOG_HEAVY("+%p [%d]", this, referenceCount); return self; }
-		void Release() { BRICKS_FEATURE_LOG_HEAVY("-%p [%d]", this, referenceCount - 1); if (!--referenceCount) delete this; }
+		Object& Retain() { referenceCount++; BRICKS_FEATURE_LOG_HEAVY("+%p [%d]", this, GetReferenceCount()); return self; }
+		void Release() { BRICKS_FEATURE_LOG_HEAVY("-%p [%d]", this, GetReferenceCount() - 1); if (!--referenceCount) delete this; BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY(); }
 		int GetReferenceCount() const { return referenceCount; }
 		template<typename T> T& Autorelease() { return static_cast<T&>(Autorelease()); }
 		template<typename T> T& Retain() { return static_cast<T&>(Retain()); }
@@ -50,13 +83,9 @@ namespace Bricks {
 		virtual bool operator==(const Object& rhs) const { return this == &rhs; }
 		virtual bool operator!=(const Object& rhs) const { return this != &rhs; }
 
-		void* operator new(size_t size, const ObjectAlloc& dummy) {
-			Object* obj = reinterpret_cast<Object*>(mallocthrowable(size));
-			obj->referenceCount = 0x80000000;
-			obj->InternalAutorelease();
-			return obj;
-		}
-		void* operator new(size_t size) { return mallocthrowable(size); }
+		void* operator new(size_t size, const Internal::ObjectAlloc& dummy) { InternalAutorelease(true); BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE(); return mallocthrowable(size); }
+		void* operator new(size_t size, const Internal::ObjectGlobalAlloc& dummy) { return mallocthrowable(size); }
+		void* operator new(size_t size) { BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE(); return mallocthrowable(size); }
 		void operator delete(void* data) { free(data); }
 
 		virtual String& GetDebugString() const;
@@ -78,9 +107,6 @@ namespace Bricks {
 		Pointer(T& t) : value(&t) { }
 		template<typename T2> Pointer(const Pointer< T2 >& t) : value(t.GetValue()) { }
 
-		template<typename T2> bool operator==(const Pointer< T2 >& t) { return t.GetValue() == value; }
-		template<typename T2> bool operator!=(const Pointer< T2 >& t) const { return t.GetValue() != value; }
-
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
 		T* operator->() const { return &*self; }
@@ -95,6 +121,9 @@ namespace Bricks {
 		void Swap(const Pointer< T >& t) { value = t.value; }
 	};
 	template<typename T> Pointer< T > Pointer< T >::Null = Pointer< T >(NULL);
+	
+	template<typename T, typename T2> static bool operator==(const Pointer< T >& t1, const Pointer< T2 >& t2) { return t1.GetValue() == t2.GetValue(); }
+	template<typename T, typename T2> static bool operator!=(const Pointer< T >& t1, const Pointer< T2 >& t2) { return t1.GetValue() != t2.GetValue(); }
 
 	template<typename T> class AutoPointer : public Pointer< T >
 	{
@@ -152,9 +181,9 @@ namespace Bricks {
 
 	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
 #ifdef BRICKS_CONFIG_RTTI
-	inline String& Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetClass().GetName().CString(), this, referenceCount); }
+	inline String& Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetClass().GetName().CString(), this, GetReferenceCount()); }
 #else
-	inline String& Object::GetDebugString() const { return String::Format("<%p> [%d]", this, referenceCount); }
+	inline String& Object::GetDebugString() const { return String::Format("<%p> [%d]", this, GetReferenceCount()); }
 #endif
 
 	typedef Pointer<Object> any;

@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 namespace Bricks {
-	const String String::Empty = String();
+	const Pointer<String>& String::Empty = globalalloc String();
 
 	String& String::Format(const char* format, ...)
 	{

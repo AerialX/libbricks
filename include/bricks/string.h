@@ -14,7 +14,7 @@ namespace Bricks {
 	{
 		public:
 			static const size_t npos = -1;
-			static const String Empty;
+			static const Pointer<String>& Empty;
 
 			static String& Format(const char* format, ...);
 

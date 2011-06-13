@@ -39,7 +39,7 @@ namespace Bricks { namespace IO {
 		return FileType::Unknown;
 	}
 
-	class FileNode : public virtual Object, public Bricks::Collections::Iterable<FileNode>
+	class FileNode : public Bricks::Collections::Iterable<FileNode>
 	{
 	private:
 		FileType::Enum type;
@@ -48,7 +48,6 @@ namespace Bricks { namespace IO {
 	public:
 		FileNode() : type(FileType::Unknown) { }
 		FileNode(FileType::Enum type, const String& path) : type(type), path(AutoPointer<FilePath>(alloc FilePath(path), false)) { }
-		virtual ~FileNode() { }
 
 		virtual FileType::Enum GetType() const { return type; }
 		virtual const String& GetName() const { return FilePath(*path).GetFileName(); }

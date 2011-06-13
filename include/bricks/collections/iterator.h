@@ -39,7 +39,7 @@ namespace Bricks { namespace Collections {
 	template<typename T> class Collection;
 
 	template<typename T>
-	class Iterator
+	class Iterator : public virtual Object
 	{
 	public:
 		virtual T& GetCurrent() const = 0;
@@ -48,7 +48,7 @@ namespace Bricks { namespace Collections {
 	};
 
 	template<typename T>
-	class Iterable
+	class Iterable : public virtual Object
 	{
 	public:
 		virtual Iterator< T >& GetIterator() const = 0;

@@ -14,7 +14,7 @@ namespace Bricks { namespace IO {
 	class Filesystem : public virtual Object
 	{
 	public:
-		static Filesystem& GetDefault();
+		static const Pointer<Filesystem>& GetDefault();
 
 		virtual FileHandle Open(
 			const String& path,
@@ -177,13 +177,13 @@ namespace Bricks { namespace IO {
 
 		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
 			FileNode(GetDirType(dir.d_type), dir.d_name),
-			filesystem(*(filesystem ? filesystem.GetValue() : &Filesystem::GetDefault()))
+			filesystem(filesystem ? filesystem.GetValue() : Filesystem::GetDefault())
 		{
 			size = -1;
 		}
 
 		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
-			filesystem(*(filesystem ? filesystem.GetValue() : &Filesystem::GetDefault()))
+			filesystem(filesystem ? filesystem : Filesystem::GetDefault())
 		{
 			self = this->filesystem->Stat(path);
 		}
