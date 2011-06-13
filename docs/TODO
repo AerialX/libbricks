@@ -1,6 +1,5 @@
 Delegates and Events
  - Do them better.
- - Resync the C++0x version to the template version.
 
 Filesystem
  - Delete Recursive
@@ -12,6 +11,7 @@ IO
 
 Threading
  - TLS doesn't destruct thread data, add a static Thread::ThreadDestroyed event and such.
+ - AtomicPointer<> class to wrap access to a class in mutex locks.
 
 Misc
- - Fix autoalloc, it's broken if the first base class isn't Object
+ - Reduce dynamic_cast's where possible
