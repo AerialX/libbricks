@@ -74,10 +74,10 @@ static void testFilesystem()
 #ifdef BRICKS_CONFIG_CPP0X
 	// Technically this will work even without libbricks configured for C++0x because the lambda decays to a function pointer,
 	// but only when using a compiler that supports C++0x. And only because the capture list is empty.
-	node->Iterate(FunctionDelegate<bool(FileNode&)>([](FileNode& subnode) -> bool {
+	node->Iterate([](FileNode& subnode) -> bool {
 		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
 		return true; // returning false is like break;ing out of the loop.
-	}));
+	});
 #else
 	foreach (FileNode& subnode, *node) {
 		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
@@ -135,11 +135,10 @@ static void testDelegates()
 {
 	// Can't rely on a single ObjectPool in main or nothing will ever be released!
 	ObjectPool pool;
-
 	Console::Default.Out->WriteLine(" ==== Delegate Tests ==== ");
 
 	Console::Default.Out->WriteLine(" --- Events Test --- ");
-	Delegate<void()>& delegate = alloc FunctionDelegate<void()>(testDelegate);
+	Delegate<void()>& delegate = alloc Delegate<void()>(testDelegate);
 	Event<void()>& event = alloc Event<void()>();
 	event += delegate;
 	event += delegate;

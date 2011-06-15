@@ -37,56 +37,51 @@
 
 namespace Bricks {
 	template<typename F> class Delegate;
-	template<typename F> class FunctionDelegate;
 	template<typename F, typename T> class FunctorDelegate;
 	template<typename C, typename F> class MethodDelegate;
 	template<typename F> class Event;
 
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Delegate<R(BRICKS_DELEGATE_TYPES)> : public virtual Object
-	{
-	public:
-		Delegate() { }
+	namespace Internal {
+		template<typename F> class BaseDelegate;
+		template<typename T, typename F> class Functor;
 
-		virtual R operator ()(BRICKS_DELEGATE_TYPES) = 0;
-		R Call(BRICKS_DELEGATE_TYPES_NAMES) const { return const_cast<Delegate<R(BRICKS_DELEGATE_TYPES)>&>(self)(BRICKS_DELEGATE_ARGS); }
-	};
+		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class BaseDelegate<R(BRICKS_DELEGATE_TYPES)> : public virtual Object
+		{
+		public:
+			virtual R operator ()(BRICKS_DELEGATE_TYPES) = 0;
+			R Call(BRICKS_DELEGATE_TYPES_NAMES) const { return const_cast<BaseDelegate<R(BRICKS_DELEGATE_TYPES)>&>(self)(BRICKS_DELEGATE_ARGS); }
+		};
 
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class FunctionDelegate<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
+		template<typename T, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Functor<T, R(BRICKS_DELEGATE_TYPES)> : public BaseDelegate<R(BRICKS_DELEGATE_TYPES)>
+		{
+		protected:
+			T value;
+
+		public:
+			Functor(const T& value) : value(value) { }
+
+			R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return value(BRICKS_DELEGATE_ARGS); }
+		};
+	}
+
+	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Delegate<R(BRICKS_DELEGATE_TYPES)> : public Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)>
 	{
-	public:
-#ifdef BRICKS_CONFIG_CPP0X
-		typedef std::function<R(BRICKS_DELEGATE_TYPES)> Function;
-#else
+	protected:
 		typedef R(*Function)(BRICKS_DELEGATE_TYPES);
-#endif
-
-	private:
+		AutoPointer< Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)> > functor;
 		Function function;
 
 	public:
-		FunctionDelegate() { }
-		FunctionDelegate(Function function) : function(function) { }
+		template<typename T> Delegate(const T& functor) : functor(alloc Internal::Functor<T, R(BRICKS_DELEGATE_TYPES)>(functor), false), function(NULL) { }
+		Delegate(Function function) : function(function) { }
+		Delegate() : function(NULL) { }
 
-		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { if (!function) throw InvalidArgumentException(); return function(BRICKS_DELEGATE_ARGS); }
-	};
-
-	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES, typename T > class FunctorDelegate<R(BRICKS_DELEGATE_TYPES), T> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
-	{
-	public:
-		typedef T Function;
-
-	private:
-		Function function;
-
-	public:
-		FunctorDelegate() { }
-		FunctorDelegate(const Function& function) : function(function) { }
-
-		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return function(BRICKS_DELEGATE_ARGS); }
+		virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { if (functor) return functor->Call(BRICKS_DELEGATE_ARGS); if (function) return function(BRICKS_DELEGATE_ARGS); throw InvalidArgumentException(); }
 	};
 
 	namespace Internal {
 		template<typename F> class MethodDelegateBase;
+
 		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
 		{
 		protected:
