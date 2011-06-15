@@ -96,8 +96,7 @@ namespace Bricks { namespace Collections {
 		bool ContainsItem(const Pair< TKey, TValue >& value) const { const_iterator iter = map.find(value.GetKey()); return iter != map.end() && !comparison->Compare(iter->second, value.GetValue()); }
 
 		void AddItem(const Pair< TKey, TValue >& value) { map[value.GetKey()] = value.GetValue(); }
-		void AddItems(Iterable< Pair< TKey, TValue> >& values) { foreach (const mapitem& value, values) AddItem(value); }
-		void AddItems(Collection< Pair< TKey, TValue> >& values) { AddItems(static_cast<Iterable< Pair< TKey, TValue > >&>(values)); }
+		void AddItems(const Iterable< Pair< TKey, TValue> >& values) { foreach (const mapitem& value, values) AddItem(value); }
 		bool RemoveItem(const Pair< TKey, TValue >& value) { return map.erase(value.GetKey()); }
 		void Clear() { map.clear(); }
 		

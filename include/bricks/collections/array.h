@@ -10,37 +10,37 @@
 #include <vector>
 
 namespace Bricks { namespace Collections {
-	template<typename T> class Array;
+	template<typename T, typename V> class Array;
 
-	template<typename T>
+	template<typename T, typename V>
 	class ArrayIterator : public Iterator< T >
 	{
 	private:
 		bool first;
-		typename Array< T >::iterator position;
-		typename Array< T >::iterator end;
-		ArrayIterator(Array< T >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
+		typename Array< T, V >::iterator position;
+		typename Array< T, V >::iterator end;
+		ArrayIterator(Array< T, V >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
 
-		friend class Array< T >;
+		friend class Array< T, V >;
 
 	public:
 		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 
-	template<typename T >
+	template<typename T, typename V = T>
 	class Array : public List< T >
 	{
 	private:
 		AutoPointer< ValueComparison< T > > comparison;
 
-		typename std::vector< T > vector;
-		typedef typename std::vector< T >::iterator iterator;
-		typedef typename std::vector< T >::const_iterator const_iterator;
+		typename std::vector< V > vector;
+		typedef typename std::vector< V >::iterator iterator;
+		typedef typename std::vector< V >::const_iterator const_iterator;
 
-		friend class ArrayIterator< T >;
+		friend class ArrayIterator< T, V >;
 
-		iterator IteratorOfItem(const T& value) {
+		iterator IteratorOfItem(const T value) {
 			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
 				if (!comparison->Compare(*iter, value))
 					return iter;
@@ -48,7 +48,7 @@ namespace Bricks { namespace Collections {
 			return vector.end();
 		}
 		
-		const_iterator IteratorOfItem(const T& value) const {
+		const_iterator IteratorOfItem(const T value) const {
 			for (const_iterator iter = vector.begin(); iter != vector.end(); iter++) {
 				if (!comparison->Compare(*iter, value))
 					return iter;
@@ -58,21 +58,22 @@ namespace Bricks { namespace Collections {
 
 	public:
 		Array(const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { }
-		Array(const Array< T >& array, const Pointer< ValueComparison< T > >& comparison = NULL) : comparison(comparison ?: array.comparison), vector(array.vector) { }
+		Array(const Array< T, V >& array, const Pointer< ValueComparison< T > >& comparison = NULL) : comparison(comparison ?: array.comparison), vector(array.vector) { }
 		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T >(const_cast<Array< T >&>(self)); }
+		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T, V >(const_cast<Array< T, V >&>(self)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); };
 
 		virtual bool ContainsItem(const T& value) const { return IteratorOfItem(value) != vector.end(); }
 
+		template<typename T2> void AddItem(T2 value) { vector.push_back(value); }
+		virtual void AddItem(T& value) { vector.push_back(value); }
 		virtual void AddItem(const T& value) { vector.push_back(value); }
-		virtual void AddItems(Iterable< T >& values) { foreach (T& item, values) AddItem(item); }
-		virtual void AddItems(Collection< T >& values) { AddItems(static_cast<Iterable< T >&>(values)); }
+		virtual void AddItems(const Iterable< T >& values) { foreach (const T& item, values) AddItem(item); }
 		virtual bool RemoveItem(const T& value)
 		{
 			iterator iter = IteratorOfItem(value);
@@ -86,8 +87,9 @@ namespace Bricks { namespace Collections {
 
 		// List
 		virtual void SetItem(long index, const T& value) { vector[index] = value; }
-		virtual T& GetItem(long index) { return vector[index]; }
+		virtual void SetItem(long index, T& value) { vector[index] = value; }
 		virtual const T& GetItem(long index) const { return vector[index]; }
+		virtual T& GetItem(long index) { return vector[index]; }
 		virtual long IndexOfItem(const T& value) const {
 			const_iterator iter = IteratorOfItem(value);
 			if (iter == vector.end())
@@ -95,14 +97,8 @@ namespace Bricks { namespace Collections {
 			return iter - vector.begin();
 		}
 
-		virtual void InsertItem(long index, const T& value)
-		{
-			vector.insert(vector.begin() + index, value);
-		}
-
-		virtual void RemoveItemAt(long index)
-		{
-			vector.erase(vector.begin() + index);
-		}
+		virtual void InsertItem(long index, const T& value) { vector.insert(vector.begin() + index, value); }
+		virtual void InsertItem(long index, T& value) { vector.insert(vector.begin() + index, value); }
+		virtual void RemoveItemAt(long index) { vector.erase(vector.begin() + index); }
 	};
 } }

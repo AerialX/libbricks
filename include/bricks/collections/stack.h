@@ -16,18 +16,18 @@ namespace Bricks { namespace Collections {
 		StackEmptyException(const String& message = String::Empty) : Exception(message) { }
 	};
 
-	template<typename T> class StackIterator;
+	template<typename T, typename V> class StackIterator;
 
-	template<typename T>
+	template<typename T, typename V = T>
 	class Stack : public Collection< T >
 	{
 	private:
 		AutoPointer< ValueComparison< T > > comparison;
-		typename std::deque< T > stack;
-		typedef typename std::deque< T >::iterator iterator;
-		typedef typename std::deque< T >::const_iterator const_iterator;
+		typename std::deque< V > stack;
+		typedef typename std::deque< V >::iterator iterator;
+		typedef typename std::deque< V >::const_iterator const_iterator;
 
-		friend class StackIterator< T >;
+		friend class StackIterator< T, V >;
 
 		const_iterator IteratorOfItem(const T& value) const {
 			for (const_iterator iter = stack.begin(); iter != stack.end(); iter++) {
@@ -47,19 +47,20 @@ namespace Bricks { namespace Collections {
 		
 	public:
 		Stack(const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { }
-		Stack(const Stack< T >& stack, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
+		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
 		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 
 		void Push(const T& value) { stack.push_front(value); }
+		void Push(T& value) { stack.push_front(value); }
 		void Pop() { if (stack.empty()) throw StackEmptyException(); stack.pop_front(); }
 		T PopItem() { if (stack.empty()) throw StackEmptyException(); T value = stack.front(); stack.pop_front(); return value; }
 		T& Peek() { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
 		const T& Peek() const { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return autoalloc StackIterator< T >(const_cast<Stack< T >&>(self)); }
+		virtual Iterator< T >& GetIterator() const { return autoalloc StackIterator< T, V >(const_cast<Stack< T, V >&>(self)); }
 
 		// Collection
 		virtual long GetCount() const { return stack.size(); };
@@ -67,8 +68,8 @@ namespace Bricks { namespace Collections {
 		virtual bool ContainsItem(const T& value) const { return IteratorOfItem(value) != stack.end(); }
 
 		virtual void AddItem(const T& value) { Push(value); }
-		virtual void AddItems(Iterable< T >& values) { foreach (T& item, values) AddItem(item); }
-		virtual void AddItems(Collection< T >& values) { AddItems(static_cast<Iterable< T >&>(values)); }
+		virtual void AddItem(T& value) { Push(value); }
+		virtual void AddItems(const Iterable< T >& values) { foreach (const T& item, values) AddItem(item); }
 		virtual void Clear() { stack.clear(); }
 		virtual bool RemoveItem(const T& value) {
 			iterator iter = IteratorOfItem(value);
@@ -79,16 +80,16 @@ namespace Bricks { namespace Collections {
 		}
 	};
 	
-	template<typename T>
+	template<typename T, typename V>
 	class StackIterator : public Iterator< T >
 	{
 	private:
 		bool first;
-		typename Stack< T >::iterator position;
-		typename Stack< T >::iterator end;
-		StackIterator(Stack< T >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
+		typename Stack< T, V >::iterator position;
+		typename Stack< T, V >::iterator end;
+		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
 
-		friend class Stack< T >;
+		friend class Stack< T, V >;
 
 	public:
 		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }

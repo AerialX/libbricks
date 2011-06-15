@@ -48,7 +48,7 @@ namespace Bricks {
 		Delegate() { }
 
 		virtual R operator ()(BRICKS_DELEGATE_TYPES) = 0;
-		R Call(BRICKS_DELEGATE_TYPES_NAMES) { return self(BRICKS_DELEGATE_ARGS); }
+		R Call(BRICKS_DELEGATE_TYPES_NAMES) const { return const_cast<Delegate<R(BRICKS_DELEGATE_TYPES)>&>(self)(BRICKS_DELEGATE_ARGS); }
 	};
 
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class FunctionDelegate<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
@@ -69,7 +69,7 @@ namespace Bricks {
 
 		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { if (!function) throw InvalidArgumentException(); return function(BRICKS_DELEGATE_ARGS); }
 	};
-	
+
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES, typename T > class FunctorDelegate<R(BRICKS_DELEGATE_TYPES), T> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
 	{
 	public:
@@ -96,6 +96,8 @@ namespace Bricks {
 			MethodDelegateBase(const Pointer<Object>& pointer) : pointer(pointer) { }
 
 			friend class Event<R(BRICKS_DELEGATE_TYPES)>;
+
+			virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { }
 		};
 	}
 
@@ -119,7 +121,8 @@ namespace Bricks {
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Event<R(BRICKS_DELEGATE_TYPES)> : public Delegate<void(BRICKS_DELEGATE_TYPES)>
 	{
 	public:
-		typedef AutoPointer<Delegate<R(BRICKS_DELEGATE_TYPES)> > EventItem;
+		typedef Delegate< R(BRICKS_DELEGATE_TYPES) > EventItem;
+		typedef AutoPointer< EventItem > EventItemStorage;
 
 	private:
 		class EventItemComparison : public Bricks::Collections::ValueComparison< EventItem >
@@ -127,24 +130,27 @@ namespace Bricks {
 		public:
 			Bricks::Collections::ComparisonResult::Enum Compare(const EventItem& v1, const EventItem& v2) {
 				typedef const Internal::MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)>* delegate;
-				delegate d1 = dynamic_cast<delegate>(&v1);
+				delegate d1 = dynamic_cast<delegate>(&*v1);
 				if (d1) {
-					delegate d2 = dynamic_cast<delegate>(&v2);
+					delegate d2 = dynamic_cast<delegate>(&*v2);
 					if (d2)
 						return d1->pointer == d2->pointer ? Bricks::Collections::ComparisonResult::Equal : Bricks::Collections::ComparisonResult::Less;
 				}
 				return v1 == v2 ? Bricks::Collections::ComparisonResult::Equal : Bricks::Collections::ComparisonResult::Less;
 			}
 		};
-		AutoPointer<Collections::Collection<EventItem> > list;
+		AutoPointer<Collections::Collection< EventItem > > list;
 
 	public:
-		Event() : list(alloc Collections::Stack<EventItem>(), false) { }
+		Event() : list(alloc Collections::Stack< EventItem, EventItemStorage >(), false) { }
 
-		Event& operator +=(Delegate<R(BRICKS_DELEGATE_TYPES)>* delegate) { list->AddItem(delegate); return self; }
-		Event& operator -=(const Delegate<R(BRICKS_DELEGATE_TYPES)>* delegate) { list->RemoveItems(delegate); return self; }
+		Event& operator +=(const Pointer< Delegate<R(BRICKS_DELEGATE_TYPES)> >& delegate) { list->AddItem(delegate); return self; }
+		Event& operator -=(const EventItem& delegate) { list->RemoveItems(delegate); return self; }
+		Event& operator -=(const Pointer<Object>& object) { list->RemoveItems(Internal::MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)>(object)); return self; }
 
-		void operator ()(BRICKS_DELEGATE_TYPES_NAMES) { foreach (const EventItem& item, list) item->Call(BRICKS_DELEGATE_ARGS); }
+		operator bool() const { return list->GetCount(); }
+
+		void operator ()(BRICKS_DELEGATE_TYPES_NAMES) { foreach (EventItem& item, *list) item(BRICKS_DELEGATE_ARGS); }
 	};
 }
 

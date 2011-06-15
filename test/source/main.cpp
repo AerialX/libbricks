@@ -113,9 +113,10 @@ static void testCollections()
 
 static void testObjects()
 {
-	Console::Default.Out->WriteLine(" ==== Object Tests ==== ");
 	// Can't rely on a single ObjectPool in main or nothing will ever be released!
 	ObjectPool pool;
+	
+	Console::Default.Out->WriteLine(" ==== Object Tests ==== ");
 
 	// Here we are adding an object to the ObjectPool, but then retaining it and never letting go.
 	// This is a memory leak.
@@ -123,6 +124,35 @@ static void testObjects()
 	Console::Default.Out->WriteLine("#define BRICKS_CONFIG_LOGGING and BRICKS_CONFIG_LOGGING_MEMLEAK in config.h to see the leak report.");
 	Object& object = autoalloc Object();
 	object.Retain();
+}
+
+static void testDelegate()
+{
+	Console::Default.Out->WriteLine("ohai, call from test delegate.");
+}
+
+static void testDelegates()
+{
+	// Can't rely on a single ObjectPool in main or nothing will ever be released!
+	ObjectPool pool;
+
+	Console::Default.Out->WriteLine(" ==== Delegate Tests ==== ");
+
+	Console::Default.Out->WriteLine(" --- Events Test --- ");
+	Delegate<void()>& delegate = alloc FunctionDelegate<void()>(testDelegate);
+	Event<void()>& event = alloc Event<void()>();
+	event += delegate;
+	event += delegate;
+	event(); // Should print the message twice.
+
+	// Remove the delegate (as many times as it's been added), and make sure the event is empty.
+	event -= delegate;
+	assert(!event);
+	event();
+
+	// Cleanup
+	event.Release();
+	delegate.Release();
 }
 
 int main(int argc, const char* argv[])
@@ -142,6 +172,10 @@ int main(int argc, const char* argv[])
 	Console::Default.Out->WriteLine();
 
 	testObjects();
+	Console::Default.Out->WriteLine();
+
+	testDelegates();
+	Console::Default.Out->WriteLine();
 
 	return 0;
 }
