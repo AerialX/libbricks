@@ -142,7 +142,8 @@ static void testDelegates()
 	Event<void()>& event = alloc Event<void()>();
 	event += delegate;
 	event += delegate;
-	event(); // Should print the message twice.
+	event += testDelegate;
+	event(); // Should print the message thrice.
 
 	// Remove the delegate (as many times as it's been added), and make sure the event is empty.
 	event -= delegate;

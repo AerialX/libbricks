@@ -5,7 +5,7 @@ DATA		:=	data
 SOURCES		:=	source source/io source/threading
 INCLUDES	:=	include
 
-DEFINES		:= -g -O3 -Wall -fPIC -D_GNU_SOURCE -std=gnu++0x
+DEFINES		:= -g -O3 -Wall -fPIC -D_GNU_SOURCE #-std=gnu++0x
 LIBS		:= 
 LDFLAGS		:= -shared
 

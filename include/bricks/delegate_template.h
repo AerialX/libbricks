@@ -38,12 +38,15 @@
 namespace Bricks {
 	template<typename F> class Delegate;
 	template<typename F, typename T> class FunctorDelegate;
-	template<typename C, typename F> class MethodDelegate;
+	template<typename C, typename F> class MethodFunction;
 	template<typename F> class Event;
 
 	namespace Internal {
 		template<typename F> class BaseDelegate;
 		template<typename T, typename F> class Functor;
+		template<typename F> class Function;
+		template<typename F> class MethodFunctionBase;
+		template<typename T, typename F> class MethodFunction;
 
 		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class BaseDelegate<R(BRICKS_DELEGATE_TYPES)> : public virtual Object
 		{
@@ -61,56 +64,77 @@ namespace Bricks {
 			Functor(const T& value) : value(value) { }
 
 			R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return value(BRICKS_DELEGATE_ARGS); }
+
+			virtual bool operator==(const Object& rhs) const { const Functor<T, R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<const Functor<T, R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return value == delegate->value; return Object::operator==(rhs); }
+			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
+		};
+
+		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Function<R(BRICKS_DELEGATE_TYPES)> : public BaseDelegate<R(BRICKS_DELEGATE_TYPES)>
+		{
+		protected:
+			typedef R(*FunctionType)(BRICKS_DELEGATE_TYPES);
+			FunctionType function;
+			friend class Delegate<R(BRICKS_DELEGATE_TYPES)>;
+
+		public:
+			Function() : function(NULL) { }
+			Function(FunctionType function) : function(function) { }
+
+			R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return function(BRICKS_DELEGATE_ARGS); }
+
+			virtual bool operator==(const Object& rhs) const { const Function<R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<const Function<R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return function == delegate->function; return Object::operator==(rhs); }
+			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
+		};
+
+		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
+		{
+		protected:
+			AutoPointer<Object> pointer;
+
+		public:
+			MethodFunctionBase(const Pointer<Object>& pointer) : pointer(pointer) { }
+
+			friend class Event<R(BRICKS_DELEGATE_TYPES)>;
+
+			virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { }
+		};
+
+		template<typename T, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodFunction<T, R(BRICKS_DELEGATE_TYPES)> : public Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>
+		{
+		public:
+			typedef R (T::*Function)(BRICKS_DELEGATE_TYPES);
+
+		private:
+			Function function;
+
+		public:
+			MethodFunction(const Pointer< T >& pointer, Function function = NULL) : Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>(pointer), function(function) { }
+
+			R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return (dynamic_cast<T*>(this->pointer.GetValue())->*function)(BRICKS_DELEGATE_ARGS); }
+
+			virtual bool operator==(const Object& rhs) const { const MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<const MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return this->pointer == delegate->pointer && function == delegate->function; return Object::operator==(rhs); }
+			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 	}
 
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Delegate<R(BRICKS_DELEGATE_TYPES)> : public Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)>
 	{
 	protected:
-		typedef R(*Function)(BRICKS_DELEGATE_TYPES);
-		AutoPointer< Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)> > functor;
-		Function function;
+		AutoPointer< Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)> > function;
 
 	public:
-		template<typename T> Delegate(const T& functor) : functor(alloc Internal::Functor<T, R(BRICKS_DELEGATE_TYPES)>(functor), false), function(NULL) { }
-		Delegate(Function function) : function(function) { }
-		Delegate() : function(NULL) { }
+		Delegate() { }
+		Delegate(Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)>& function) : function(function) { }
+		Delegate(typename Internal::Function<R(BRICKS_DELEGATE_TYPES)>::FunctionType function) : function(alloc Internal::Function<R(BRICKS_DELEGATE_TYPES)>(function), false) { }
+		template<typename T> Delegate(const T& function) : function(alloc Internal::Functor<T, R(BRICKS_DELEGATE_TYPES)>(function), false) { }
+		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>::Function function) : function(alloc Internal::MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>(object, function), false) { }
 
-		virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { if (functor) return functor->Call(BRICKS_DELEGATE_ARGS); if (function) return function(BRICKS_DELEGATE_ARGS); throw InvalidArgumentException(); }
-	};
+		BRICKS_COPY_CONSTRUCTOR(Delegate<R(BRICKS_DELEGATE_TYPES)>);
 
-	namespace Internal {
-		template<typename F> class MethodDelegateBase;
+		virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { if (function) return function->Call(BRICKS_DELEGATE_ARGS); throw InvalidArgumentException(); }
 
-		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
-		{
-		protected:
-			AutoPointer<Object> pointer;
-
-		public:
-			MethodDelegateBase(const Pointer<Object>& pointer) : pointer(pointer) { }
-
-			friend class Event<R(BRICKS_DELEGATE_TYPES)>;
-
-			virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { }
-		};
-	}
-
-	template<typename C, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodDelegate<C, R(BRICKS_DELEGATE_TYPES)> : public Internal::MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)>
-	{
-	public:
-		typedef R (C::*Function)(BRICKS_DELEGATE_TYPES);
-
-	private:
-		Function function;
-
-	public:
-		MethodDelegate(const Pointer< C >& pointer, Function function = NULL) : Internal::MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)>(pointer), function(function) { }
-
-		R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return (static_cast<C*>(this->pointer.GetValue())->*function)(BRICKS_DELEGATE_ARGS); }
-
-		bool operator==(const Object& rhs) const { const MethodDelegate<C, R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<MethodDelegate<C, R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return this->pointer == delegate.pointer && function == delegate.function; return Object::operator==(rhs); }
-		bool operator!=(const Object& rhs) const { return !operator==(rhs); }
+		bool operator==(const Object& rhs) const { const Delegate<R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<const Delegate<R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return (!function && !delegate->function) || (function && delegate->function && (*function == *delegate->function)); return Object::operator==(rhs); }
+		bool operator !=(const Object& rhs) const { return !operator==(rhs); }
 	};
 
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Event<R(BRICKS_DELEGATE_TYPES)> : public Delegate<void(BRICKS_DELEGATE_TYPES)>
@@ -124,7 +148,7 @@ namespace Bricks {
 		{
 		public:
 			Bricks::Collections::ComparisonResult::Enum Compare(const EventItem& v1, const EventItem& v2) {
-				typedef const Internal::MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)>* delegate;
+				typedef const Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>* delegate;
 				delegate d1 = dynamic_cast<delegate>(&*v1);
 				if (d1) {
 					delegate d2 = dynamic_cast<delegate>(&*v2);
@@ -139,9 +163,10 @@ namespace Bricks {
 	public:
 		Event() : list(alloc Collections::Stack< EventItem, EventItemStorage >(), false) { }
 
-		Event& operator +=(const Pointer< Delegate<R(BRICKS_DELEGATE_TYPES)> >& delegate) { list->AddItem(delegate); return self; }
+		Event& operator +=(EventItem& delegate) { list->AddItem(delegate); return self; }
+		Event& operator +=(const EventItem& delegate) { list->AddItem(CopyPointer<EventItem>(delegate)); return self; }
 		Event& operator -=(const EventItem& delegate) { list->RemoveItems(delegate); return self; }
-		Event& operator -=(const Pointer<Object>& object) { list->RemoveItems(Internal::MethodDelegateBase<R(BRICKS_DELEGATE_TYPES)>(object)); return self; }
+		Event& operator -=(const Pointer<Object>& object) { list->RemoveItems(Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>(object)); return self; }
 
 		operator bool() const { return list->GetCount(); }
 
