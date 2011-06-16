@@ -7,6 +7,9 @@ Random Usage Notes
  - Prefer operator overloading (==, >, <, etc) over equivalents such as EqualTo()
     - I'm kind of torn on this one.
  - When to return a reference type vs. a Pointer<>? Iunno.
+ - Delegates do not own objects when retaining a member pointer.
+    - They do make copies of functors, however.
+    - Events hold on to references to delegates.
 
 
 Naming Conventions

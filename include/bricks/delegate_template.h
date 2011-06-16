@@ -177,6 +177,9 @@ namespace Bricks {
 
 		void operator ()(BRICKS_DELEGATE_TYPES_NAMES) { foreach (EventItem& item, *list) item(BRICKS_DELEGATE_ARGS); }
 	};
+
+	template<typename T BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES >
+	static AutoPointer<T> Autorelease(BRICKS_DELEGATE_TYPES_NAMES) { return AutoPointer<T>(alloc T(BRICKS_DELEGATE_ARGS), false); }
 }
 
 #undef BRICKS_DELEGATE_COMMA
