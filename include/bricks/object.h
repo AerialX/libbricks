@@ -88,6 +88,10 @@ namespace Bricks {
 		void* operator new(size_t size) { BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE(); return mallocthrowable(size); }
 		void operator delete(void* data) { free(data); }
 
+#undef BRICKS_FEATURE_LOGGING_MEMLEAK
+#undef BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY
+#undef BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE
+
 		virtual String& GetDebugString() const;
 //		virtual int GetHash() const;
 	};
@@ -144,6 +148,10 @@ namespace Bricks {
 
 		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		AutoPointer< T >& operator=(const AutoPointer< T >& t) { Swap(t); return self; }
+		AutoPointer< T >& operator=(T* t) { Swap(t); return self; }
+		AutoPointer< T >& operator=(T& t) { Swap(t); return self; }
+		AutoPointer< T >& operator=(const T& t) { Swap(t); return self; }
+		template<typename T2> AutoPointer< T >& operator=(const Pointer< T2 >& t) { Swap(t); return self; }
 
 		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
 	};
@@ -161,9 +169,12 @@ namespace Bricks {
 		
 		CopyPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		CopyPointer< T >& operator=(const CopyPointer< T >& t) { Swap(t); return self; }
+		CopyPointer< T >& operator=(const T* t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t)); return self; }
+		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(&t)); return self; }
+		template<typename T2> CopyPointer< T >& operator=(const Pointer< T2 >& t) { Swap(t); return self; }
 
 		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue())); }
-		void Swap(const CopyPointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue())); }
+#undef BRICKS_COPY_POINTER
 	};
 
 #define BRICKS_COPY_CONSTRUCTOR(T) T& Copy() const { return alloc T(self); }

@@ -128,8 +128,22 @@ static void testObjects()
 
 static void testDelegate()
 {
-	Console::Default.Out->WriteLine("ohai, call from test delegate.");
+	Console::Default.Out->WriteLine("ohai, call from static test delegate.");
 }
+
+class TestDelegateClass
+{
+protected:
+	int value;
+
+public:
+	TestDelegateClass() : value(0) { }
+
+	void testDelegateFunction()
+	{
+		Console::Default.Out->WriteLine(String::Format("ohai, call #%d from test delegate class", ++value));
+	}
+};
 
 static void testDelegates()
 {
@@ -140,13 +154,18 @@ static void testDelegates()
 	Console::Default.Out->WriteLine(" --- Events Test --- ");
 	Delegate<void()>& delegate = alloc Delegate<void()>(testDelegate);
 	Event<void()>& event = alloc Event<void()>();
+	TestDelegateClass test;
 	event += delegate;
 	event += delegate;
 	event += testDelegate;
-	event(); // Should print the message thrice.
+	event += Delegate<void()>(test, &TestDelegateClass::testDelegateFunction);
+	event += Delegate<void()>(test, &TestDelegateClass::testDelegateFunction);
+	event += MethodDelegate(test, &TestDelegateClass::testDelegateFunction);
+	event(); // Should print the first message thrice, and the second.
 
 	// Remove the delegate (as many times as it's been added), and make sure the event is empty.
 	event -= delegate;
+	event -= test;
 	assert(!event);
 	event();
 

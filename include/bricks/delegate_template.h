@@ -86,20 +86,20 @@ namespace Bricks {
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
-		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)> : public Delegate<R(BRICKS_DELEGATE_TYPES)>
+		template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)> : public BaseDelegate<R(BRICKS_DELEGATE_TYPES)>
 		{
 		protected:
-			AutoPointer<Object> pointer;
+			void* pointer;
 
 		public:
-			MethodFunctionBase(const Pointer<Object>& pointer) : pointer(pointer) { }
+			MethodFunctionBase(void* pointer) : pointer(pointer) { }
 
 			friend class Event<R(BRICKS_DELEGATE_TYPES)>;
 
 			virtual R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { }
 		};
 
-		template<typename T, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodFunction<T, R(BRICKS_DELEGATE_TYPES)> : public Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>
+		template<typename T, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class MethodFunction<T, R(BRICKS_DELEGATE_TYPES)> : public MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>
 		{
 		public:
 			typedef R (T::*Function)(BRICKS_DELEGATE_TYPES);
@@ -108,9 +108,9 @@ namespace Bricks {
 			Function function;
 
 		public:
-			MethodFunction(const Pointer< T >& pointer, Function function = NULL) : Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>(pointer), function(function) { }
+			MethodFunction(void* pointer, Function function = NULL) : MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>(pointer), function(function) { }
 
-			R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return (dynamic_cast<T*>(this->pointer.GetValue())->*function)(BRICKS_DELEGATE_ARGS); }
+			R operator ()(BRICKS_DELEGATE_TYPES_NAMES) { return (static_cast<T*>(this->pointer)->*function)(BRICKS_DELEGATE_ARGS); }
 
 			virtual bool operator==(const Object& rhs) const { const MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<const MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return this->pointer == delegate->pointer && function == delegate->function; return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
@@ -122,12 +122,14 @@ namespace Bricks {
 	protected:
 		AutoPointer< Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)> > function;
 
+		friend class Event<R(BRICKS_DELEGATE_TYPES)>;
+
 	public:
 		Delegate() { }
 		Delegate(Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)>& function) : function(function) { }
 		Delegate(typename Internal::Function<R(BRICKS_DELEGATE_TYPES)>::FunctionType function) : function(alloc Internal::Function<R(BRICKS_DELEGATE_TYPES)>(function), false) { }
 		template<typename T> Delegate(const T& function) : function(alloc Internal::Functor<T, R(BRICKS_DELEGATE_TYPES)>(function), false) { }
-		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>::Function function) : function(alloc Internal::MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>(object, function), false) { }
+		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>::Function function) : function(alloc Internal::MethodFunction<T, R(BRICKS_DELEGATE_TYPES)>(static_cast<void*>(&object), function), false) { }
 
 		BRICKS_COPY_CONSTRUCTOR(Delegate<R(BRICKS_DELEGATE_TYPES)>);
 
@@ -136,6 +138,9 @@ namespace Bricks {
 		bool operator==(const Object& rhs) const { const Delegate<R(BRICKS_DELEGATE_TYPES)>* delegate = dynamic_cast<const Delegate<R(BRICKS_DELEGATE_TYPES)>*>(&rhs); if (delegate) return (!function && !delegate->function) || (function && delegate->function && (*function == *delegate->function)); return Object::operator==(rhs); }
 		bool operator !=(const Object& rhs) const { return !operator==(rhs); }
 	};
+
+	template<typename T, typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES >
+	static Delegate<R(BRICKS_DELEGATE_TYPES)> MethodDelegate(T& object, R (T::*function)(BRICKS_DELEGATE_TYPES)) { return Delegate<R(BRICKS_DELEGATE_TYPES)>(object, function); }
 
 	template<typename R BRICKS_DELEGATE_COMMA BRICKS_DELEGATE_TYPENAMES > class Event<R(BRICKS_DELEGATE_TYPES)> : public Delegate<void(BRICKS_DELEGATE_TYPES)>
 	{
@@ -149,9 +154,9 @@ namespace Bricks {
 		public:
 			Bricks::Collections::ComparisonResult::Enum Compare(const EventItem& v1, const EventItem& v2) {
 				typedef const Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>* delegate;
-				delegate d1 = dynamic_cast<delegate>(&*v1);
+				delegate d1 = dynamic_cast<delegate>(v1.function.GetValue());
 				if (d1) {
-					delegate d2 = dynamic_cast<delegate>(&*v2);
+					delegate d2 = dynamic_cast<delegate>(v2.function.GetValue());
 					if (d2)
 						return d1->pointer == d2->pointer ? Bricks::Collections::ComparisonResult::Equal : Bricks::Collections::ComparisonResult::Less;
 				}
@@ -161,12 +166,12 @@ namespace Bricks {
 		AutoPointer<Collections::Collection< EventItem > > list;
 
 	public:
-		Event() : list(alloc Collections::Stack< EventItem, EventItemStorage >(), false) { }
+		Event() : list(alloc Collections::Array< EventItem, EventItemStorage >(AutoPointer<EventItemComparison>(alloc EventItemComparison(), false)), false) { }
 
 		Event& operator +=(EventItem& delegate) { list->AddItem(delegate); return self; }
 		Event& operator +=(const EventItem& delegate) { list->AddItem(CopyPointer<EventItem>(delegate)); return self; }
 		Event& operator -=(const EventItem& delegate) { list->RemoveItems(delegate); return self; }
-		Event& operator -=(const Pointer<Object>& object) { list->RemoveItems(Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)>(object)); return self; }
+		template<typename T> Event& operator -=(const T& object) { Internal::MethodFunctionBase<R(BRICKS_DELEGATE_TYPES)> method(static_cast<void*>(const_cast<T*>(&object))); list->RemoveItems(Delegate<R(BRICKS_DELEGATE_TYPES)>(static_cast<Internal::BaseDelegate<R(BRICKS_DELEGATE_TYPES)>&>(method))); return self; }
 
 		operator bool() const { return list->GetCount(); }
 

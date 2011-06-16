@@ -1,6 +1,5 @@
 Delegates and Events
- - Add MethodFunction to test.
- - Make MethodFunction easier to use, perhaps provide a bind(this, funcname) wrapper.
+ - Needs a boost::bind now for arbitrary arguments.
 
 Filesystem
  - Delete Recursive
