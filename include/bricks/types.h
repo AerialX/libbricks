@@ -7,6 +7,8 @@
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>
+#undef __STDC_CONSTANT_MACROS
+#undef __STDC_LIMIT_MACROS
 
 typedef int8_t		s8;
 typedef uint8_t		u8;
@@ -54,6 +56,27 @@ typedef volatile double		vf64;
 #ifdef __APPLE__
 #define BRICKS_FEATURE_APPLE
 #endif
+#ifdef __MINGW32__
+#define BRICKS_FEATURE_MINGW
+#endif
+#ifdef __linux__
+#define BRICKS_FEATURE_LINUX
+#endif
+#ifdef __BSD__
+#define BRICKS_FEATURE_BSD
+#endif
+
+#if defined(BRICKS_FEATURE_LINUX) || defined(BRICKS_FEATURE_BSD)
+#define BRICKS_FEATURE_LINUXBSD
+#endif
+
+#if defined(BRICKS_FEATURE_GCC) && !defined(BRICKS_FEATURE_MINGW)
+#define BRICKS_FEATURE_UNIX
+#endif
+
+#if defined(BRICKS_FEATURE_MINGW) || defined(BRICKS_FEATURE_VCPP)
+#define BRICKS_FEATURE_WINDOWS
+#endif
 
 /* Attributes */
 #ifdef BRICKS_FEATURE_GCC
@@ -85,4 +108,44 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #define BRICKS_FEATURE_LOG_HEAVY BRICKS_FEATURE_LOG
 #else
 #define BRICKS_FEATURE_LOG_HEAVY(...)
+#endif
+
+/* Missing Features */
+#ifdef BRICKS_FEATURE_MINGW
+#define S_IRWXG	00070
+#define S_IRGRP	00040
+#define S_IWGRP	00020
+#define S_IXGRP	00100
+#define S_IRWXO	00007
+#define S_IROTH	00004
+#define S_IWOTH	00002
+#define S_IXOTH	00001
+#define S_ISVTX	0001000
+#define S_ISUID	0004000
+#define S_ISGID	0002000
+
+#define S_ISLNK(m)	0
+#define S_ISSOCK(m)	0
+
+#define DT_UNKNOWN	0
+#define DT_FIFO		1
+#define DT_CHR		2
+#define DT_DIR		4
+#define DT_BLK		6
+#define DT_REG		8
+#define DT_LNK		10
+#define DT_SOCK		12
+#define DT_WHT		14
+
+typedef short nlink_t;
+typedef short uid_t;
+typedef short gid_t;
+typedef short blksize_t;
+typedef short blkcnt_t;
+
+#include <errno.h>
+static inline int fsync(int fd) { errno = ENOSYS; return -1; }
+
+#undef _GNU_SOURCE
+
 #endif

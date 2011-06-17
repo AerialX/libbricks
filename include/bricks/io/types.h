@@ -1,7 +1,9 @@
 #pragma once
 
+#include <bricks/types.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 namespace Bricks { namespace IO {
 	namespace FileMode { enum Enum {

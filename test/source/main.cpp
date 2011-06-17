@@ -64,7 +64,9 @@ static void testFilesystem()
 	Pointer<FilePath> path = autoalloc FilePath("lol");
 	*path = path->Combine("sup");
 	*path = path->RootPath("/test");
+#ifndef BRICKS_FEATURE_WINDOWS
 	assert(!path->Compare("/test/lol/sup"));
+#endif
 	Console::Default.Out->WriteLine(String::Format("Result: %s, filename is %s", path->CString(), path->GetFileName().CString()));
 	Console::Default.Out->WriteLine(String::Format("Directory is: %s", path->GetDirectory().CString()));
 

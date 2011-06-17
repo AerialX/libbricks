@@ -7,9 +7,12 @@
 #include <errno.h>
 #include <limits.h>
 
-#ifdef __APPLE__
+#ifdef BRICKS_FEATURE_APPLE
 #define off64_t off_t
 #define lseek64 lseek
+#define ftruncate64 ftruncate
+#endif
+#ifdef BRICKS_FEATURE_MINGW
 #define ftruncate64 ftruncate
 #endif
 

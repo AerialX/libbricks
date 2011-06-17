@@ -104,13 +104,13 @@ namespace Bricks {
 			
 			size_t FirstIndexOf(const String& string, size_t off = 0) const {
 				size_t count = string.GetSize();
-				size_t firstindex = count;
+				size_t firstindex = GetSize();
 				for (size_t i = 0; i < count; i++) {
 					size_t index = FirstIndexOf(string[i], off);
 					if (index != npos && index < firstindex)
 						firstindex = index;
 				}
-				return firstindex == count ? npos : firstindex;
+				return firstindex == GetSize() ? npos : firstindex;
 			}
 			size_t LastIndexOf(const String& string, size_t off = 0) const {
 				size_t count = string.GetSize();

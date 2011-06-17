@@ -17,10 +17,12 @@ namespace Bricks {
 		String& ret = autoalloc String(temp);
 		free(temp);
 #else
-		size_t size = strlen(format) * 4;
-		char* temp = new char[size];
-		vsnprintf(temp, size, format, args);
-		temp[size - 1] = '\0';
+		int size = vsnprintf(NULL, 0, format, args);
+		if (size < 0)
+			throw NotSupportedException();
+		char* temp = new char[size + 1];
+		vsnprintf(temp, size + 1, format, args);
+		temp[size] = '\0';
 		String& ret = autoalloc String(temp);
 		delete[] temp;
 #endif

@@ -145,11 +145,16 @@ namespace Bricks { namespace IO {
 		gid_t GetGroupID() const { return st.st_gid; }
 		dev_t GetSpecialDeviceID() const { return st.st_rdev; }
 		off_t GetSize() const { return st.st_size; }
-		blksize_t GetBlockSize() const { return st.st_blksize; }
-		blkcnt_t GetBlockCount() const { return st.st_blocks; }
 		time_t GetAccessTime() const { return st.st_atime; }
 		time_t GetModifiedTime() const { return st.st_mtime; }
 		time_t GetChangeTime() const { return st.st_ctime; }
+#ifdef BRICKS_FEATURE_LINUXBSD
+		blksize_t GetBlockSize() const { return st.st_blksize; }
+		blkcnt_t GetBlockCount() const { return st.st_blocks; }
+#else
+		blksize_t GetBlockSize() const { throw NotSupportedException(); }
+		blkcnt_t GetBlockCount() const { throw NotSupportedException(); }
+#endif
 		FileType::Enum GetFileType() const { return FileStatType(st.st_mode); }
 		const FilePath& GetFilePath() const { return *path; }
 
@@ -176,7 +181,11 @@ namespace Bricks { namespace IO {
 		}
 
 		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
+#ifdef BRICKS_FEATURE_LINUXBSD
 			FileNode(GetDirType(dir.d_type), dir.d_name),
+#else
+			FileNode(GetDirType(DT_UNKNOWN), dir.d_name),
+#endif
 			filesystem(filesystem ? filesystem.GetValue() : Filesystem::GetDefault())
 		{
 			size = -1;
