@@ -31,14 +31,8 @@
 #define BRICKS_DELEGATE_TYPES_NAMES BRICKS_DELEGATE_ENUM2(BRICKS_DELEGATE_COUNT, T, arg)
 #define BRICKS_DELEGATE_ARGS BRICKS_DELEGATE_ENUM(BRICKS_DELEGATE_COUNT, arg)
 
-#ifdef BRICKS_CONFIG_CPP0X
-#include <functional>
-#endif
-
 namespace Bricks {
 	template<typename F> class Delegate;
-	template<typename F, typename T> class FunctorDelegate;
-	template<typename C, typename F> class MethodFunction;
 	template<typename F> class Event;
 
 	namespace Internal {

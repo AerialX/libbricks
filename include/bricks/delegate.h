@@ -2,7 +2,7 @@
 
 #include "bricks.h"
 #include "bricks/collections.h"
-#include "bricks/collections/stack.h"
+#include "bricks/collections/array.h"
 
 #define BRICKS_HEADER_DELEGATE
 
