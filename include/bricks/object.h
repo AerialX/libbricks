@@ -110,7 +110,7 @@ namespace Bricks {
 		Pointer(T* t) : value(t) { }
 		Pointer(T& t) : value(&t) { }
 		template<typename T2> Pointer(const Pointer< T2 >& t) : value(t.GetValue()) { }
-		Pointer(const T& t);
+		template<typename U> Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL);
 
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
@@ -142,7 +142,7 @@ namespace Bricks {
 		AutoPointer(const Pointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(T* t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		AutoPointer(const T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
+		template<typename U> AutoPointer(const U& t, bool retain = true, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL) : Pointer< T >(t) { if (retain) Retain(); }
 		template<typename T2> AutoPointer(const Pointer< T2 >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		virtual ~AutoPointer() { Release(); }
 
@@ -150,7 +150,7 @@ namespace Bricks {
 		AutoPointer< T >& operator=(const AutoPointer< T >& t) { Swap(t); return self; }
 		AutoPointer< T >& operator=(T* t) { Swap(t); return self; }
 		AutoPointer< T >& operator=(T& t) { Swap(t); return self; }
-		AutoPointer< T >& operator=(const T& t) { Swap(t); return self; }
+		template<typename U> typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value, AutoPointer< T >&>::Type operator=(const U& t) { Swap(t); return self; }
 		template<typename T2> AutoPointer< T >& operator=(const Pointer< T2 >& t) { Swap(t); return self; }
 
 		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
@@ -208,9 +208,7 @@ namespace Bricks {
 			throw OutOfMemoryException();
 		return data;
 	}
-	template<typename T>
-	inline Pointer<T>::Pointer(const T& t)
-	{
+	template<typename T> template<typename U> inline Pointer< T >::Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy) : value(&const_cast<U&>(t)) {
 		throw InvalidArgumentException();
 	}
 }
