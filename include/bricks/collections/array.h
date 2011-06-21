@@ -40,7 +40,7 @@ namespace Bricks { namespace Collections {
 
 		friend class ArrayIterator< T, V >;
 
-		iterator IteratorOfItem(const T value) {
+		iterator IteratorOfItem(const T& value) {
 			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
 				if (!comparison->Compare(*iter, value))
 					return iter;
@@ -48,7 +48,7 @@ namespace Bricks { namespace Collections {
 			return vector.end();
 		}
 		
-		const_iterator IteratorOfItem(const T value) const {
+		const_iterator IteratorOfItem(const T& value) const {
 			for (const_iterator iter = vector.begin(); iter != vector.end(); iter++) {
 				if (!comparison->Compare(*iter, value))
 					return iter;
