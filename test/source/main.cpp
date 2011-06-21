@@ -16,7 +16,7 @@ static void testFilesystem()
 {
 	// Can't rely on a single ObjectPool in main or nothing will ever be released!
 	ObjectPool pool;
-	
+
 	Console::Default.Out->WriteLine(" ==== Filesystem Tests ==== ");
 
 	try {
@@ -74,8 +74,6 @@ static void testFilesystem()
 	Console::Default.Out->WriteLine("Listing contents of current directory...");
 	Pointer<FileNode> node = autoalloc FilesystemNode("."); // current dir
 #ifdef BRICKS_CONFIG_CPP0X
-	// Technically this will work even without libbricks configured for C++0x because the lambda decays to a function pointer,
-	// but only when using a compiler that supports C++0x. And only because the capture list is empty.
 	node->Iterate([](FileNode& subnode) -> bool {
 		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
 		return true; // returning false is like break;ing out of the loop.
