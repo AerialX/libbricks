@@ -19,7 +19,6 @@ namespace Bricks { namespace IO {
 
 		u64 GetOffset() { return offset; }
 		Stream& GetStream() { return *stream; }
-		operator Stream&() { return *stream; }
 
 		u64 GetLength() const { return length; }
 		void SetLength(u64 length) { this->length = length; }

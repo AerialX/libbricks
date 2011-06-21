@@ -169,15 +169,15 @@ namespace Bricks {
 		
 		CopyPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		CopyPointer< T >& operator=(const CopyPointer< T >& t) { Swap(t); return self; }
-		CopyPointer< T >& operator=(const T* t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t)); return self; }
-		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(&t)); return self; }
+		CopyPointer< T >& operator=(const T* t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t), false); return self; }
+		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(&t), false); return self; }
 		template<typename T2> CopyPointer< T >& operator=(const Pointer< T2 >& t) { Swap(t); return self; }
 
-		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue())); }
+		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue()), false); }
 #undef BRICKS_COPY_POINTER
 	};
 
-#define BRICKS_COPY_CONSTRUCTOR(T) T& Copy() const { return alloc T(self); }
+#define BRICKS_COPY_CONSTRUCTOR(T) virtual T& Copy() const { return alloc T(self); }
 }
 
 #include "bricks/objectpool.h"

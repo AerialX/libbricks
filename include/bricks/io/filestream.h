@@ -18,7 +18,7 @@ namespace Bricks { namespace IO {
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite,
 			Pointer<Filesystem> filesystem = NULL
-		) : System(filesystem ?: Pointer<Filesystem>(Filesystem::GetDefault())), Handle(System->Open(path, createmode, mode)) { }
+		) : System(filesystem ?: Filesystem::GetDefault()), Handle(System->Open(path, createmode, mode)) { }
 		FileStream(FileHandle handle, Pointer<Filesystem> filesystem = NULL) : System(filesystem ?: Pointer<Filesystem>(Filesystem::GetDefault())), Handle(handle) { }
 		size_t Read(void* buffer, size_t size) { return System->Read(Handle, buffer, size); }
 		size_t Write(const void* buffer, size_t size) { return System->Write(Handle, buffer, size); }

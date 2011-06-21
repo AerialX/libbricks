@@ -186,13 +186,13 @@ namespace Bricks { namespace IO {
 #else
 			FileNode(GetDirType(DT_UNKNOWN), dir.d_name),
 #endif
-			filesystem(filesystem ? filesystem.GetValue() : Filesystem::GetDefault())
+			filesystem(filesystem ?: Filesystem::GetDefault())
 		{
 			size = -1;
 		}
 
 		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
-			filesystem(filesystem ? filesystem : Filesystem::GetDefault())
+			filesystem(filesystem ?: Filesystem::GetDefault())
 		{
 			self = this->filesystem->Stat(path);
 		}

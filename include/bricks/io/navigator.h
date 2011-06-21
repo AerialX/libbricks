@@ -26,6 +26,8 @@ namespace Bricks { namespace IO {
 	public:
 		StreamNavigator(Stream& stream, Endian::Enum endianness) : stream(stream), endianness(endianness) { }
 		
+		operator Stream&() { return *stream; }
+
 		virtual void Pad(u64 size) = 0;
 		void PadTo(u64 position) { if (position < stream->GetPosition()) throw InvalidArgumentException("position"); Pad(position - stream->GetPosition()); }
 		void PadToMultiple(int round) { PadTo(BRICKS_FEATURE_ROUND_UP(stream->GetPosition(), round)); }
