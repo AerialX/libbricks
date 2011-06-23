@@ -8,7 +8,7 @@ namespace Bricks { namespace Audio {
 		#include <libavformat/avformat.h>
 	}
 
-	class FFmpegDecoder : public AudioCodec<short>
+	class FFmpegDecoder : public AudioCodec<s16>
 	{
 	protected:
 		size_t streamIndex;
@@ -21,14 +21,14 @@ namespace Bricks { namespace Audio {
 		void* cache;
 		size_t cacheLength;
 
-		int ReadCache(AudioBuffer<short>& buffer, int count, int offset);
+		int ReadCache(AudioBuffer<s16>& buffer, int count, int offset);
 
 	public:
 		FFmpegDecoder(const String& filename);
 		~FFmpegDecoder();
 
 		void Seek(s64 sample);
-		int Read(AudioBuffer<short>& buffer, int count, int offset = 0);
+		int Read(AudioBuffer<s16>& buffer, int count, int offset = 0);
 	};
 } }
 

@@ -1,3 +1,4 @@
+#define BRICKS_FEATURE_FFMPEG
 #ifdef BRICKS_FEATURE_FFMPEG
 
 #ifdef BRICKS_FEATURE_APPLE
@@ -66,16 +67,16 @@ void FFmpegDecoder::Seek(s64 sample)
 	AudioCodec::Seek(sample);
 }
 
-int FFmpegDecoder::ReadCache(AudioBuffer<short>& buffer, int count, int offset)
+int FFmpegDecoder::ReadCache(AudioBuffer<s16>& buffer, int count, int offset)
 {
-	count = BRICKS_FEATURE_MIN((size_t)count, cacheLength / sizeof(AudioBuffer<short>::AudioSample) / channels);
-	buffer.DeinterlaceFrom((AudioBuffer<short>::AudioSample*)cache, count, offset);
-	cacheLength -= sizeof(AudioBuffer<short>::AudioSample) * channels * count;
-	memmove(cache, (u8*)cache + sizeof(AudioBuffer<short>::AudioSample) * channels * count, cacheLength);
+	count = BRICKS_FEATURE_MIN((size_t)count, cacheLength / sizeof(AudioBuffer<s16>::AudioSample) / channels);
+	buffer.DeinterlaceFrom((AudioBuffer<s16>::AudioSample*)cache, count, offset);
+	cacheLength -= sizeof(AudioBuffer<s16>::AudioSample) * channels * count;
+	memmove(cache, (u8*)cache + sizeof(AudioBuffer<s16>::AudioSample) * channels * count, cacheLength);
 	return count;
 }
 
-int FFmpegDecoder::Read(AudioBuffer<short>& buffer, int count, int boffset)
+int FFmpegDecoder::Read(AudioBuffer<s16>& buffer, int count, int boffset)
 {
 	int offset = ReadCache(buffer, count, boffset);
 	count -= offset;
@@ -87,7 +88,7 @@ int FFmpegDecoder::Read(AudioBuffer<short>& buffer, int count, int boffset)
 
 		while (packet.size > 0) {
 			int datasize = bufferSize;
-			int used = avcodec_decode_audio3(stream->codec, (short*)this->buffer, &datasize, &packet);
+			int used = avcodec_decode_audio3(stream->codec, (s16*)this->buffer, &datasize, &packet);
 			if (used < 0)
 				break;
 			packet.size -= used;
@@ -99,8 +100,8 @@ int FFmpegDecoder::Read(AudioBuffer<short>& buffer, int count, int boffset)
 			int read = BRICKS_FEATURE_MAX(BRICKS_FEATURE_MIN(datasize, count * 2 * channels), 0);
 			int left = datasize - read;
 			if (read > 0) {
-				int samples = read / sizeof(AudioBuffer<short>::AudioSample) / channels;
-				buffer.DeinterlaceFrom((AudioBuffer<short>::AudioSample*)this->buffer, samples, boffset + offset);
+				int samples = read / sizeof(AudioBuffer<s16>::AudioSample) / channels;
+				buffer.DeinterlaceFrom((AudioBuffer<s16>::AudioSample*)this->buffer, samples, boffset + offset);
 				offset += samples;
 				count -= samples;
 			}
