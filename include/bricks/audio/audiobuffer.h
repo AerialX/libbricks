@@ -26,6 +26,25 @@ namespace Bricks { namespace Audio {
 			delete[] buffer;
 		}
 
+		AudioBuffer(const AudioBuffer<T>& source) : channels(source.GetChannels()), size(source.GetSize()) {
+			buffer = new AudioSample*[channels];
+			for (u32 i = 0; i < channels; i++) {
+				buffer[i] = new AudioSample[size];
+				memcpy(buffer[i], source[i], size * sizeof(AudioSample));
+			}
+		}
+
+		AudioBuffer<T>& operator=(const AudioBuffer<T>& source) {
+			this->~AudioBuffer();
+			channels = source.GetChannels();
+			size = source.GetSize();
+			buffer = new AudioSample*[channels];
+			for (u32 i = 0; i < channels; i++) {
+				buffer[i] = new AudioSample[size];
+				memcpy(buffer[i], source[i], size * sizeof(AudioSample));
+			}
+		}
+
 		AudioSample* operator[](u32 index) { return buffer[index]; }
 		const AudioSample* operator[](u32 index) const { return buffer[index]; }
 
