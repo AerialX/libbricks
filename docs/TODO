@@ -17,3 +17,8 @@ Threading
 Misc
  - Reduce dynamic_cast's where possible
     - Shot myself in the foot there, forced Object to always virtual inheritence.
+
+Audio
+ - Needs a lot of work.
+ - AudioCodec<T> can derive and implement Bricks::IO::Stream as well to expose a binary stream.
+ - AudioCodec<Tdest, Tsrc> wrapper around codecs for sample conversion.

@@ -2,7 +2,7 @@ TARGET		:=	libbricks.so
 ATARGET		:=	libbricks.a
 BUILD		:=	build
 DATA		:=	data
-SOURCES		:=	source source/io source/threading
+SOURCES		:=	source source/io source/threading source/audio
 INCLUDES	:=	include
 
 DEFINES		:= -g -O3 -Wall -fPIC -D_GNU_SOURCE #-std=gnu++0x
