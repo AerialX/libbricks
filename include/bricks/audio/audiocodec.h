@@ -94,4 +94,33 @@ namespace Bricks { namespace Audio {
 			Subcodec<T>::Write(newbuffer, count, offset);
 		}
 	};
+
+	template<typename Tdest, typename Tsrc>
+	class ConversionCodec : public AudioCodec<Tdest>
+	{
+	protected:
+		AutoPointer< AudioCodec<Tsrc> > codec;
+
+	public:
+		ConversionCodec(AudioCodec<Tsrc>& codec) : codec(codec) { }
+
+		u32 GetChannels() const { return codec->GetChannels(); }
+		u32 GetSampleRate() const { return codec->GetSampleRate(); }
+		u32 GetBitRate() const { return codec->GetBitRate(); }
+		s64 GetSamples() const { return codec->GetSamples(); }
+		s64 GetPosition() const { return codec->GetPosition(); }
+		void Seek(s64 sample) { codec->Seek(sample); }
+
+		void Write(const AudioBuffer<Tdest>& buffer, u32 count, u32 offset = 0) {
+			AudioBuffer<Tsrc> source(buffer);
+			codec->Write(source, count, offset);
+		}
+
+		u32 Read(AudioBuffer<Tdest>& buffer, u32 count, u32 offset = 0) {
+			AudioBuffer<Tsrc> source(buffer.GetChannels(), buffer.GetSize());
+			u32 read = codec->Read(source, count, offset);
+			buffer = source;
+			return read;
+		}
+	};
 } }
