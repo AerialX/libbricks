@@ -272,14 +272,23 @@ namespace Bricks { namespace IO {
 
 	void PosixFilesystem::DeleteFile(const String& path)
 	{
-		unlink(path.CString());
+		if (unlink(path.CString()))
+			ThrowErrno();
 	}
 
 	void PosixFilesystem::DeleteDirectory(const String& path, bool recursive)
 	{
-		if (recursive)
-			throw NotImplementedException();
-		rmdir(path.CString());
+		if (recursive) {
+			FilesystemNode node(path);
+			foreach (FileNode& subnode, node) {
+				if (subnode.GetType() == FileType::Directory)
+					DeleteDirectory(subnode.GetFullName(), true);
+				else
+					DeleteFile(path);
+			}
+		}
+		if (rmdir(path.CString()))
+			ThrowErrno();
 	}
 	
 	Stream& FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
