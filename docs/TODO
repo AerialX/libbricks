@@ -17,6 +17,8 @@ Threading
 Misc
  - Reduce dynamic_cast's where possible
     - Shot myself in the foot there, forced Object to always virtual inheritence.
+ - Add a BRICKS_PRIVATE_COPY macro to prevent copy constructors / assignment operators from being accessible.
+    - And use it on a bunch of types like RawkCodec.
 
 Audio
  - Needs a lot of work.
