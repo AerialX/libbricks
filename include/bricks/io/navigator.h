@@ -53,6 +53,7 @@ namespace Bricks { namespace IO {
 		BRICKS_STREAM_READ(16);
 		BRICKS_STREAM_READ(32);
 		BRICKS_STREAM_READ(64);
+#undef BRICKS_STREAM_READ
 		u8 ReadByte() { u8 data; if (stream->Read(&data, sizeof(data)) != sizeof(data)) throw EndOfStreamException(); return data; }
 		void ReadBytes(void* data, size_t size) { if (stream->Read(data, size) != size) throw EndOfStreamException(); }
 
@@ -100,6 +101,7 @@ namespace Bricks { namespace IO {
 		BRICKS_STREAM_WRITE(16);
 		BRICKS_STREAM_WRITE(32);
 		BRICKS_STREAM_WRITE(64);
+#undef BRICKS_STREAM_WRITE
 		void WriteByte(u8 data) { if (stream->Write(&data, sizeof(data)) != sizeof(data)) throw StreamException(); }
 		void WriteBytes(const void* data, size_t size) { if (stream->Write(data, size) != size) throw StreamException(); }
 		void WriteString(const String& str, size_t size = String::npos) {
