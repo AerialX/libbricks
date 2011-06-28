@@ -50,6 +50,7 @@ static void testFilesystem()
 	u32 num = reader->ReadInt32(Endian::BigEndian);
 	assert(num == 0x1337BAAD);
 	Pointer<String> str = reader->ReadString();
+	assert(*str == "ohai");
 	u16 num2 = reader->ReadInt16();
 	assert(num2 == 0xF33D);
 	//assert(reader->IsEndOfFile()); // Not implemented yet, fail.
