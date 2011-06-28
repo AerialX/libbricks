@@ -54,8 +54,7 @@ namespace Bricks { namespace Audio {
 
 		u32 GetChannels() const { return channels; }
 		u32 GetSize() const { return size; }
-		AudioSample** GetBuffer() { return buffer; }
-		const AudioSample** GetBuffer() const { return buffer; }
+		AudioSample** GetBuffer() const { return buffer; }
 
 		int CopyTo(AudioBuffer<AudioSample>& dest, u32 sourcechannel = 0, u32 sourceindex = 0, u32 destchannel = 0, u32 destindex = 0, s32 count = -1) const {
 			if (count < 0)
