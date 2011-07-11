@@ -28,7 +28,7 @@ Naming Conventions
 Non-Pointer Conventions
 =======================
 
- - Objects on stack / member variables are fine. In fact, ObjectPools are often used on the stack RIAA style.
+ - Objects on stack / member variables are fine. In fact, ObjectPools are often used on the stack RAII style.
  - Be careful not to overrelease them.
  - However, use sparingly. Most classes shouldn't be used this way, consider AutoPointer<>s (or references, if you're up to manual release) instead.
     - AutoPointer<> helps because it makes your class copyable. Always use references/Pointers if using a user value, since anything may be subclassed.
