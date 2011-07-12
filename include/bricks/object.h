@@ -15,6 +15,9 @@
 #define globalalloc *new(Bricks::Internal::Global)
 #define alloc *new
 
+#define BRICKS_COPY_CONSTRUCTOR(T) public: virtual T& Copy() const { return alloc T(self); }
+#define BRICKS_COPY_HIDE(T) private: T(const T&); T& operator=(const T&);
+
 namespace Bricks {
 	class Class;
 	class String;
@@ -31,7 +34,7 @@ namespace Bricks {
 		private:
 			u32 referenceCount;
 			ReferenceCounter() : referenceCount(1) { }
-			ReferenceCounter(const ReferenceCounter& count) : referenceCount(count.referenceCount) { }
+			ReferenceCounter(const ReferenceCounter& count) : referenceCount(1) { }
 			ReferenceCounter& operator =(const ReferenceCounter& count) { return self; }
 			u32 operator ++(int) { return referenceCount++; }
 			u32 operator ++() { return ++referenceCount; }
@@ -109,10 +112,10 @@ namespace Bricks {
 		Pointer(const Pointer< T >& t) : value(t.value) { }
 		Pointer(T* t) : value(t) { }
 		Pointer(T& t) : value(&t) { }
-		template<typename T2> Pointer(const Pointer< T2 >& t) : value(t.GetValue()) { }
+		template<typename U> Pointer(const Pointer< U >& t) : value(t.GetValue()) { }
 		template<typename U> Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL);
 
-		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
+		Pointer< T >& operator=(Pointer< T >& t) { Swap(t); return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
 		T* operator->() const { return &*self; }
 		T& operator*() const;
@@ -176,8 +179,6 @@ namespace Bricks {
 		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue()), false); }
 #undef BRICKS_COPY_POINTER
 	};
-
-#define BRICKS_COPY_CONSTRUCTOR(T) virtual T& Copy() const { return alloc T(self); }
 }
 
 #include "bricks/objectpool.h"
