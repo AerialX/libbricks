@@ -31,6 +31,12 @@ namespace Bricks {
 		const String& GetArgument() const { return *Argument; }
 	};
 
+	class InvalidOperationException : public Exception
+	{
+	public:
+		InvalidOperationException(const String& message = String::Empty) : Exception(message) { }
+	};
+
 	class NotImplementedException : public Exception
 	{
 	public:
