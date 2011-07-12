@@ -45,4 +45,3 @@ Non-Pointer Conventions
 Value Types
 -----------
  - As mentioned above, some types are meant to be used as rvalues, and all over as value types.
- - These should be considered native types that 
