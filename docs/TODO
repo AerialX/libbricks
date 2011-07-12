@@ -14,13 +14,16 @@ Threading
  - TLS doesn't destruct thread data, add a static Thread::ThreadDestroyed event and such.
  - AtomicPointer<> class to wrap access to a class in mutex locks.
 
+Audio
+ - Needs a lot of work.
+ - AudioCodec<T> can derive and implement Bricks::IO::Stream as well to expose a binary stream.
+ - AudioCodec<Tdest, Tsrc> wrapper around codecs for sample conversion.
+
 Misc
  - Reduce dynamic_cast's where possible
     - Shot myself in the foot there, forced Object to always virtual inheritence.
  - Add a BRICKS_PRIVATE_COPY macro to prevent copy constructors / assignment operators from being accessible.
     - And use it on a bunch of types like RawkCodec.
-
-Audio
- - Needs a lot of work.
- - AudioCodec<T> can derive and implement Bricks::IO::Stream as well to expose a binary stream.
- - AudioCodec<Tdest, Tsrc> wrapper around codecs for sample conversion.
+    - And make a NoCopy class to inherit from alternatively.
+ - Start separating namespaces into their own libraries (Bricks::Audio carries too much bulk)
+ - Maybe transition back to the original templated Alloc<> and AutoAlloc<> rather than use the hacky alloc/autoalloc keywords. Probably should.
