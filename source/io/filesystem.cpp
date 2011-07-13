@@ -12,9 +12,10 @@
 #define lseek64 lseek
 #define ftruncate64 ftruncate
 #endif
-#ifdef BRICKS_FEATURE_MINGW
+#if defined(BRICKS_FEATURE_MINGW) || defined(BRICKS_FEATURE_ANDROID)
 #define ftruncate64 ftruncate
 #endif
+
 
 namespace Bricks { namespace IO {
 	const String FilePath::DirectorySeparators = String("/\\");
@@ -219,15 +220,23 @@ namespace Bricks { namespace IO {
 	
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
 	{
+#ifdef BRICKS_FEATURE_ANDROID
+		throw NotSupportedException();
+#else
 		long ret = telldir((DIR*)fd);
 		if (ret < 0)
 			ThrowErrno();
 		return ret;
+#endif
 	}
 
 	void PosixFilesystem::SeekDirectory(FileHandle fd, size_t offset)
 	{
+#ifdef BRICKS_FEATURE_ANDROID
+		throw NotSupportedException();
+#else
 		seekdir((DIR*)fd, offset);
+#endif
 	}
 
 	void PosixFilesystem::CloseDirectory(FileHandle fd)
