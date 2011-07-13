@@ -4,11 +4,13 @@
 #error Use bricks.h
 #endif
 
+#define BRICKS_SFINAE_TRUE(x) (sizeof(x) == sizeof(Bricks::SFINAE::True))
+
 namespace Bricks {
 	namespace SFINAE {
 		template<typename T> T* MakePointer();
-		typedef u8 Yes;
-		typedef u16 No;
+		typedef u8 True;
+		typedef u16 False;
 
 		template<bool, typename T = void> struct EnableIf { };
 		template<typename T> struct EnableIf<true, T> { typedef T Type; };
@@ -18,12 +20,12 @@ namespace Bricks {
 		template<typename T> struct IsConst<const T&> { static const bool Value = true; };
 
 		template<typename T, typename U> struct IsSameType {
-			static Yes ConditionT(U*);
-			static No ConditionT(...);
-			static Yes ConditionU(T*);
-			static No ConditionU(...);
+			static True ConditionT(U*);
+			static False ConditionT(...);
+			static True ConditionU(T*);
+			static False ConditionU(...);
 
-			static const bool Value = sizeof(ConditionU(MakePointer<U>())) == sizeof(Yes) && sizeof(ConditionT(MakePointer<T>())) == sizeof(Yes);
+			static const bool Value = BRICKS_SFINAE_TRUE(ConditionU(MakePointer<U>())) && BRICKS_SFINAE_TRUE(ConditionT(MakePointer<T>()));
 		};
 
 		template<typename T> struct IsIntegerNumber { static const bool Value = false; };
