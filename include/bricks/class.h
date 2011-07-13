@@ -4,6 +4,7 @@
 #error Use bricks.h
 #endif
 
+#ifdef BRICKS_CONFIG_RTTI
 namespace Bricks {
 	class Class : public virtual Object
 	{
@@ -17,3 +18,4 @@ namespace Bricks {
 		bool operator==(const Class& rhs) { return type == rhs.type; }
 	};
 }
+#endif
