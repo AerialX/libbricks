@@ -115,7 +115,7 @@ namespace Bricks {
 		template<typename U> Pointer(const Pointer< U >& t) : value(t.GetValue()) { }
 		template<typename U> Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL);
 
-		Pointer< T >& operator=(Pointer< T >& t) { Swap(t); return self; }
+		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		Pointer< T >& operator=(T& t) { value = &t; return self; }
 		T* operator->() const { return &*self; }
 		T& operator*() const;
@@ -146,7 +146,7 @@ namespace Bricks {
 		AutoPointer(T* t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		template<typename U> AutoPointer(const U& t, bool retain = true, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL) : Pointer< T >(t) { if (retain) Retain(); }
-		template<typename T2> AutoPointer(const Pointer< T2 >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
+		template<typename U> AutoPointer(const Pointer< U >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
 		virtual ~AutoPointer() { Release(); }
 
 		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
@@ -154,7 +154,7 @@ namespace Bricks {
 		AutoPointer< T >& operator=(T* t) { Swap(t); return self; }
 		AutoPointer< T >& operator=(T& t) { Swap(t); return self; }
 		template<typename U> typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value, AutoPointer< T >&>::Type operator=(const U& t) { Swap(t); return self; }
-		template<typename T2> AutoPointer< T >& operator=(const Pointer< T2 >& t) { Swap(t); return self; }
+		template<typename U> AutoPointer< T >& operator=(const Pointer< U >& t) { Swap(t); return self; }
 
 		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
 	};
@@ -168,13 +168,13 @@ namespace Bricks {
 		CopyPointer(const Pointer< T >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(t.GetValue()), false) { }
 		CopyPointer(const T* t) : AutoPointer< T >(BRICKS_COPY_POINTER(t), false) { }
 		CopyPointer(const T& t) : AutoPointer< T >(BRICKS_COPY_POINTER(&t), false) { }
-		template<typename T2> CopyPointer(const Pointer< T2 >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(t.GetValue()), false) { }
+		template<typename U> CopyPointer(const Pointer< U >& t) : AutoPointer< T >(BRICKS_COPY_POINTER(t.GetValue()), false) { }
 		
 		CopyPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return self; }
 		CopyPointer< T >& operator=(const CopyPointer< T >& t) { Swap(t); return self; }
 		CopyPointer< T >& operator=(const T* t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t), false); return self; }
 		CopyPointer< T >& operator=(const T& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(&t), false); return self; }
-		template<typename T2> CopyPointer< T >& operator=(const Pointer< T2 >& t) { Swap(t); return self; }
+		template<typename U> CopyPointer< T >& operator=(const Pointer< U >& t) { Swap(t); return self; }
 
 		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue()), false); }
 #undef BRICKS_COPY_POINTER
