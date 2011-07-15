@@ -4,7 +4,7 @@
 #include "bricks/collections.h"
 #include "bricks/collections/array.h"
 
-#define BRICKS_ARGLIST_HEADER "bricks/delegate_template.h"
+#define BRICKS_ARGLIST_HEADER "bricks/internal/delegate.h"
 
 #include "bricks/internal/arglist.h"
 
