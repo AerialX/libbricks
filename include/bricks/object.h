@@ -174,10 +174,7 @@ namespace Bricks {
 	};
 }
 
-#define BRICKS_ARGLIST_HEADER "bricks/alloc.h"
-#include "bricks/internal/arglist.h"
-#undef BRICKS_ARGLIST_HEADER
-
+#include "bricks/alloc.h"
 #include "bricks/objectpool.h"
 #include "bricks/string.h"
 #include "bricks/class.h"
