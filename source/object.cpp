@@ -12,29 +12,13 @@ namespace Bricks {
 #ifdef BRICKS_CONFIG_RTTI
 	Class& Object::GetClass() const
 	{
-		return autoalloc Class(self);
+		return AutoAlloc<Class>(*this);
 	}
 #endif
 
 	typedef Stack< Pointer<ObjectPool> > PoolStack;
 	static ThreadLocalStorage<PoolStack> pools;
-	static PoolStack& GetThreadPools() { if (!pools.HasValue()) pools.SetValue(AutoPointer<PoolStack>(alloc PoolStack(), false)); return pools.GetValue(); }
-
-#ifdef BRICKS_FEATURE_TLS
-	// TODO: Use ThreadLocalStorage<Number>
-	static BRICKS_FEATURE_TLS bool autorelease = false;
-	bool Object::InternalAutorelease()
-	{
-		bool ret = autorelease;
-		InternalAutorelease(false);
-		return ret;
-	}
-
-	void Object::InternalAutorelease(bool value)
-	{
-		autorelease = value;
-	}
-#endif
+	static PoolStack& GetThreadPools() { if (!pools.HasValue()) pools.SetValue(TempAlloc<PoolStack>()); return pools.GetValue(); }
 
 #ifdef BRICKS_CONFIG_LOGGING_MEMLEAK
 	typedef Array< Pointer<Object> > MemleakArray;
@@ -58,7 +42,7 @@ namespace Bricks {
 		if (!memleaks) {
 			bool status = reportobject;
 			memleaksAllocLock = true;
-			memleaks = alloc MemleakArray();
+			memleaks = Alloc<MemleakArray>();
 			memleaksAllocLock = false;
 			reportobject = status;
 		}
@@ -87,18 +71,18 @@ namespace Bricks {
 
 		memleaksAllocLock = true;
 
-		ObjectPool& pool = alloc ObjectPool();
+		{
+			ObjectPool pool;
 
-		if (memleaks->GetCount())
-			BRICKS_FEATURE_LOG("MEMORY LEAKS");
+			if (memleaks->GetCount())
+				BRICKS_FEATURE_LOG("MEMORY LEAKS");
 
-		foreach (const Pointer<Object>& object, *memleaks) {
-			BRICKS_FEATURE_LOG("= %p [%d] %s", object.GetValue(), object->GetReferenceCount() - 1, object->GetDebugString().CString());
+			foreach (const Pointer<Object>& object, *memleaks) {
+				BRICKS_FEATURE_LOG("= %p [%d] %s", object.GetValue(), object->GetReferenceCount() - 1, object->GetDebugString().CString());
+			}
+
+			memleaks->Release();
 		}
-
-		memleaks->Release();
-
-		pool.Release();
 
 		memleaksAllocLock = false;
 	}
@@ -119,17 +103,16 @@ namespace Bricks {
 	}
 
 	ObjectPool::ObjectPool() :
-		objects(alloc Stack< AutoPointer<Object> >(NULL))
+		objects(TempAlloc<Stack< AutoPointer<Object> > >(NULL))
 	{
 		BRICKS_FEATURE_LOG("Installing Pool: %p", this);
-		GetThreadPools().Push(self);
+		GetThreadPools().Push(*this);
 	}
 
 	ObjectPool::~ObjectPool()
 	{
 		BRICKS_FEATURE_LOG("Draining Pool: %s", GetDebugString().CString());
-		GetThreadPools().RemoveItem(self);
-		objects.Release();
+		GetThreadPools().RemoveItem(*this);
 	}
 }
 

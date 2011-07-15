@@ -134,7 +134,7 @@ namespace Bricks { namespace IO {
 
 	public:
 		FileInfo(struct stat& st, const String& path, Pointer<Filesystem> filesystem) :
-			st(st), path(alloc FilePath(path), false), filesystem(filesystem)
+			st(st), path(TempAlloc<FilePath>(path)), filesystem(filesystem)
 		{ }
 		virtual ~FileInfo() { }
 
@@ -194,10 +194,10 @@ namespace Bricks { namespace IO {
 		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
 			filesystem(filesystem ?: Filesystem::GetDefault())
 		{
-			self = this->filesystem->Stat(path);
+			*this = this->filesystem->Stat(path);
 		}
 
-		Pointer<FileNode> GetParent() const { return autoalloc FilesystemNode(FilePath(GetFullName()).GetDirectory(), filesystem); }
+		Pointer<FileNode> GetParent() const { return AutoAlloc<FilesystemNode>(FilePath(GetFullName()).GetDirectory(), filesystem); }
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; throw NotSupportedException(); }
 		Stream& OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
 
@@ -223,5 +223,5 @@ namespace Bricks { namespace IO {
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	
-	inline Bricks::Collections::Iterator<FileNode>& FilesystemNode::GetIterator() const { return autoalloc FilesystemNodeIterator(self); }
+	inline Bricks::Collections::Iterator<FileNode>& FilesystemNode::GetIterator() const { return AutoAlloc<FilesystemNodeIterator>(*this); }
 } }

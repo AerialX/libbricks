@@ -17,7 +17,7 @@ namespace Bricks {
 		{
 		public:
 			virtual R operator ()(BRICKS_ARGLIST_TYPES) = 0;
-			R Call(BRICKS_ARGLIST_TYPES_NAMES) const { return const_cast<BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(self)(BRICKS_ARGLIST_ARGS); }
+			R Call(BRICKS_ARGLIST_TYPES_NAMES) const { return const_cast<BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(*this)(BRICKS_ARGLIST_ARGS); }
 		};
 
 		template<typename T, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class Functor<T, R(BRICKS_ARGLIST_TYPES)> : public BaseDelegate<R(BRICKS_ARGLIST_TYPES)>
@@ -92,9 +92,9 @@ namespace Bricks {
 	public:
 		Delegate() { }
 		Delegate(Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>& function) : function(function) { }
-		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(alloc Internal::Function<R(BRICKS_ARGLIST_TYPES)>(function), false) { }
-		template<typename T> Delegate(const T& function) : function(alloc Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)>(function), false) { }
-		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(alloc Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(&object), function), false) { }
+		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(TempAlloc<Internal::Function<R(BRICKS_ARGLIST_TYPES)> >(function)) { }
+		template<typename T> Delegate(const T& function) : function(TempAlloc<Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)> >(function)) { }
+		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(TempAlloc<Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)> >(static_cast<void*>(&object), function)) { }
 
 		BRICKS_COPY_CONSTRUCTOR(Delegate<R(BRICKS_ARGLIST_TYPES)>);
 
@@ -131,18 +131,15 @@ namespace Bricks {
 		AutoPointer<Collections::Collection< EventItem > > list;
 
 	public:
-		Event() : list(alloc Collections::Array< EventItem, EventItemStorage >(AutoPointer<EventItemComparison>(alloc EventItemComparison(), false)), false) { }
+		Event() : list(TempAlloc<Collections::Array< EventItem, EventItemStorage >(TempAlloc<EventItemComparison>())) { }
 
-		Event& operator +=(EventItem& delegate) { list->AddItem(delegate); return self; }
-		Event& operator +=(const EventItem& delegate) { list->AddItem(CopyPointer<EventItem>(delegate)); return self; }
-		Event& operator -=(const EventItem& delegate) { list->RemoveItems(delegate); return self; }
-		template<typename T> Event& operator -=(const T& object) { Internal::MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)> method(static_cast<void*>(const_cast<T*>(&object))); list->RemoveItems(Delegate<R(BRICKS_ARGLIST_TYPES)>(static_cast<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(method))); return self; }
+		Event& operator +=(EventItem& delegate) { list->AddItem(delegate); return *this; }
+		Event& operator +=(const EventItem& delegate) { list->AddItem(CopyPointer<EventItem>(delegate)); return *this; }
+		Event& operator -=(const EventItem& delegate) { list->RemoveItems(delegate); return *this; }
+		template<typename T> Event& operator -=(const T& object) { Internal::MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)> method(static_cast<void*>(const_cast<T*>(&object))); list->RemoveItems(Delegate<R(BRICKS_ARGLIST_TYPES)>(static_cast<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(method))); return *this; }
 
 		operator bool() const { return list->GetCount(); }
 
 		void operator ()(BRICKS_ARGLIST_TYPES_NAMES) { foreach (EventItem& item, *list) item(BRICKS_ARGLIST_ARGS); }
 	};
-
-	template<typename T BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
-	static AutoPointer<T> Autorelease(BRICKS_ARGLIST_TYPES_NAMES) { return AutoPointer<T>(alloc T(BRICKS_ARGLIST_ARGS), false); }
 }

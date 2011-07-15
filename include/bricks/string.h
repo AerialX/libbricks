@@ -57,17 +57,17 @@ namespace Bricks {
 			{
 				if (this != &string)
 					Construct(string.CString(), string.GetSize());
-				return self;
+				return *this;
 			}
 			String& operator =(const char* string)
 			{
 				Construct(string);
-				return self;
+				return *this;
 			}
 
 			String& operator +(const String& string) const
 			{
-				String& out = autoalloc String(self, 0, GetSize() + string.GetSize());
+				String& out = AutoAlloc<String>(*this, 0, GetSize() + string.GetSize());
 				strcat(out.buffer, string.buffer);
 				return out;
 			}
@@ -79,7 +79,7 @@ namespace Bricks {
 				strcat(newbuffer, string.buffer);
 				free(buffer);
 				buffer = newbuffer;
-				return self;
+				return *this;
 			}
 
 			const char* CString() const { return buffer; }
@@ -98,7 +98,7 @@ namespace Bricks {
 			int Compare(size_t off1, const char* string, size_t len) const { return strncmp(buffer + off1, string, len); }
 			bool operator ==(const String& string) const { return !Compare(string); }
 
-			String& Substring(size_t off = 0, size_t len = npos) const { return autoalloc String(buffer + (off == npos ? 0 : off), len); }
+			String& Substring(size_t off = 0, size_t len = npos) const { return AutoAlloc<String>(buffer + (off == npos ? 0 : off), len); }
 
 			size_t FirstIndexOf(char chr, size_t off = 0) const { return ConvertStrChr(strchr(CString() + off, chr)); }
 			size_t LastIndexOf(char chr, size_t off = 0) const { return ConvertStrChr(strrchr(CString() + off, chr)); }

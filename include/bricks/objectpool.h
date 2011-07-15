@@ -8,7 +8,7 @@ namespace Bricks {
 	class ObjectPool : public virtual Object
 	{
 	private:
-		Collections::Collection< AutoPointer<Object> >& objects;
+		AutoPointer<Collections::Collection< AutoPointer<Object> > > objects;
 
 	public:
 		static ObjectPool& GetCurrentPool();
@@ -21,8 +21,8 @@ namespace Bricks {
 
 	inline Object& Object::Autorelease()
 	{
-		ObjectPool::GetCurrentPool().AddObject(self);
+		ObjectPool::GetCurrentPool().AddObject(*this);
 		Release();
-		return self;
+		return *this;
 	}
 }

@@ -46,9 +46,9 @@ namespace Bricks { namespace Collections {
 		}
 		
 	public:
-		Stack(const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { }
-		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
-		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { AddItems(collection); }
+		Stack(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { }
+		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
+		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 
@@ -60,7 +60,7 @@ namespace Bricks { namespace Collections {
 		const T& Peek() const { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return autoalloc StackIterator< T, V >(const_cast<Stack< T, V >&>(self)); }
+		virtual Iterator< T >& GetIterator() const { return AutoAlloc<StackIterator< T, V > >(const_cast<Stack< T, V >&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return stack.size(); };

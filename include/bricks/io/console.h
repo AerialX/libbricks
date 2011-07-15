@@ -8,7 +8,7 @@ namespace Bricks { namespace IO {
 	class Console : public virtual Object
 	{
 	protected:
-		Console(Stream& in, Stream& out, Stream& error) : In(alloc StreamReader(in), false), Out(alloc StreamWriter(out), false), Error(alloc StreamWriter(error), false) { }
+		Console(Stream& in, Stream& out, Stream& error) : In(TempAlloc<StreamReader>(in)), Out(TempAlloc<StreamWriter>(out)), Error(TempAlloc<StreamWriter>(error)) { }
 
 	public:
 		static Console& Default;
@@ -24,9 +24,9 @@ namespace Bricks { namespace IO {
 	{
 	public:
 		StandardConsole() : Console(
-				*AutoPointer<FileStream>(alloc FileStream(STDIN_FILENO), false),
-				*AutoPointer<FileStream>(alloc FileStream(STDOUT_FILENO), false),
-				*AutoPointer<FileStream>(alloc FileStream(STDERR_FILENO), false)
+				TempAlloc<FileStream>(STDIN_FILENO),
+				TempAlloc<FileStream>(STDOUT_FILENO),
+				TempAlloc<FileStream>(STDERR_FILENO)
 		) { }
 	};
 } }

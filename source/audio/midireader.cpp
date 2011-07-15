@@ -20,13 +20,17 @@ static MidiTimeDivision& ReadDivision(StreamReader& reader)
 {
 	u16 division = reader.ReadInt16();
 	if (division & 0x8000)
-		return autoalloc MidiFramesPerSecondDivision((division & 0x7F00) >> 8, division & 0xFF);
-	return autoalloc MidiTicksPerBeatDivision(division & 0x7FFF);
+		return AutoAlloc<MidiFramesPerSecondDivision>((division & 0x7F00) >> 8, division & 0xFF);
+	return AutoAlloc<MidiTicksPerBeatDivision>(division & 0x7FFF);
 }
+
+template<typename Test> Test* wut(Test& test) { return NULL; }
+template<typename Test> Test* wut(const Test& test) { return NULL; }
 
 MidiReader::MidiReader(Stream& stream)
 {
-	reader = autoalloc StreamReader(stream, Endian::BigEndian);
+	Stream* test = wut(stream);
+	reader = TempAlloc<StreamReader>(stream, Endian::BigEndian);
 
 	if (reader->ReadInt32() != MagicHeader1)
 		throw FormatException();
@@ -93,7 +97,7 @@ Stream& MidiReader::GetTrackStream()
 	if (EndOfFile())
 		throw InvalidOperationException();
 
-	return autoalloc Substream(reader->GetStream(), trackPosition, trackSize);
+	return AutoAlloc<Substream>(reader->GetStream(), trackPosition, trackSize);
 }
 
 static MidiMetaEvent& CreateMetaEvent(u32 delta, MidiEventType::Enum type, u32 length, void* data)
@@ -107,13 +111,13 @@ static MidiMetaEvent& CreateMetaEvent(u32 delta, MidiEventType::Enum type, u32 l
 		case MidiEventType::Lyric:
 		case MidiEventType::Marker:
 		case MidiEventType::CuePoint:
-			return autoalloc MidiTextEvent(event);
+			return AutoAlloc<MidiTextEvent>(event);
 		case MidiEventType::Tempo:
-			return autoalloc MidiTempoEvent(event);
+			return AutoAlloc<MidiTempoEvent>(event);
 		case MidiEventType::TimeSignature:
-			return autoalloc MidiTimeSignatureEvent(event);
+			return AutoAlloc<MidiTimeSignatureEvent>(event);
 		default:
-			return autoalloc MidiMetaEvent(event);
+			return AutoAlloc<MidiMetaEvent>(event);
 	}
 }
 
@@ -124,9 +128,9 @@ static MidiChannelEvent& CreateChannelEvent(u32 delta, MidiEventType::Enum type,
 		case MidiEventType::NoteOn:
 		case MidiEventType::NoteOff:
 		case MidiEventType::NoteAftertouch:
-			return autoalloc MidiNoteEvent(event);
+			return AutoAlloc<MidiNoteEvent>(event);
 		default:
-			return autoalloc MidiChannelEvent(event);
+			return AutoAlloc<MidiChannelEvent>(event);
 	}
 }
 

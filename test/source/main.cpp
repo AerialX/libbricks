@@ -29,9 +29,9 @@ static void testFilesystem()
 
 	Console::Default.Out->WriteLine("Writing test.bin...");
 
-	FileStream& stream = alloc FileStream("test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
+	FileStream& stream = Alloc<FileStream>("test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
 
-	StreamWriter& writer = alloc StreamWriter(stream, Endian::BigEndian);
+	StreamWriter& writer = Alloc<StreamWriter>(stream, Endian::BigEndian);
 	writer.WriteInt32(0x1337BAAD);
 	writer.WriteString("ohai");
 	writer.WriteByte('\0');
@@ -45,8 +45,8 @@ static void testFilesystem()
 	Console::Default.Out->WriteLine("Reading test.bin...");
 
 	// Reseatable and nullable type
-	Pointer<FileStream> rstream = autoalloc FileStream("test.bin", FileOpenMode::Open, FileMode::ReadOnly);
-	Pointer<StreamReader> reader = autoalloc StreamReader(rstream, Endian::LittleEndian);
+	Pointer<FileStream> rstream = AutoAlloc<FileStream>("test.bin", FileOpenMode::Open, FileMode::ReadOnly);
+	Pointer<StreamReader> reader = AutoAlloc<StreamReader>(rstream, Endian::LittleEndian);
 	u32 num = reader->ReadInt32(Endian::BigEndian);
 	assert(num == 0x1337BAAD);
 	Pointer<String> str = reader->ReadString();
@@ -62,7 +62,7 @@ static void testFilesystem()
 
 	Console::Default.Out->WriteLine(" --- File Path Test --- ");
 	Console::Default.Out->WriteLine("Creating FilePath, should be /test/lol/sup");
-	Pointer<FilePath> path = autoalloc FilePath("lol");
+	Pointer<FilePath> path = AutoAlloc<FilePath>("lol");
 	*path = path->Combine("sup");
 	*path = path->RootPath("/test");
 #ifndef BRICKS_FEATURE_WINDOWS
@@ -73,7 +73,7 @@ static void testFilesystem()
 
 	Console::Default.Out->WriteLine(" --- Directory Iteration Test --- ");
 	Console::Default.Out->WriteLine("Listing contents of current directory...");
-	Pointer<FileNode> node = autoalloc FilesystemNode("."); // current dir
+	Pointer<FileNode> node = AutoAlloc<FilesystemNode>("."); // current dir
 #ifdef BRICKS_CONFIG_CPP0X
 	node->Iterate([](FileNode& subnode) -> bool {
 		Console::Default.Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
@@ -93,7 +93,7 @@ static void testCollections()
 	
 	Console::Default.Out->WriteLine(" ==== Collection Tests ==== ");
 	Console::Default.Out->WriteLine(" --- 3 Item Array Test --- ");
-	Pointer<Array<int> > array = autoalloc Array<int>();
+	Pointer<Array<int> > array = AutoAlloc<Array<int> >();
 	array->AddItem(5);
 	array->AddItem(3);
 	array->AddItem(7);
@@ -123,7 +123,7 @@ static void testObjects()
 	// This is a memory leak.
 	Console::Default.Out->WriteLine(" --- Memory Leak Test --- ");
 	Console::Default.Out->WriteLine("#define BRICKS_CONFIG_LOGGING and BRICKS_CONFIG_LOGGING_MEMLEAK in config.h to see the leak report.");
-	Object& object = autoalloc Object();
+	Object& object = AutoAlloc<Object>();
 	object.Retain();
 }
 
@@ -153,8 +153,8 @@ static void testDelegates()
 	Console::Default.Out->WriteLine(" ==== Delegate Tests ==== ");
 
 	Console::Default.Out->WriteLine(" --- Events Test --- ");
-	Delegate<void()>& delegate = alloc Delegate<void()>(testDelegate);
-	Event<void()>& event = alloc Event<void()>();
+	Delegate<void()>& delegate = Alloc<Delegate<void()> >(testDelegate);
+	Event<void()>& event = Alloc<Event<void()> >();
 	TestDelegateClass test;
 	event += delegate;
 	event += delegate;

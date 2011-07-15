@@ -47,7 +47,7 @@ namespace Bricks { namespace IO {
 
 	public:
 		FileNode() : type(FileType::Unknown) { }
-		FileNode(FileType::Enum type, const String& path) : type(type), path(AutoPointer<FilePath>(alloc FilePath(path), false)) { }
+		FileNode(FileType::Enum type, const String& path) : type(type), path(TempAlloc<FilePath>(path)) { }
 
 		virtual FileType::Enum GetType() const { return type; }
 		virtual const String& GetName() const { return FilePath(*path).GetFileName(); }

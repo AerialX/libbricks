@@ -78,7 +78,7 @@ namespace Bricks { namespace Audio {
 			delete[] data;
 			data = new u8[length];
 			memcpy(data, event.data, length);
-			return self;
+			return *this;
 		}
 
 		const u8* GetData() const { return data; }

@@ -24,8 +24,8 @@ namespace Bricks { namespace IO {
 	const Pointer<Filesystem>& Filesystem::GetDefault()
 	{
 		if (!defaultFilesystem)
-			//defaultFilesystem = globalalloc C89Filesystem();
-			defaultFilesystem = globalalloc PosixFilesystem();
+			//defaultFilesystem = GlobalAlloc<C89Filesystem>();
+			defaultFilesystem = GlobalAlloc<PosixFilesystem>();
 		return defaultFilesystem;
 	}
 
@@ -215,7 +215,7 @@ namespace Bricks { namespace IO {
 		}
 		if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, ".."))
 			return ReadDirectory(fd); // Not interested in this crap
-		return autoalloc FilesystemNode(*dir);
+		return AutoAlloc<FilesystemNode>(*dir);
 	}
 	
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
@@ -250,7 +250,7 @@ namespace Bricks { namespace IO {
 		struct stat st;
 		if (stat(path.CString(), &st))
 			ThrowErrno();
-		return autoalloc FileInfo(st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
+		return AutoAlloc<FileInfo>(st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
 	}
 	
 	bool PosixFilesystem::IsFile(const String& path) const
@@ -276,7 +276,7 @@ namespace Bricks { namespace IO {
 		char buffer[PATH_MAX];
 		if (!getcwd(buffer, sizeof(buffer)))
 			ThrowErrno();
-		return autoalloc String(buffer);
+		return AutoAlloc<String>(buffer);
 	}
 
 	void PosixFilesystem::DeleteFile(const String& path)
@@ -302,6 +302,6 @@ namespace Bricks { namespace IO {
 	
 	Stream& FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
 	{
-		return autoalloc FileStream(GetFullName(), createmode, mode, permissions, filesystem);
+		return AutoAlloc<FileStream>(GetFullName(), createmode, mode, permissions, filesystem);
 	}
 } }

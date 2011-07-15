@@ -57,13 +57,13 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array(const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { }
+		Array(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { }
 		Array(const Array< T, V >& array, const Pointer< ValueComparison< T > >& comparison = NULL) : comparison(comparison ?: array.comparison), vector(array.vector) { }
-		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = AutoPointer< ValueComparison< T > >(alloc OperatorEqualityComparison< T >(), false)) : comparison(comparison) { AddItems(collection); }
+		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return autoalloc ArrayIterator< T, V >(const_cast<Array< T, V >&>(self)); }
+		virtual Iterator< T >& GetIterator() const { return AutoAlloc<ArrayIterator< T, V > >(const_cast<Array< T, V >&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); };

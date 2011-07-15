@@ -12,7 +12,7 @@
 
 namespace Bricks { namespace Collections {
 	template<typename T> inline void Iterable< T >::Iterate(const Delegate<bool(T&)>& delegate) {
-		foreach (T& t, self) {
+		foreach (T& t, *this) {
 			if (!const_cast<Delegate<bool(T&)>&>(delegate).Call(t))
 				break;
 		}

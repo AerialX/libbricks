@@ -60,7 +60,7 @@ namespace Bricks { namespace IO {
 
 		String& ReadString() {
 			// TODO: StringBuilder, this is fail.
-			String& ret = autoalloc String();
+			String& ret = AutoAlloc<String>();
 			while (true) {
 				int read = stream->ReadByte();
 				if (read <= 0)
@@ -73,7 +73,7 @@ namespace Bricks { namespace IO {
 		String& ReadString(int length) {
 			char buffer[length];
 			ReadBytes(buffer, length);
-			return autoalloc String(buffer, length);
+			return AutoAlloc<String>(buffer, length);
 		}
 		
 		void Pad(u64 size) {

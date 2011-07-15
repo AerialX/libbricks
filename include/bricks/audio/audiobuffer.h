@@ -32,13 +32,13 @@ namespace Bricks { namespace Audio {
 
 		AudioBuffer(const AudioBuffer<T>& source) : channels(source.GetChannels()), size(source.GetSize()) {
 			Construct();
-			source.CopyTo(self, 0, 0, 0, 0, size);
+			source.CopyTo(*this, 0, 0, 0, 0, size);
 		}
 
 		template<typename Tsrc>
 		AudioBuffer(const AudioBuffer<Tsrc>& source) : channels(source.GetChannels()), size(source.GetSize()) {
 			Construct();
-			source.CopyTo(self, 0, 0, 0, 0, size);
+			source.CopyTo(*this, 0, 0, 0, 0, size);
 		}
 
 		AudioBuffer<T>& operator=(const AudioBuffer<T>& source) {
@@ -46,7 +46,7 @@ namespace Bricks { namespace Audio {
 			channels = source.GetChannels();
 			size = source.GetSize();
 			Construct();
-			source.CopyTo(self, 0, 0, 0, 0, size);
+			source.CopyTo(*this, 0, 0, 0, 0, size);
 		}
 
 		AudioSample* operator[](u32 index) { return buffer[index]; }
