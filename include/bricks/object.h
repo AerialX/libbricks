@@ -105,7 +105,7 @@ namespace Bricks {
 		Pointer(const Pointer< T >& t) : value(t.value) { }
 		Pointer(T* t) : value(t) { }
 		Pointer(T& t) : value(&t) { }
-		template<typename U> Pointer(const Pointer< U >& t) : value(t.GetValue()) { }
+		template<typename U> Pointer(const Pointer< U >& t) : value(dynamic_cast<T*>(t.GetValue())) { }
 		template<typename U> Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL);
 
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return *this; }

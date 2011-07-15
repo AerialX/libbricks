@@ -211,12 +211,11 @@ namespace Bricks { namespace IO {
 		FileHandle dir;
 		AutoPointer<FileNode> current;
 
-		FilesystemNodeIterator(const FilesystemNode& node) :
-			filesystem(node.filesystem), dir(filesystem->OpenDirectory(node.GetFullName())) { }
-
 		friend class FilesystemNode;
 
 	public:
+		FilesystemNodeIterator(const FilesystemNode& node) :
+			filesystem(node.filesystem), dir(filesystem->OpenDirectory(node.GetFullName())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
 		FileNode& GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return const_cast<FileNode&>(*current); }

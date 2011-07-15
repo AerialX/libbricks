@@ -99,11 +99,11 @@ namespace Bricks {
 	void ObjectPool::AddObject(Object& object)
 	{
 		BRICKS_FEATURE_LOG_HEAVY("Autoreleasing %p [%d]", &object, object.GetReferenceCount());
-		objects.AddItem(object);
+		objects->AddItem(object);
 	}
 
 	ObjectPool::ObjectPool() :
-		objects(TempAlloc<Stack< AutoPointer<Object> > >(NULL))
+		objects(TempAlloc<Stack< AutoPointer<Object> > >(Pointer<Object>::Null))
 	{
 		BRICKS_FEATURE_LOG("Installing Pool: %p", this);
 		GetThreadPools().Push(*this);

@@ -131,7 +131,7 @@ namespace Bricks {
 		AutoPointer<Collections::Collection< EventItem > > list;
 
 	public:
-		Event() : list(TempAlloc<Collections::Array< EventItem, EventItemStorage >(TempAlloc<EventItemComparison>())) { }
+		Event() : list(TempAlloc<Collections::Array< EventItem, EventItemStorage > >(TempAlloc<EventItemComparison>())) { }
 
 		Event& operator +=(EventItem& delegate) { list->AddItem(delegate); return *this; }
 		Event& operator +=(const EventItem& delegate) { list->AddItem(CopyPointer<EventItem>(delegate)); return *this; }

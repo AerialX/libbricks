@@ -73,7 +73,7 @@ namespace Bricks { namespace IO {
 		String& ReadString(int length) {
 			char buffer[length];
 			ReadBytes(buffer, length);
-			return AutoAlloc<String>(buffer, length);
+			return AutoAlloc<String>((const char*)buffer, length);
 		}
 		
 		void Pad(u64 size) {

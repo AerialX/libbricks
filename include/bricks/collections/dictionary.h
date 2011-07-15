@@ -115,11 +115,11 @@ namespace Bricks { namespace Collections {
 		typename std::map< TKey, TValue >::iterator position;
 		typename std::map< TKey, TValue >::iterator end;
 		mutable Pair< TKey, TValue > current;
-		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
 
 		friend class Dictionary< TKey, TValue >;
 
 	public:
+		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
 		virtual Pair< TKey, TValue >& GetCurrent() const { if (!first || position == end) throw InvalidIteratorException(); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
 		virtual bool MoveNext() { if (!first) return (first = true) && position != end; return position != end && ++position != end; }
 	};

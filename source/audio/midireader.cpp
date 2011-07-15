@@ -24,12 +24,8 @@ static MidiTimeDivision& ReadDivision(StreamReader& reader)
 	return AutoAlloc<MidiTicksPerBeatDivision>(division & 0x7FFF);
 }
 
-template<typename Test> Test* wut(Test& test) { return NULL; }
-template<typename Test> Test* wut(const Test& test) { return NULL; }
-
 MidiReader::MidiReader(Stream& stream)
 {
-	Stream* test = wut(stream);
 	reader = TempAlloc<StreamReader>(stream, Endian::BigEndian);
 
 	if (reader->ReadInt32() != MagicHeader1)

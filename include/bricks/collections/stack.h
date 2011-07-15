@@ -87,11 +87,11 @@ namespace Bricks { namespace Collections {
 		bool first;
 		typename Stack< T, V >::iterator position;
 		typename Stack< T, V >::iterator end;
-		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
 
 		friend class Stack< T, V >;
 
 	public:
+		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
 		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};

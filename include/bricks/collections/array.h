@@ -19,11 +19,11 @@ namespace Bricks { namespace Collections {
 		bool first;
 		typename Array< T, V >::iterator position;
 		typename Array< T, V >::iterator end;
-		ArrayIterator(Array< T, V >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
 
 		friend class Array< T, V >;
 
 	public:
+		ArrayIterator(Array< T, V >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
 		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};

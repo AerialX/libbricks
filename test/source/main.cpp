@@ -153,7 +153,7 @@ static void testDelegates()
 	Console::Default.Out->WriteLine(" ==== Delegate Tests ==== ");
 
 	Console::Default.Out->WriteLine(" --- Events Test --- ");
-	Delegate<void()>& delegate = Alloc<Delegate<void()> >(testDelegate);
+	Delegate<void()>& delegate = Alloc<Delegate<void()> >(&testDelegate);
 	Event<void()>& event = Alloc<Event<void()> >();
 	TestDelegateClass test;
 	event += delegate;
