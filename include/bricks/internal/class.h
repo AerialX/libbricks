@@ -1,7 +1,5 @@
 #pragma once
 
-#include "bricks/object.h"
-
 #ifdef BRICKS_CONFIG_RTTI
 namespace Bricks {
 	class Class : public virtual Object

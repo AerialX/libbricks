@@ -1,7 +1,6 @@
 #pragma once
 
 #include "bricks/object.h"
-#include "bricks/string.h"
 #include "bricks/io/stream.h"
 #include "bricks/io/endian.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "bricks/object.h"
-#include "bricks/string.h"
 #include "bricks/io/filepath.h"
 #include "bricks/io/filenode.h"
 #include "bricks/io/stream.h"

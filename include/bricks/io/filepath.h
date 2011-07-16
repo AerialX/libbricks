@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/string.h"
+#include "bricks/object.h"
 
 namespace Bricks { namespace IO {
 	class FilePath : public String

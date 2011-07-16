@@ -173,11 +173,11 @@ namespace Bricks {
 	};
 }
 
-#include "bricks/alloc.h"
-#include "bricks/objectpool.h"
-#include "bricks/string.h"
-#include "bricks/class.h"
-#include "bricks/exception.h"
+#include "bricks/internal/alloc.h"
+#include "bricks/internal/objectpool.h"
+#include "bricks/internal/string.h"
+#include "bricks/internal/class.h"
+#include "bricks/internal/exception.h"
 
 namespace Bricks {
 	class ObjectPoolLeakException : public Exception

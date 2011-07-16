@@ -1,7 +1,5 @@
 #pragma once
 
-#include "bricks/object.h"
-
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>

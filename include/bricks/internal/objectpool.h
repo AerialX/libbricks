@@ -1,8 +1,5 @@
 #pragma once
 
-#include "bricks/types.h"
-#include "bricks/object.h"
-
 namespace Bricks {
 	namespace Collections { template<typename T> class Collection; }
 
