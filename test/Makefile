@@ -5,7 +5,7 @@ SOURCES		:=	source
 INCLUDES	:=	$(SOURCES) ../include
 PCHINCLUDES	:=	../build ../source
 
-DEFINES		:= -H -g -O3 -Wall -fPIC # -std=c++0x
+DEFINES		:= -g -O3 -Wall -fPIC # -std=c++0x
 LIBS		:= 
 LDFLAGS		:= -L../.. -lbricks
 
