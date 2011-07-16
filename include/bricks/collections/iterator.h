@@ -6,29 +6,6 @@ namespace Bricks {
 	template<typename F> class Delegate;
 }
 
-namespace Bricks { namespace Collections { namespace Internal {
-	struct IteratorTypeBase
-	{
-		mutable bool state;
-		operator bool() const { return state; }
-		IteratorTypeBase() : state(true) { }
-	};
-	template<typename T>
-	struct IteratorType : public IteratorTypeBase
-	{
-		const T* value;
-		IteratorType(const T* value) : IteratorTypeBase(), value(value) { }
-	};
-	template<typename T>
-	inline IteratorType<T> IteratorContainer(T& t) { return IteratorType<T>(&t); }
-	template<typename T>
-	inline T& IteratorContainer(const T& dummy, const IteratorTypeBase& t) { return *const_cast<T*>(static_cast<const IteratorType<T>&>(t).value); }
-} } }
-#define foreach_container Bricks::Collections::Internal::IteratorContainer
-#define foreach_iterator(list) ((list).GetIterator())
-#define foreach_basetype const Bricks::Collections::Internal::IteratorTypeBase&
-#define foreach(val, list) for (foreach_basetype iter = foreach_container(foreach_iterator(list)); foreach_container(foreach_iterator(list), iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = foreach_container(foreach_iterator(list), iter).GetCurrent(); !iter.state; iter.state = true)
-
 namespace Bricks { namespace Collections {
 	class InvalidIteratorException : public Exception
 	{
@@ -56,3 +33,26 @@ namespace Bricks { namespace Collections {
 		void Iterate(const Delegate<bool(T&)>& delegate);
 	};
 } }
+
+namespace Bricks { namespace Collections { namespace Internal {
+	struct IteratorTypeBase
+	{
+		mutable bool state;
+		operator bool() const { return state; }
+		IteratorTypeBase() : state(true) { }
+	};
+	template<typename T>
+	struct IteratorType : public IteratorTypeBase
+	{
+		Iterator<T>& value;
+		IteratorType(Iterator<T>& value) : IteratorTypeBase(), value(value) { }
+	};
+	template<typename T>
+	inline IteratorType<T> IteratorContainerPack(const Iterable<T>& t) { return IteratorType<T>(t.GetIterator()); }
+	template<typename T>
+	inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>& dummy, const IteratorTypeBase& t) { return static_cast<const IteratorType<T>&>(t).value; }
+} } }
+#define foreach_container Bricks::Collections::Internal::IteratorContainerPack
+#define foreach_iterator Bricks::Collections::Internal::IteratorContainerUnpack
+#define foreach_basetype const Bricks::Collections::Internal::IteratorTypeBase&
+#define foreach(val, list) for (foreach_basetype iter = foreach_container(list); foreach_iterator(list, iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = foreach_iterator(list, iter).GetCurrent(); !iter.state; iter.state = true)
