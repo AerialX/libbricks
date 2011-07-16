@@ -27,9 +27,10 @@ BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
 
 export OFILES	:=	$(addsuffix .o,$(BINFILES))	$(CPPFILES:.cpp=.o) $(CFILES:.c=.o)
 export GCHFILES	:=	$(addsuffix .gch,$(HPPFILES))
+export PCHFILES	:=	$(addprefix ../,$(foreach dir,$(PCHINCLUDES),$(wildcard $(dir)/*.hpp.gch)))
 
 ifneq ($(USECLANG),)
-export PCHFLAGS	:=	$(foreach pch,$(GCHFILES) $(addprefix ../,$(foreach dir,$(PCHINCLUDES),$(wildcard $(dir)/*.hpp.gch))),-include-pch $(pch))
+export PCHFLAGS	:=	$(foreach pch,$(GCHFILES) $(PCHFILES),-include-pch $(pch))
 endif
 
 INCLUDES		+=	$(PCHSOURCES)
@@ -68,7 +69,7 @@ $(OUTPUT): $(GCHFILES) $(OFILES) $(AOUTPUT)
 	@echo "[LD]  $(notdir $@)"
 	@$(LD) $(LDFLAGS) $(OFILES) -o $(OUTPUT)
 
-$(OFILES) : $(GCHFILES)
+$(OFILES) : $(GCHFILES) $(PCHFILES)
 
 ifneq ($(AOUTPUT),)
 $(AOUTPUT): $(OFILES)
