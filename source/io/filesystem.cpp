@@ -1,4 +1,4 @@
-#include "bricks/io.h"
+#include "bricksall.hpp"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -15,7 +15,6 @@
 #if defined(BRICKS_FEATURE_MINGW) || defined(BRICKS_FEATURE_ANDROID)
 #define ftruncate64 ftruncate
 #endif
-
 
 namespace Bricks { namespace IO {
 	const String FilePath::DirectorySeparators = String("/\\");

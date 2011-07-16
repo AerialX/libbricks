@@ -4,7 +4,7 @@
 #error libbricks must be configured to use the STL
 #endif
 
-#include "bricks/collections.h"
+#include "bricks/collections/list.h"
 #include "bricks/collections/comparison.h"
 
 #include <vector>

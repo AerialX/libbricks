@@ -1,8 +1,6 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
+#include "bricks/types.h"
 
 #ifdef __GLIBC__
 #include <endian.h>

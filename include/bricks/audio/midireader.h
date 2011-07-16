@@ -1,7 +1,8 @@
 #pragma once
 
-#include "bricks.h"
-#include "bricks/io.h"
+#include "bricks/object.h"
+#include "bricks/io/stream.h"
+#include "bricks/io/navigator.h"
 #include "bricks/audio/miditypes.h"
 
 namespace Bricks { namespace Audio {

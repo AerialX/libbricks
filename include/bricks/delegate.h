@@ -1,7 +1,7 @@
 #pragma once
 
-#include "bricks.h"
-#include "bricks/collections.h"
+#include "bricks/object.h"
+#include "bricks/exception.h"
 #include "bricks/collections/array.h"
 
 #define BRICKS_ARGLIST_HEADER "bricks/internal/delegate.h"

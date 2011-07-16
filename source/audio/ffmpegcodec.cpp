@@ -1,3 +1,5 @@
+#include "bricksall.hpp"
+
 #ifdef BRICKS_FEATURE_FFMPEG
 
 #ifdef BRICKS_FEATURE_APPLE
@@ -5,9 +7,6 @@
 #else
 #include <malloc.h>
 #endif
-
-#include "bricks/audio.h"
-#include "bricks/audio/ffmpegcodec.h"
 
 using namespace Bricks;
 using namespace Bricks::Audio;

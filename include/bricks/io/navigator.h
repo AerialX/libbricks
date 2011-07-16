@@ -1,8 +1,9 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
+#include "bricks/object.h"
+#include "bricks/string.h"
+#include "bricks/io/stream.h"
+#include "bricks/io/endian.h"
 
 namespace Bricks { namespace IO {
 	class EndOfStreamException : public Exception

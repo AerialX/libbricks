@@ -1,8 +1,7 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
+#include "bricks/types.h"
+#include "bricks/sfinae.h"
 
 #include <stdlib.h>
 

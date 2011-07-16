@@ -1,4 +1,4 @@
-#include "bricks/audio/midireader.h"
+#include "bricksall.hpp"
 
 using namespace Bricks;
 using namespace Bricks::IO;

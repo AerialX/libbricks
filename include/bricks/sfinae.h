@@ -1,8 +1,6 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
+#include "bricks/types.h"
 
 #define BRICKS_SFINAE_TRUE(x) (sizeof(x) == sizeof(Bricks::SFINAE::True))
 

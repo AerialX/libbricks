@@ -1,4 +1,4 @@
-#include "bricks/threading.h"
+#include "bricksall.hpp"
 
 namespace Bricks { namespace Threading { namespace Internal {
 	ThreadID GetCurrentThreadID()

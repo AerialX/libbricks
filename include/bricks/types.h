@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bricks/config.h"
+
 #define BRICKS_VERSION_MAJOR 0
 #define BRICKS_VERISON_MINOR 1
 #define BRICKS_VERSION "0.1"
@@ -49,6 +51,9 @@ typedef volatile double		vf64;
 #if __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 #define BRICKS_FEATURE_GCC_4_3
 #endif
+#endif
+#ifdef __clang__
+#define BRICKS_FEATURE_CLANG
 #endif
 #ifdef __OBJC__
 #define BRICKS_FEATURE_OBJC

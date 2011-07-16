@@ -1,7 +1,4 @@
-#include "bricks.h"
-#include "bricks/collections/array.h"
-#include "bricks/collections/stack.h"
-#include "bricks/threading/threadlocalstorage.h"
+#include "bricksall.hpp"
 
 using namespace Bricks::Collections;
 using namespace Bricks::Threading;

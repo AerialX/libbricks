@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/collections.h"
+#include "bricks/object.h"
 
 namespace Bricks {
 	template<typename F> class Delegate;

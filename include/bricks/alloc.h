@@ -1,3 +1,7 @@
+#pragma once
+
+#include "bricks/object.h"
+
 #define BRICKS_ARGLIST_HEADER "bricks/internal/alloc.h"
 
 #define BRICKS_ARGLIST_ENUM_CUSTOM(count, value) BRICKS_ARGLIST_ENUM_CUSTOM_(count, value)

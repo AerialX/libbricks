@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks.h"
+#include "bricks/object.h"
 
 namespace Bricks { namespace Audio {
 	namespace MidiType {

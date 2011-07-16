@@ -1,6 +1,9 @@
 #pragma once
 
-#include "bricks/io.h"
+#include "bricks/object.h"
+#include "bricks/io/stream.h"
+#include "bricks/io/navigator.h"
+#include "bricks/io/filestream.h"
 
 #include <unistd.h>
 

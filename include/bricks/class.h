@@ -1,8 +1,6 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
+#include "bricks/object.h"
 
 #ifdef BRICKS_CONFIG_RTTI
 namespace Bricks {

@@ -1,8 +1,10 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
+#include "bricks/object.h"
+#include "bricks/string.h"
+#include "bricks/io/filepath.h"
+#include "bricks/io/filenode.h"
+#include "bricks/io/stream.h"
 
 #include <stdio.h>
 

@@ -1,13 +1,11 @@
 #pragma once
 
-#ifndef BRICKS_HEADER_BRICKS
-#error Use bricks.h
-#endif
-
 #include <dirent.h>
 #include <sys/stat.h>
 
-#include "bricks/collections.h"
+#include "bricks/io/types.h"
+#include "bricks/io/filepath.h"
+#include "bricks/collections/iterator.h"
 
 namespace Bricks { namespace IO {
 	namespace FileType { enum Enum {

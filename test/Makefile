@@ -3,8 +3,9 @@ BUILD		:=	build
 DATA		:=	data
 SOURCES		:=	source
 INCLUDES	:=	$(SOURCES) ../include
+PCHINCLUDES	:=	../build ../source
 
-DEFINES		:= -g -O3 -Wall # -std=c++0x
+DEFINES		:= -H -g -O3 -Wall -fPIC # -std=c++0x
 LIBS		:= 
 LDFLAGS		:= -L../.. -lbricks
 

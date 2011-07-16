@@ -1,4 +1,4 @@
-#include "bricks.h"
+#include "bricksall.hpp"
 
 #include <errno.h>
 

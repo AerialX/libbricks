@@ -1,4 +1,4 @@
-#include "bricks/threading.h"
+#include "bricksall.hpp"
 
 using namespace Bricks::Collections;
 

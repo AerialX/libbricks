@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bricks/object.h"
 #include "bricks/collections/dictionary.h"
 
 namespace Bricks { namespace Threading {

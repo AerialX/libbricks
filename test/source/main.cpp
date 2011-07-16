@@ -1,12 +1,11 @@
-#include <assert.h>
+// NOTE: This is a special precompiled header libbricks builds for itself.
+//       The sample uses it to speed up the build process, normal libbricks users should use their own.
 
-#include <bricks.h>
-#include <bricks/io.h>
-#include <bricks/io/console.h>
-#include <bricks/collections.h>
-#include <bricks/collections/array.h>
-#include <bricks/collections/dictionary.h>
-#include <bricks/delegate.h>
+#ifndef __clang__
+#include <bricksall.hpp>
+#endif
+
+#include <assert.h>
 
 using namespace Bricks;
 using namespace Bricks::IO;
