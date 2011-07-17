@@ -2,9 +2,6 @@ Delegates and Events
  - Maybe hold on to functor references, and only copy const references. Or just screw it and use std::ref.
  - Needs a boost::bind now for arbitrary arguments.
 
-Filesystem
- - Delete Recursive
-
 IO
  - Text{Reader,Writer}
  - Network
