@@ -171,6 +171,8 @@ namespace Bricks {
 		void Swap(const Pointer< T >& t) { AutoPointer< T >::Swap(BRICKS_COPY_POINTER(t.GetValue()), false); }
 #undef BRICKS_COPY_POINTER
 	};
+
+	class NoCopy { private: NoCopy(const NoCopy&); NoCopy& operator =(const NoCopy&); protected: NoCopy() { } };
 }
 
 #include "bricks/internal/alloc.h"
