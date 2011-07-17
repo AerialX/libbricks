@@ -67,7 +67,7 @@ DEPENDS	:=	$(OFILES:.o=.d) $(GCHFILES:.gch=.d)
 
 $(OUTPUT): $(GCHFILES) $(OFILES) $(AOUTPUT)
 	@echo "[LD]  $(notdir $@)"
-	@$(LD) $(LDFLAGS) $(OFILES) -o $(OUTPUT)
+	@$(LD) $(OFILES) $(LDFLAGS) -o $(OUTPUT)
 
 $(OFILES) : $(GCHFILES) $(PCHFILES)
 

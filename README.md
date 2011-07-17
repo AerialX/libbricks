@@ -9,9 +9,17 @@ memory management in portable C++ land and it turned into this.
 Building
 --------
 
-Uh, have a decent compiler (probably only compiles with GCC) and run...
+Uh, have GCC installed and run...
 
     make
+
+You may specify an alternate GCC to build for Windows like so...
+
+    make CXX=i486-mingw32-g++ AR=i486-mingw32-ar
+
+Or alternatively, use Clang instead...
+
+    make USECLANG=1
 
 
 Configuration
