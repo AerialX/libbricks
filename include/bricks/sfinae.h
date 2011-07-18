@@ -26,6 +26,13 @@ namespace Bricks {
 			static const bool Value = BRICKS_SFINAE_TRUE(ConditionU(MakePointer<U>())) && BRICKS_SFINAE_TRUE(ConditionT(MakePointer<T>()));
 		};
 
+		template<typename T, typename U> struct IsCompatibleType {
+			static True Condition(T*);
+			static False Condition(...);
+
+			static const bool Value = BRICKS_SFINAE_TRUE(Condition(MakePointer<U>()));
+		};
+
 		template<typename T> struct IsIntegerNumber { static const bool Value = false; };
 		template<> struct IsIntegerNumber<s8> { static const bool Value = true; };
 		template<> struct IsIntegerNumber<u8> { static const bool Value = true; };

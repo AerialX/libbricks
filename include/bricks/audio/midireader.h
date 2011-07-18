@@ -6,7 +6,7 @@
 #include "bricks/audio/miditypes.h"
 
 namespace Bricks { namespace Audio {
-	class MidiReader : public virtual Object
+	class MidiReader : public Object
 	{
 	protected:
 		AutoPointer<IO::StreamReader> reader;

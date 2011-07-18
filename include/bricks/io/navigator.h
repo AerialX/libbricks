@@ -17,7 +17,7 @@ namespace Bricks { namespace IO {
 		StreamException(const String& message = String::Empty) : Exception(message) { }
 	};
 	
-	class StreamNavigator : public virtual Object
+	class StreamNavigator : public Object
 	{
 	protected:
 		AutoPointer<Stream> stream;

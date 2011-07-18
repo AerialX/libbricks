@@ -13,7 +13,7 @@ namespace Bricks {
 		template<typename F> class MethodFunctionBase;
 		template<typename T, typename F> class MethodFunction;
 
-		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class BaseDelegate<R(BRICKS_ARGLIST_TYPES)> : public virtual Object
+		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class BaseDelegate<R(BRICKS_ARGLIST_TYPES)> : public Object
 		{
 		public:
 			virtual R operator ()(BRICKS_ARGLIST_TYPES) = 0;
@@ -114,7 +114,7 @@ namespace Bricks {
 		typedef AutoPointer< EventItem > EventItemStorage;
 
 	private:
-		class EventItemComparison : public Bricks::Collections::ValueComparison< EventItem >
+		class EventItemComparison : public Object, public Bricks::Collections::ValueComparison< EventItem >
 		{
 		public:
 			Bricks::Collections::ComparisonResult::Enum Compare(const EventItem& v1, const EventItem& v2) {

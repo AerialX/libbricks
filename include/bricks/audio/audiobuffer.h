@@ -4,7 +4,7 @@
 
 namespace Bricks { namespace Audio {
 	template<typename T>
-	class AudioBuffer : public virtual Object
+	class AudioBuffer : public Object
 	{
 	public:
 		typedef T AudioSample;

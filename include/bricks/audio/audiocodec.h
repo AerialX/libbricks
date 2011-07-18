@@ -4,7 +4,7 @@
 
 namespace Bricks { namespace Audio {
 	template<typename T>
-	class AudioCodec : public virtual Object
+	class AudioCodec
 	{
 	protected:
 		u32 channels;
@@ -29,7 +29,7 @@ namespace Bricks { namespace Audio {
 	};
 
 	template<typename T>
-	class NullCodec : public AudioCodec<T>
+	class NullCodec : public Object, public AudioCodec<T>
 	{
 	public:
 		NullCodec(u32 channels, u32 samplerate, s64 samples, u32 bitrate = 0, s64 position = 0) : AudioCodec<T>(channels, samplerate, samples, bitrate, position) { }
@@ -44,7 +44,7 @@ namespace Bricks { namespace Audio {
 	};
 
 	template<typename T>
-	class Subcodec : public AudioCodec<T>
+	class Subcodec : public Object, public AudioCodec<T>
 	{
 	protected:
 		AutoPointer< AudioCodec<T> > codec;
@@ -96,7 +96,7 @@ namespace Bricks { namespace Audio {
 	};
 
 	template<typename Tdest, typename Tsrc>
-	class ConversionCodec : public AudioCodec<Tdest>
+	class ConversionCodec : public Object, public AudioCodec<Tdest>
 	{
 	protected:
 		AutoPointer< AudioCodec<Tsrc> > codec;

@@ -39,7 +39,7 @@ namespace Bricks { namespace Audio {
 		};
 	}
 
-	struct MidiEvent : public virtual Object
+	struct MidiEvent : public Object
 	{
 	protected:
 		u32 deltaTime;
@@ -100,7 +100,7 @@ namespace Bricks { namespace Audio {
 		u8 GetParameter2() const { return parameter2; }
 	};
 
-	struct MidiTimeDivision : public virtual Object
+	struct MidiTimeDivision : public Object
 	{
 
 	};

@@ -104,7 +104,8 @@ namespace Bricks {
 		Pointer(const Pointer< T >& t) : value(t.value) { }
 		Pointer(T* t) : value(t) { }
 		Pointer(T& t) : value(&t) { }
-		template<typename U> Pointer(const Pointer< U >& t) : value(dynamic_cast<T*>(t.GetValue())) { }
+		template<typename U> Pointer(const Pointer< U >& t, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) : value(static_cast<T*>(t.GetValue())) { }
+		template<typename U> Pointer(const Pointer< U >& t, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) : value(dynamic_cast<T*>(t.GetValue())) { }
 		template<typename U> Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL);
 
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return *this; }
@@ -128,18 +129,20 @@ namespace Bricks {
 	template<typename T> class AutoPointer : public Pointer< T >
 	{
 	private:
-		void Retain() { if (*this) dynamic_cast<Object*>(this->GetValue())->Retain(); }
-		void Release() { if (*this) dynamic_cast<Object*>(this->GetValue())->Release(); }
+		template<typename U> static void Retain(AutoPointer<U>& ptr, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) static_cast<Object*>(ptr.GetValue())->Retain(); }
+		template<typename U> static void Release(AutoPointer<U>& ptr, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) static_cast<Object*>(ptr.GetValue())->Release(); }
+		template<typename U> static void Retain(AutoPointer<U>& ptr, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) dynamic_cast<Object*>(ptr.GetValue())->Retain(); }
+		template<typename U> static void Release(AutoPointer<U>& ptr, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) dynamic_cast<Object*>(ptr.GetValue())->Release(); }
 
 	public:
 		AutoPointer() { }
-		AutoPointer(const AutoPointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		AutoPointer(const Pointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		AutoPointer(T* t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		template<typename U> AutoPointer(const U& t, bool retain = true, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL) : Pointer< T >(t) { if (retain) Retain(); }
-		template<typename U> AutoPointer(const Pointer< U >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(); }
-		virtual ~AutoPointer() { Release(); }
+		AutoPointer(const AutoPointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
+		AutoPointer(const Pointer< T >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
+		AutoPointer(T* t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
+		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
+		template<typename U> AutoPointer(const U& t, bool retain = true, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL) : Pointer< T >(t) { if (retain) Retain(*this); }
+		template<typename U> AutoPointer(const Pointer< U >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
+		virtual ~AutoPointer() { Release(*this); }
 
 		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return *this; }
 		AutoPointer< T >& operator=(const AutoPointer< T >& t) { Swap(t); return *this; }
@@ -148,7 +151,7 @@ namespace Bricks {
 		template<typename U> typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value, AutoPointer< T >&>::Type operator=(const U& t) { Swap(t); return *this; }
 		template<typename U> AutoPointer< T >& operator=(const Pointer< U >& t) { Swap(t); return *this; }
 
-		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(); Pointer< T >::operator=(t); if (retain) Retain(); }
+		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(*this); Pointer< T >::operator=(t); if (retain) Retain(*this); }
 	};
 
 	template<typename T> class CopyPointer : public AutoPointer< T >

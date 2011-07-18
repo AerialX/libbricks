@@ -2,7 +2,7 @@
 
 #ifdef BRICKS_CONFIG_RTTI
 namespace Bricks {
-	class Class : public virtual Object
+	class Class : public Object
 	{
 	private:
 		const std::type_info& type;

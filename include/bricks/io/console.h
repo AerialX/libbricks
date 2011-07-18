@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 namespace Bricks { namespace IO {
-	class Console : public virtual Object
+	class Console : public Object
 	{
 	protected:
 		Console(Stream& in, Stream& out, Stream& error) : In(TempAlloc<StreamReader>(in)), Out(TempAlloc<StreamWriter>(out)), Error(TempAlloc<StreamWriter>(error)) { }

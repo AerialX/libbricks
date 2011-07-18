@@ -6,7 +6,7 @@
 #include "bricks/audio/midireader.h"
 
 namespace Bricks { namespace Audio {
-	class Midi : public virtual Object
+	class Midi : public Object
 	{
 
 	};
