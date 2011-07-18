@@ -17,3 +17,4 @@ Audio
 
 Misc
  - Start separating namespaces into their own libraries (Bricks::Audio carries too much bulk)
+ - Find a good build manager.
