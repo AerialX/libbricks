@@ -57,9 +57,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { }
+		Array(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { }
 		Array(const Array< T, V >& array, const Pointer< ValueComparison< T > >& comparison = NULL) : comparison(comparison ?: array.comparison), vector(array.vector) { }
-		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { AddItems(collection); }
+		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator

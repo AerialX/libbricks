@@ -47,9 +47,9 @@ namespace Bricks { namespace Collections {
 		}
 		
 	public:
-		Stack(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { }
-		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
-		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorEqualityComparison< T > >()) : comparison(comparison) { AddItems(collection); }
+		Stack(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { }
+		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
+		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 

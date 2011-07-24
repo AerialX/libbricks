@@ -71,9 +71,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Dictionary(const Pointer< ValueComparison< TKey > >& keycomparison = TempAlloc<OperatorValueComparison< TKey > >(), const Pointer< ValueComparison< TValue > >& comparison = TempAlloc<OperatorEqualityComparison< TValue > >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
+		Dictionary(const Pointer< ValueComparison< TKey > >& keycomparison = TempAlloc<OperatorValueComparison< TKey > >(), const Pointer< ValueComparison< TValue > >& comparison = TempAlloc<OperatorValueComparison< TValue > >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
 		Dictionary(const Dictionary< TKey, TValue >& dictionary, const Pointer< ValueComparison< TKey > >& keycomparison = NULL, const Pointer< ValueComparison< TValue > >& comparison = NULL) : keycomparison(keycomparison ?: dictionary.keycomparison), comparison(comparison ?: dictionary.comparison), map(dictionary.map) { }
-		Dictionary(const Collection< Pair< TKey, TValue > >& collection, const Pointer< ValueComparison< TKey > >& keycomparison = TempAlloc<OperatorValueComparison< TKey > >(), const Pointer< ValueComparison< TValue > >& comparison = TempAlloc<OperatorEqualityComparison< TValue > >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
+		Dictionary(const Collection< Pair< TKey, TValue > >& collection, const Pointer< ValueComparison< TKey > >& keycomparison = TempAlloc<OperatorValueComparison< TKey > >(), const Pointer< ValueComparison< TValue > >& comparison = TempAlloc<OperatorValueComparison< TValue > >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
 		virtual ~Dictionary() { }
 
 		TValue& GetItem(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter != map.end()) return iter->second; return map[key] = value; }
