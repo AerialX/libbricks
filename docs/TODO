@@ -18,3 +18,4 @@ Audio
 Misc
  - Start separating namespaces into their own libraries (Bricks::Audio carries too much bulk)
  - Find a good build manager.
+ - Decide on a keyword to #define as (*this), self is taken by ObjC. myself?
