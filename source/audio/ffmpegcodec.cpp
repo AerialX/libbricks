@@ -27,7 +27,7 @@ FFmpegDecoder::FFmpegDecoder(const String& filename)
 		stream = format->streams[streamIndex];
 		if (!stream)
 			continue;
-		if (stream->codec->codec_type == CODEC_TYPE_AUDIO) {
+		if (stream->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
 			codec = avcodec_find_decoder(stream->codec->codec_id);
 			break;
 		}
