@@ -24,7 +24,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		ArrayIterator(Array< T, V >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
-		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual Pointer< T > GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 
@@ -57,13 +57,13 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Array(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { }
+		Array(const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison) { }
 		Array(const Array< T, V >& array, const Pointer< ValueComparison< T > >& comparison = NULL) : comparison(comparison ?: array.comparison), vector(array.vector) { }
-		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { AddItems(collection); }
+		Array(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison) { AddItems(collection); }
 		virtual ~Array() { }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return AutoAlloc<ArrayIterator< T, V > >(const_cast<Array< T, V >&>(*this)); }
+		virtual AutoPointer< Iterator< T > > GetIterator() const { return autonew ArrayIterator< T, V >(const_cast<Array< T, V >&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); };

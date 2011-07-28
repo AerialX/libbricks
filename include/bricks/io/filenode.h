@@ -41,18 +41,18 @@ namespace Bricks { namespace IO {
 	{
 	private:
 		FileType::Enum type;
-		CopyPointer<FilePath> path;
+		FilePath path;
 
 	public:
 		FileNode() : type(FileType::Unknown) { }
-		FileNode(FileType::Enum type, const String& path) : type(type), path(TempAlloc<FilePath>(path)) { }
+		FileNode(FileType::Enum type, const String& path) : type(type), path(path) { }
 
 		virtual FileType::Enum GetType() const { return type; }
-		virtual const String& GetName() const { return FilePath(*path).GetFileName(); }
-		virtual const String& GetFullName() const { if (!FilePath(*path).IsPathRooted()) throw NotSupportedException(); return *path; }
-		virtual Pointer<FileNode> GetParent() const = 0;
+		virtual const String GetName() const { return path.GetFileName(); }
+		virtual const String GetFullName() const { if (!path.IsPathRooted()) throw NotSupportedException(); return path; }
+		virtual AutoPointer<FileNode> GetParent() const = 0;
 		virtual u64 GetSize() const = 0;
-		virtual Stream& OpenStream(
+		virtual AutoPointer<Stream> OpenStream(
 			FileOpenMode::Enum createmode = FileOpenMode::Create,
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite

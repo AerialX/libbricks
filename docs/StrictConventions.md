@@ -5,7 +5,7 @@ Calling Conventions For Public Interfaces
  - Types may be passed by Pointer<> instead, but only when a NULL value is valid in the context.
  - Types may not be passed by value, unless they are a designated value type (in which case, const references are still preferred).
  - No C pointers for non-value types (and prefer void* for raw data).
- - These same rules apply to return values.
+ - These same rules apply to return values, with the addition of AutoPointer<> being used when returning a temporary.
 
 Value Types
  - You may use any libbricks class as a value on the stack, or privately as class members in cases when polymorphism is unnecessary.

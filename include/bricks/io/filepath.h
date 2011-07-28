@@ -14,7 +14,6 @@ namespace Bricks { namespace IO {
 #endif
 		static const char ExtensionSeparator = '.';
 
-		BRICKS_COPY_CONSTRUCTOR(FilePath);
 	private:
 		void RemoveLeafSeparator()
 		{
@@ -26,17 +25,18 @@ namespace Bricks { namespace IO {
 		static size_t NposOrAdd(size_t num, size_t add) { return num + ((num == npos) ? 0 : add); }
 
 	public:
+		FilePath() { }
 		FilePath(const String& string) : String(string) { RemoveLeafSeparator(); }
 
 		const String& GetFullPath() const { return *this; }
-		String& GetDirectory() const { return Substring(0, LastIndexOf(DirectorySeparators)); }
-		String& GetFileName() const { return Substring(NposOrAdd(LastIndexOf(DirectorySeparators), 1)); }
-		String& RootPath(const String& root) { if (IsPathRooted()) return *this; return FilePath(root).Combine(*this); }
+		String GetDirectory() const { return Substring(0, LastIndexOf(DirectorySeparators)); }
+		String GetFileName() const { return Substring(NposOrAdd(LastIndexOf(DirectorySeparators), 1)); }
+		String RootPath(const String& root) { if (IsPathRooted()) return *this; return FilePath(root).Combine(*this); }
 //		String GetRoot() const;
 
-		String& GetExtension() const { String name = GetFileName(); return name.Substring(NposOrAdd(name.FirstIndexOf(ExtensionSeparator), 1)); }
-		String& GetFileNameWithoutExtension() const { String name = GetFileName(); return name.Substring(0, name.FirstIndexOf(ExtensionSeparator)); }
-		String& Combine(const String& leaf) const { return *this + DirectorySeparator + leaf; }
+		String GetExtension() const { String name = GetFileName(); return name.Substring(NposOrAdd(name.FirstIndexOf(ExtensionSeparator), 1)); }
+		String GetFileNameWithoutExtension() const { String name = GetFileName(); return name.Substring(0, name.FirstIndexOf(ExtensionSeparator)); }
+		String Combine(const String& leaf) const { return *this + DirectorySeparator + leaf; }
 
 #ifdef BRICKS_FEATURE_WINDOWS
 		bool IsPathRooted() const { return FirstIndexOf(DirectorySeparators) == 2; } // TODO: Fixit.

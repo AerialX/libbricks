@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 namespace Bricks { namespace IO {
-	class FileInfo;
+	struct FileInfo;
 
 	typedef size_t FileHandle;
 
@@ -40,12 +40,12 @@ namespace Bricks { namespace IO {
 		virtual void Close(FileHandle fd) = 0;
 
 		virtual FileHandle OpenDirectory(const String& path) = 0;
-		virtual Pointer<FileNode> ReadDirectory(FileHandle fd) = 0;
+		virtual AutoPointer<FileNode> ReadDirectory(FileHandle fd) = 0;
 		virtual size_t TellDirectory(FileHandle fd) = 0;
 		virtual void SeekDirectory(FileHandle fd, size_t offset) = 0;
 		virtual void CloseDirectory(FileHandle fd) = 0;
 		
-		virtual FileInfo& Stat(const String& path) const = 0;
+		virtual FileInfo Stat(const String& path) const = 0;
 
 		virtual bool IsFile(const String& path) const = 0;
 		virtual bool IsDirectory(const String& path) const = 0;
@@ -54,7 +54,7 @@ namespace Bricks { namespace IO {
 		virtual void DeleteFile(const String& path) = 0;
 		virtual void DeleteDirectory(const String& path, bool recursive) = 0;
 
-		virtual const String& GetCurrentDirectory() const = 0;
+		virtual String GetCurrentDirectory() const = 0;
 	};
 
 	class C89Filesystem : public Object, public Filesystem
@@ -109,12 +109,12 @@ namespace Bricks { namespace IO {
 		void Truncate(FileHandle fd, u64 length);
 		
 		FileHandle OpenDirectory(const String& path);
-		Pointer<FileNode> ReadDirectory(FileHandle fd);
+		AutoPointer<FileNode> ReadDirectory(FileHandle fd);
 		size_t TellDirectory(FileHandle fd);
 		void SeekDirectory(FileHandle fd, size_t offset);
 		void CloseDirectory(FileHandle fd);
 		
-		FileInfo& Stat(const String& path) const;
+		FileInfo Stat(const String& path) const;
 
 		bool IsFile(const String& path) const;
 		bool IsDirectory(const String& path) const;
@@ -123,21 +123,20 @@ namespace Bricks { namespace IO {
 		void DeleteFile(const String& path);
 		void DeleteDirectory(const String& path, bool recursive);
 
-		const String& GetCurrentDirectory() const;
+		String GetCurrentDirectory() const;
 	};
 	
-	class FileInfo : public Object
+	struct FileInfo : public Object
 	{
 	private:
 		struct stat st;
-		AutoPointer<FilePath> path;
+		FilePath path;
 		AutoPointer<Filesystem> filesystem;
 
 	public:
-		FileInfo(struct stat& st, const String& path, Pointer<Filesystem> filesystem) :
-			st(st), path(TempAlloc<FilePath>(path)), filesystem(filesystem)
+		FileInfo(struct stat& st, const String& path, const Pointer<Filesystem>& filesystem) :
+			st(st), path(path), filesystem(filesystem)
 		{ }
-		virtual ~FileInfo() { }
 
 		dev_t GetDeviceID() const { return st.st_dev; }
 		ino_t GetInode() const { return st.st_ino; }
@@ -157,10 +156,10 @@ namespace Bricks { namespace IO {
 		blkcnt_t GetBlockCount() const { throw NotSupportedException(); }
 #endif
 		FileType::Enum GetFileType() const { return FileStatType(st.st_mode); }
-		const FilePath& GetFilePath() const { return *path; }
+		FilePath GetFilePath() const { return path; }
 
-		FileInfo& GetParent() const { return filesystem->Stat(path->GetDirectory()); }
-		Filesystem& GetFilesystem() const { return const_cast<Filesystem&>(*filesystem); }
+		FileInfo GetParent() const { return filesystem->Stat(path.GetDirectory()); }
+		Pointer<Filesystem> GetFilesystem() const { return filesystem; }
 	};
 
 	class FilesystemNodeIterator;
@@ -181,7 +180,7 @@ namespace Bricks { namespace IO {
 			size = info.GetSize();
 		}
 
-		FilesystemNode(const struct dirent& dir, Pointer<Filesystem> filesystem = NULL) :
+		FilesystemNode(const struct dirent& dir, const Pointer<Filesystem>& filesystem = NULL) :
 #ifdef BRICKS_FEATURE_LINUXBSD
 			FileNode(GetDirType(dir.d_type), dir.d_name),
 #else
@@ -192,17 +191,17 @@ namespace Bricks { namespace IO {
 			size = -1;
 		}
 
-		FilesystemNode(const String& path, Pointer<Filesystem> filesystem = NULL) :
+		FilesystemNode(const String& path, const Pointer<Filesystem>& filesystem = NULL) :
 			filesystem(filesystem ?: Filesystem::GetDefault())
 		{
 			*this = this->filesystem->Stat(path);
 		}
 
-		Pointer<FileNode> GetParent() const { return AutoAlloc<FilesystemNode>(FilePath(GetFullName()).GetDirectory(), filesystem); }
+		AutoPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullName()).GetDirectory(), filesystem); }
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; throw NotSupportedException(); }
-		Stream& OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
+		AutoPointer<Stream> OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
 
-		Bricks::Collections::Iterator<FileNode>& GetIterator() const;
+		AutoPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
 	};
 
 	class FilesystemNodeIterator : public Object, public Bricks::Collections::Iterator<FileNode>
@@ -215,13 +214,13 @@ namespace Bricks { namespace IO {
 		friend class FilesystemNode;
 
 	public:
-		FilesystemNodeIterator(const FilesystemNode& node) :
-			filesystem(node.filesystem), dir(filesystem->OpenDirectory(node.GetFullName())) { }
+		FilesystemNodeIterator(const Pointer<const FilesystemNode>& node) :
+			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetFullName())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
-		FileNode& GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return const_cast<FileNode&>(*current); }
+		Pointer< FileNode > GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return current; }
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	
-	inline Bricks::Collections::Iterator<FileNode>& FilesystemNode::GetIterator() const { return AutoAlloc<FilesystemNodeIterator>(*this); }
+	inline AutoPointer< Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
 } }

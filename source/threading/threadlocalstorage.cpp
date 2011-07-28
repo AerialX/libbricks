@@ -23,10 +23,10 @@ namespace Bricks { namespace Threading { namespace Internal {
 	{
 #ifdef BRICKS_FEATURE_TLS
 		if (!localStorage)
-			localStorage = &GlobalAlloc<ThreadLocalStorageDictionary>(AutoPointer< ValueComparison<const void*> >(GlobalAlloc<OperatorValueComparison<const void*> >(), false), AutoPointer< ValueComparison< AutoPointer<Object> > >(GlobalAlloc<OperatorValueComparison< AutoPointer<Object> > >(), false));
+			localStorage = new (Bricks::Internal::Global)ThreadLocalStorageDictionary(autonew (Bricks::Internal::Global)OperatorValueComparison<const void*>(), autonew (Bricks::Internal::Global)OperatorValueComparison< AutoPointer<Object> >());
 		return *localStorage;
 #else
-		return localStorage.GetItem(GetCurrentThreadID(), TempAlloc<ThreadLocalStorageDictionary>());
+		return localStorage.GetItem(GetCurrentThreadID(), autonew ThreadLocalStorageDictionary());
 #endif
 	}
 

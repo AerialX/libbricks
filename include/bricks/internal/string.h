@@ -10,9 +10,9 @@ namespace Bricks {
 	{
 		public:
 			static const size_t npos = -1;
-			static const Pointer<String>& Empty;
+			static const String Empty;
 
-			static String& Format(const char* format, ...);
+			static String Format(const char* format, ...);
 
 			BRICKS_COPY_CONSTRUCTOR(String);
 
@@ -47,7 +47,7 @@ namespace Bricks {
 
 			~String() { free(buffer); buffer = NULL; }
 
-			String& GetDebugString() const { return Format("\"%s\" [%d]", CString(), GetReferenceCount()); }
+			String GetDebugString() const { return Format("\"%s\" [%d]", CString(), GetReferenceCount()); }
 
 			String& operator =(const String& string)
 			{
@@ -61,9 +61,9 @@ namespace Bricks {
 				return *this;
 			}
 
-			String& operator +(const String& string) const
+			String operator +(const String& string) const
 			{
-				String& out = AutoAlloc<String>(*this, 0, GetSize() + string.GetSize());
+				String out(*this, 0, GetSize() + string.GetSize());
 				strcat(out.buffer, string.buffer);
 				return out;
 			}
@@ -94,7 +94,7 @@ namespace Bricks {
 			int Compare(size_t off1, const char* string, size_t len) const { return strncmp(buffer + off1, string, len); }
 			bool operator ==(const String& string) const { return !Compare(string); }
 
-			String& Substring(size_t off = 0, size_t len = npos) const { return AutoAlloc<String>(buffer + (off == npos ? 0 : off), len); }
+			String Substring(size_t off = 0, size_t len = npos) const { return String(buffer + (off == npos ? 0 : off), len); }
 
 			size_t FirstIndexOf(char chr, size_t off = 0) const { return ConvertStrChr(strchr(CString() + off, chr)); }
 			size_t LastIndexOf(char chr, size_t off = 0) const { return ConvertStrChr(strrchr(CString() + off, chr)); }

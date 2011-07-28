@@ -23,8 +23,8 @@ namespace Bricks { namespace IO {
 	const Pointer<Filesystem>& Filesystem::GetDefault()
 	{
 		if (!defaultFilesystem)
-			//defaultFilesystem = GlobalAlloc<C89Filesystem>();
-			defaultFilesystem = GlobalAlloc<PosixFilesystem>();
+			//defaultFilesystem = new (Internal::Global)C89Filesystem();
+			defaultFilesystem = new (Internal::Global)PosixFilesystem();
 		return defaultFilesystem;
 	}
 
@@ -204,7 +204,7 @@ namespace Bricks { namespace IO {
 		return (FileHandle)dir;
 	}
 	
-	Pointer<FileNode> PosixFilesystem::ReadDirectory(FileHandle fd)
+	AutoPointer<FileNode> PosixFilesystem::ReadDirectory(FileHandle fd)
 	{
 		errno = 0;
 		struct dirent* dir = readdir((DIR*)fd);
@@ -214,7 +214,7 @@ namespace Bricks { namespace IO {
 		}
 		if (!strcmp(dir->d_name, ".") || !strcmp(dir->d_name, ".."))
 			return ReadDirectory(fd); // Not interested in this crap
-		return AutoAlloc<FilesystemNode>(*dir);
+		return autonew FilesystemNode(*dir);
 	}
 	
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
@@ -244,12 +244,12 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 
-	FileInfo& PosixFilesystem::Stat(const String& path) const
+	FileInfo PosixFilesystem::Stat(const String& path) const
 	{
 		struct stat st;
 		if (stat(path.CString(), &st))
 			ThrowErrno();
-		return AutoAlloc<FileInfo>(st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
+		return FileInfo(st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
 	}
 	
 	bool PosixFilesystem::IsFile(const String& path) const
@@ -270,12 +270,12 @@ namespace Bricks { namespace IO {
 		return !stat(path.CString(), &st);
 	}
 
-	const String& PosixFilesystem::GetCurrentDirectory() const
+	String PosixFilesystem::GetCurrentDirectory() const
 	{
 		char buffer[PATH_MAX];
 		if (!getcwd(buffer, sizeof(buffer)))
 			ThrowErrno();
-		return AutoAlloc<String>(buffer);
+		return buffer;
 	}
 
 	void PosixFilesystem::DeleteFile(const String& path)
@@ -299,8 +299,8 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 	
-	Stream& FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
+	AutoPointer<Stream> FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
 	{
-		return AutoAlloc<FileStream>(GetFullName(), createmode, mode, permissions, filesystem);
+		return autonew FileStream(GetFullName(), createmode, mode, permissions, filesystem);
 	}
 } }

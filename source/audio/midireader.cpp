@@ -16,17 +16,17 @@ static int ReadInteger(Stream& stream)
 	return ret;
 }
 
-static MidiTimeDivision& ReadDivision(StreamReader& reader)
+static AutoPointer<MidiTimeDivision> ReadDivision(StreamReader& reader)
 {
 	u16 division = reader.ReadInt16();
 	if (division & 0x8000)
-		return AutoAlloc<MidiFramesPerSecondDivision>((division & 0x7F00) >> 8, division & 0xFF);
-	return AutoAlloc<MidiTicksPerBeatDivision>(division & 0x7FFF);
+		return autonew MidiFramesPerSecondDivision((division & 0x7F00) >> 8, division & 0xFF);
+	return autonew MidiTicksPerBeatDivision(division & 0x7FFF);
 }
 
-MidiReader::MidiReader(Stream& stream)
+MidiReader::MidiReader(Pointer<Stream> stream)
 {
-	reader = TempAlloc<StreamReader>(stream, Endian::BigEndian);
+	reader = autonew StreamReader(stream, Endian::BigEndian);
 
 	if (reader->ReadInt32() != MagicHeader1)
 		throw FormatException();
@@ -88,15 +88,15 @@ void MidiReader::SeekTrack(u32 index)
 		NextTrack();
 }
 
-Stream& MidiReader::GetTrackStream()
+AutoPointer<Stream> MidiReader::GetTrackStream()
 {
 	if (EndOfFile())
 		throw InvalidOperationException();
 
-	return AutoAlloc<Substream>(reader->GetStream(), trackPosition, trackSize);
+	return autonew Substream(reader->GetStream(), trackPosition, trackSize);
 }
 
-static MidiMetaEvent& CreateMetaEvent(u32 delta, MidiEventType::Enum type, u32 length, void* data)
+static AutoPointer<MidiMetaEvent> CreateMetaEvent(u32 delta, MidiEventType::Enum type, u32 length, void* data)
 {
 	MidiMetaEvent event(delta, type, length, data);
 	switch (type) {
@@ -107,30 +107,30 @@ static MidiMetaEvent& CreateMetaEvent(u32 delta, MidiEventType::Enum type, u32 l
 		case MidiEventType::Lyric:
 		case MidiEventType::Marker:
 		case MidiEventType::CuePoint:
-			return AutoAlloc<MidiTextEvent>(event);
+			return autonew MidiTextEvent(event);
 		case MidiEventType::Tempo:
-			return AutoAlloc<MidiTempoEvent>(event);
+			return autonew MidiTempoEvent(event);
 		case MidiEventType::TimeSignature:
-			return AutoAlloc<MidiTimeSignatureEvent>(event);
+			return autonew MidiTimeSignatureEvent(event);
 		default:
-			return AutoAlloc<MidiMetaEvent>(event);
+			return autonew MidiMetaEvent(event);
 	}
 }
 
-static MidiChannelEvent& CreateChannelEvent(u32 delta, MidiEventType::Enum type, u8 channel, u8 parameter1, u8 parameter2)
+static AutoPointer<MidiChannelEvent> CreateChannelEvent(u32 delta, MidiEventType::Enum type, u8 channel, u8 parameter1, u8 parameter2)
 {
 	MidiChannelEvent event(delta, type, channel, parameter1, parameter2);
 	switch (type) {
 		case MidiEventType::NoteOn:
 		case MidiEventType::NoteOff:
 		case MidiEventType::NoteAftertouch:
-			return AutoAlloc<MidiNoteEvent>(event);
+			return autonew MidiNoteEvent(event);
 		default:
-			return AutoAlloc<MidiChannelEvent>(event);
+			return autonew MidiChannelEvent(event);
 	}
 }
 
-MidiEvent& MidiReader::ReadEvent()
+AutoPointer<MidiEvent> MidiReader::ReadEvent()
 {
 	if (EndOfTrack())
 		throw InvalidOperationException();

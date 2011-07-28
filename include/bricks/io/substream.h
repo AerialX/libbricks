@@ -12,11 +12,11 @@ namespace Bricks { namespace IO {
 		u64 length;
 
 	public:
-		Substream(Stream& stream, u64 offset) : stream(stream), offset(offset), position(0) { length = stream.GetLength() - offset; }
-		Substream(Stream& stream, u64 offset, u64 length) : stream(stream), offset(offset), position(0), length(0) { }
+		Substream(const Pointer<Stream>& stream, u64 offset) : stream(stream), offset(offset), position(0) { length = stream->GetLength() - offset; }
+		Substream(const Pointer<Stream>& stream, u64 offset, u64 length) : stream(stream), offset(offset), position(0), length(0) { }
 
 		u64 GetOffset() { return offset; }
-		Stream& GetStream() { return *stream; }
+		Pointer<Stream> GetStream() { return *stream; }
 
 		u64 GetLength() const { return length; }
 		void SetLength(u64 length) { this->length = length; }
@@ -44,7 +44,7 @@ namespace Bricks { namespace IO {
 			return size;
 		}
 
-		u64 GetStreamOffset(Pointer<Stream> parent = NULL) {
+		u64 GetStreamOffset(const Pointer<Stream>& parent = NULL) {
 			Pointer<Substream> substream = dynamic_cast<Substream&>(*stream);
 			if (substream && substream != parent)
 				return substream->GetStreamOffset(parent) + offset;

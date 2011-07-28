@@ -24,9 +24,7 @@ namespace Bricks { namespace IO {
 		Endian::Enum endianness;
 
 	public:
-		StreamNavigator(Stream& stream, Endian::Enum endianness) : stream(stream), endianness(endianness) { }
-		
-		operator Stream&() { return *stream; }
+		StreamNavigator(const Pointer<Stream>& stream, Endian::Enum endianness) : stream(stream), endianness(endianness) { }
 
 		virtual void Pad(u64 size) = 0;
 		void PadTo(u64 position) { if (position < stream->GetPosition()) throw InvalidArgumentException("position"); Pad(position - stream->GetPosition()); }
@@ -36,13 +34,13 @@ namespace Bricks { namespace IO {
 		void SetPosition(u64 position) { stream->SetPosition(position); }
 		u64 GetLength() { return stream->GetLength(); }
 		bool IsEndOfFile() { return GetPosition() == GetLength(); }
-		Stream& GetStream() { return *stream; }
+		Pointer<Stream> GetStream() { return stream; }
 	};
 
 	class StreamReader : public StreamNavigator
 	{
 	public:
-		StreamReader(Stream& stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
+		StreamReader(const Pointer<Stream>& stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
 
 #define BRICKS_STREAM_READ(size) \
 		u##size ReadInt##size(Endian::Enum endian = Endian::Unknown) { \
@@ -58,9 +56,9 @@ namespace Bricks { namespace IO {
 		u8 ReadByte() { u8 data; if (stream->Read(&data, sizeof(data)) != sizeof(data)) throw EndOfStreamException(); return data; }
 		void ReadBytes(void* data, size_t size) { if (stream->Read(data, size) != size) throw EndOfStreamException(); }
 
-		String& ReadString() {
+		String ReadString() {
 			// TODO: StringBuilder, this is fail.
-			String& ret = AutoAlloc<String>();
+			String ret;
 			while (true) {
 				int read = stream->ReadByte();
 				if (read <= 0)
@@ -70,10 +68,10 @@ namespace Bricks { namespace IO {
 			return ret;
 		}
 
-		String& ReadString(int length) {
+		String ReadString(int length) {
 			char buffer[length];
 			ReadBytes(buffer, length);
-			return AutoAlloc<String>((const char*)buffer, length);
+			return String(buffer, length);
 		}
 		
 		void Pad(u64 size) {
@@ -90,7 +88,7 @@ namespace Bricks { namespace IO {
 	class StreamWriter : public StreamNavigator
 	{
 	public:
-		StreamWriter(Stream& stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
+		StreamWriter(const Pointer<Stream>& stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
 
 #define BRICKS_STREAM_WRITE(size) \
 		void WriteInt##size(u##size value, Endian::Enum endian = Endian::Unknown) { \

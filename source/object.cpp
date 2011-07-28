@@ -4,18 +4,15 @@ using namespace Bricks::Collections;
 using namespace Bricks::Threading;
 
 namespace Bricks {
-	Internal::ObjectAlloc Internal::Auto;
-
+	namespace Internal {
+		ObjectGlobalAlloc Global;
+	}
 #ifdef BRICKS_CONFIG_RTTI
-	Class& Object::GetClass() const
+	AutoPointer<Class> Object::GetClass() const
 	{
-		return AutoAlloc<Class>(*this);
+		return autonew Class(this);
 	}
 #endif
-
-	typedef Stack< Pointer<ObjectPool> > PoolStack;
-	static ThreadLocalStorage<PoolStack> pools;
-	static PoolStack& GetThreadPools() { if (!pools.HasValue()) pools.SetValue(TempAlloc<PoolStack>()); return pools.GetValue(); }
 
 #ifdef BRICKS_CONFIG_LOGGING_MEMLEAK
 	typedef Array< Pointer<Object> > MemleakArray;
@@ -39,7 +36,7 @@ namespace Bricks {
 		if (!memleaks) {
 			bool status = reportobject;
 			memleaksAllocLock = true;
-			memleaks = Alloc<MemleakArray>();
+			memleaks = new MemleakArray();
 			memleaksAllocLock = false;
 			reportobject = status;
 		}
@@ -74,7 +71,7 @@ namespace Bricks {
 			if (memleaks->GetCount())
 				BRICKS_FEATURE_LOG("MEMORY LEAKS");
 
-			foreach (const Pointer<Object>& object, *memleaks) {
+			foreach (const Pointer<Object>& object, memleaks) {
 				BRICKS_FEATURE_LOG("= %p [%d] %s", object.GetValue(), object->GetReferenceCount() - 1, object->GetDebugString().CString());
 			}
 
@@ -84,33 +81,6 @@ namespace Bricks {
 		memleaksAllocLock = false;
 	}
 #endif
-
-	ObjectPool& ObjectPool::GetCurrentPool()
-	{
-		PoolStack& pools = GetThreadPools();
-		if (!pools.GetCount())
-			throw ObjectPoolLeakException();
-		return *pools.Peek();
-	}
-
-	void ObjectPool::AddObject(Object& object)
-	{
-		BRICKS_FEATURE_LOG_HEAVY("Autoreleasing %p [%d]", &object, object.GetReferenceCount());
-		objects->AddItem(object);
-	}
-
-	ObjectPool::ObjectPool() :
-		objects(TempAlloc<Stack< AutoPointer<Object> > >(Pointer<Object>::Null))
-	{
-		BRICKS_FEATURE_LOG("Installing Pool: %p", this);
-		GetThreadPools().Push(*this);
-	}
-
-	ObjectPool::~ObjectPool()
-	{
-		BRICKS_FEATURE_LOG("Draining Pool: %s", GetDebugString().CString());
-		GetThreadPools().RemoveItem(*this);
-	}
 }
 
 extern "C" __attribute__((weak)) const char* _NSPrintForDebugger(Bricks::Object* object)

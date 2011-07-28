@@ -92,9 +92,9 @@ namespace Bricks {
 	public:
 		Delegate() { }
 		Delegate(Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>& function) : function(function) { }
-		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(TempAlloc<Internal::Function<R(BRICKS_ARGLIST_TYPES)> >(function)) { }
-		template<typename T> Delegate(const T& function) : function(TempAlloc<Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)> >(function)) { }
-		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(TempAlloc<Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)> >(static_cast<void*>(&object), function)) { }
+		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::Function<R(BRICKS_ARGLIST_TYPES)>(function)) { }
+		template<typename T> Delegate(const T& function) : function(autonew Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
+		template<typename T> Delegate(T& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(&object), function)) { }
 
 		BRICKS_COPY_CONSTRUCTOR(Delegate<R(BRICKS_ARGLIST_TYPES)>);
 
@@ -131,12 +131,14 @@ namespace Bricks {
 		AutoPointer<Collections::Collection< EventItem > > list;
 
 	public:
-		Event() : list(TempAlloc<Collections::Array< EventItem, EventItemStorage > >(TempAlloc<EventItemComparison>())) { }
+		//Event() : list(autonew Collections::Array< EventItem, EventItemStorage >(autonew EventItemComparison())) { }
+		Event() : list(autonew Collections::Array< EventItem, EventItemStorage >(autonew EventItemComparison())) { }
 
-		Event& operator +=(EventItem& delegate) { list->AddItem(delegate); return *this; }
+		Event& operator +=(const Pointer<EventItem>& delegate) { list->AddItem(delegate); return *this; }
 		Event& operator +=(const EventItem& delegate) { list->AddItem(CopyPointer<EventItem>(delegate)); return *this; }
-		Event& operator -=(const EventItem& delegate) { list->RemoveItems(delegate); return *this; }
+		Event& operator -=(const Pointer<EventItem>& delegate) { list->RemoveItems(delegate); return *this; }
 		template<typename T> Event& operator -=(const T& object) { Internal::MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)> method(static_cast<void*>(const_cast<T*>(&object))); list->RemoveItems(Delegate<R(BRICKS_ARGLIST_TYPES)>(static_cast<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(method))); return *this; }
+		template<typename T> Event& operator -=(const Pointer<T>& object) { return operator-=<T>(*object); }
 
 		operator bool() const { return list->GetCount(); }
 

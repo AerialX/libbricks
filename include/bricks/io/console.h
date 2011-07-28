@@ -11,10 +11,10 @@ namespace Bricks { namespace IO {
 	class Console : public Object
 	{
 	protected:
-		Console(Stream& in, Stream& out, Stream& error) : In(TempAlloc<StreamReader>(in)), Out(TempAlloc<StreamWriter>(out)), Error(TempAlloc<StreamWriter>(error)) { }
+		Console(Pointer<Stream> in, Pointer<Stream> out, Pointer<Stream> error) : In(autonew StreamReader(in)), Out(autonew StreamWriter(out)), Error(autonew StreamWriter(error)) { }
 
 	public:
-		static Console& Default;
+		static Pointer<Console> Default;
 
 		AutoPointer<StreamReader> In;
 		AutoPointer<StreamWriter> Out;
@@ -27,9 +27,9 @@ namespace Bricks { namespace IO {
 	{
 	public:
 		StandardConsole() : Console(
-				TempAlloc<FileStream>(STDIN_FILENO),
-				TempAlloc<FileStream>(STDOUT_FILENO),
-				TempAlloc<FileStream>(STDERR_FILENO)
+				autonew FileStream(STDIN_FILENO),
+				autonew FileStream(STDOUT_FILENO),
+				autonew FileStream(STDERR_FILENO)
 		) { }
 	};
 } }

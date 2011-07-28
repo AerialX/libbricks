@@ -71,9 +71,9 @@ namespace Bricks { namespace Collections {
 		}
 
 	public:
-		Dictionary(const Pointer< ValueComparison< TKey > >& keycomparison = TempAlloc<OperatorValueComparison< TKey > >(), const Pointer< ValueComparison< TValue > >& comparison = TempAlloc<OperatorValueComparison< TValue > >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
+		Dictionary(const Pointer< ValueComparison< TKey > >& keycomparison = autonew OperatorValueComparison< TKey >(), const Pointer< ValueComparison< TValue > >& comparison = autonew OperatorValueComparison< TValue >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { }
 		Dictionary(const Dictionary< TKey, TValue >& dictionary, const Pointer< ValueComparison< TKey > >& keycomparison = NULL, const Pointer< ValueComparison< TValue > >& comparison = NULL) : keycomparison(keycomparison ?: dictionary.keycomparison), comparison(comparison ?: dictionary.comparison), map(dictionary.map) { }
-		Dictionary(const Collection< Pair< TKey, TValue > >& collection, const Pointer< ValueComparison< TKey > >& keycomparison = TempAlloc<OperatorValueComparison< TKey > >(), const Pointer< ValueComparison< TValue > >& comparison = TempAlloc<OperatorValueComparison< TValue > >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
+		Dictionary(const Collection< Pair< TKey, TValue > >& collection, const Pointer< ValueComparison< TKey > >& keycomparison = autonew OperatorValueComparison< TKey >(), const Pointer< ValueComparison< TValue > >& comparison = autonew OperatorValueComparison< TValue >()) : keycomparison(keycomparison), comparison(comparison), map(keycomparison) { AddItems(collection); }
 		virtual ~Dictionary() { }
 
 		TValue& GetItem(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter != map.end()) return iter->second; return map[key] = value; }
@@ -101,7 +101,7 @@ namespace Bricks { namespace Collections {
 		void Clear() { map.clear(); }
 		
 		// Iterator
-		Iterator< Pair< TKey, TValue > >& GetIterator() const { return AutoAlloc<dictiter>(const_cast<dicttype&>(*this)); }
+		AutoPointer< Iterator< Pair< TKey, TValue > > > GetIterator() const { return autonew dictiter(const_cast<dicttype&>(*this)); }
 		
 		TValue& operator[](const TKey& key) { return GetItem(key); }
 		const TValue& operator[](const TKey& key) const { return GetItem(key); }
@@ -120,7 +120,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
-		virtual Pair< TKey, TValue >& GetCurrent() const { if (!first || position == end) throw InvalidIteratorException(); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
+		virtual Pointer< Pair< TKey, TValue > > GetCurrent() const { if (!first || position == end) throw InvalidIteratorException(); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
 		virtual bool MoveNext() { if (!first) return (first = true) && position != end; return position != end && ++position != end; }
 	};
 } }

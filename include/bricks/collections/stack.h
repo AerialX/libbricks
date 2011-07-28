@@ -47,9 +47,9 @@ namespace Bricks { namespace Collections {
 		}
 		
 	public:
-		Stack(const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { }
-		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
-		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = TempAlloc<OperatorValueComparison< T > >()) : comparison(comparison) { AddItems(collection); }
+		Stack(const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison) { }
+		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
+		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison) { AddItems(collection); }
 		
 		virtual ~Stack() { }
 
@@ -61,7 +61,7 @@ namespace Bricks { namespace Collections {
 		const T& Peek() const { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
 
 		// Iterator
-		virtual Iterator< T >& GetIterator() const { return AutoAlloc<StackIterator< T, V > >(const_cast<Stack< T, V >&>(*this)); }
+		virtual AutoPointer< Iterator< T > > GetIterator() const { return autonew StackIterator< T, V >(const_cast<Stack< T, V >&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return stack.size(); };
@@ -93,7 +93,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
-		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual Pointer< T > GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 } }

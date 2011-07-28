@@ -6,25 +6,24 @@ namespace Bricks {
 	class Exception : public Object
 	{
 	protected:
-		CopyPointer<String> Message;
+		String Message;
 
 	public:
 		Exception() : Message(String::Empty) { }
 		Exception(const String& message) : Message(message) { }
-		virtual ~Exception() { }
 
-		const String& GetMessage() const { return *Message; }
+		String GetMessage() const { return Message; }
 	};
 
 	class InvalidArgumentException : public Exception
 	{
 	protected:
-		CopyPointer<String> Argument;
+		String Argument;
 
 	public:
 		InvalidArgumentException(const String& argument = String::Empty, const String& message = String::Empty) : Exception(message), Argument(argument) { }
 
-		const String& GetArgument() const { return *Argument; }
+		String GetArgument() const { return Argument; }
 	};
 
 	class InvalidOperationException : public Exception
