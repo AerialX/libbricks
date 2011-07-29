@@ -12,7 +12,7 @@
 #define BRICKS_COPY_CONSTRUCTOR(T) public: virtual AutoPointer< T > Copy() const { return autonew T(*this); }
 #define BRICKS_COPY_HIDE(T) protected: T(const T&); T& operator=(const T&);
 
-#define autonew (Bricks::Internal::AutoAllocPointer)new
+#define autonew Bricks::Internal::AutoAllocPointer() * new
 
 namespace Bricks {
 	class Class;
@@ -159,10 +159,9 @@ namespace Bricks {
 	};
 
 	namespace Internal {
-		class AutoAllocPointer : public AutoPointer<Object>
+		struct AutoAllocPointer
 		{
-		public:
-			template<typename U> AutoAllocPointer(U* t) : AutoPointer<Object>(t, false) { }
+			template<typename U> AutoPointer<U> operator *(U* t) { return AutoPointer<U>(t, false); }
 		};
 	}
 

@@ -32,7 +32,7 @@ Alloc<>, AutoAlloc<>
 new, autonew
 ------------
 This is the new solution that was chosen for the transition to a focus on pointer types. Pointer<>s may be simply assigned with the standard C++ new. The autonew convenience macro is provided to create an AutoPointer<> (required, to keep the reference count from being one too high if you just assign a new object to an AutoPointer<> without manually Release()ing it).
-The approach is to define autonew as new preceeded by a cast, allowing a temporary type to do something with the object before passing it back along. This could also be used in the autoalloc option to remove its hackiness cons.
+The approach is to define autonew as new preceeded by an operator overload, allowing a temporary type to do something with the object before passing it back along. This could also be used in the autoalloc option to remove its hackiness cons.
  - Pros
     - Much less hacky. Just adds one new unintrusive keyword, "autonew"
     - None of the cons from the other options.
