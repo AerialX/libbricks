@@ -90,7 +90,7 @@ static void testCollections()
 	array->AddItem(3);
 	array->AddItem(7);
 	foreach (int item, array)
-		Console::Default->Out->WriteLine(String::Format("Array Item: %d", item).CString());
+		Console::Default->Out->WriteLine(String::Format("Array Item: %d", item));
 
 	Console::Default->Out->WriteLine(" --- <int, String> Dictionary Test --- ");
 	Pointer<Dictionary<int, String> > dict = new Dictionary<int, String>();
@@ -99,8 +99,8 @@ static void testCollections()
 	dict->Add(3, "three");
 	Pair<int, String> item; // Must be declared outside of the foreach due to a preprocessor limitation
 	foreach (item, dict)
-		Console::Default->Out->WriteLine(String::Format("%d - %s", item.GetKey(), item.GetValue().CString()).CString());
-	Console::Default->Out->WriteLine(String::Format("Item at key 1: %s", dict->GetItem(1).CString()).CString());
+		Console::Default->Out->WriteLine(String::Format("%d - %s", item.GetKey(), item.GetValue().CString()));
+	Console::Default->Out->WriteLine(String::Format("Item at key 1: %s", dict->GetItem(1).CString()));
 	dict->Release();
 }
 
