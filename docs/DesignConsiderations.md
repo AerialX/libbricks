@@ -79,3 +79,19 @@ Is it a safe to assume the behaviour of a function from the perspective of its i
 
 One solution is to just always use AutoPointer<>, screw it all and just needlessly retain/release whenever a function returns.
 Alternatively, the Pointer<> class could be modified to behave like an AutoPointer when constructed in a certain way. There would be the added overhead of a sort of bool value per pointer, as well as a non-trivial destructor.
+
+As much as I would like to use a less intrusive method, and leave this up to the implementation... Objective-C naming conventions define whether an object is retained or not, so libbricks should be able to use return types for the same thing. The added complexity comes from whether the object being returned is autoreleased, or just a weak pointer.
+
+Options:
+ - Public interfaces always return AutoPointer<>s. While this will "just work" it adds needless retain/releases upon function returns.
+ - Make a MagicPointer<> that can be constructed to act like either a Pointer<> or AutoPointer<> on destruction. This adds extra data passed along with every return.
+ - Interface design enforces either Pointer<> or AutoPointer<> return types. May cause problems with returning autoreleased pointers vs weak ones in an implementation.
+    - A variant on this is to almost always return AutoPointer<>, unless it is explicitly supposed to return a weak pointer - as opposed to preferring Pointer<> return types. This is similar to the always-return-AutoPointer<> option.
+ - Redesign to follow the Objective-C style: prefer working with raw pointers and just use autorelease pools.
+
+Pointer<> vs Pointer* in public interfaces
+==========================================
+
+The pre-pointer interface used to prefer the passing of arguments by reference. Maybe this should have changed to things being passed by native C pointers rather than by Pointer<> types.
+
+Basic concern: that the compiler is constructing a new Pointer<> object every time you call a function. This is unnecessary. If calling conventions say types by value and const references may only be used for value types, it is unnecessary to use the Pointer<> type for anything but null checking (which is a performance hit anyway).
