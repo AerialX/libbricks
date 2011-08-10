@@ -68,8 +68,8 @@ namespace Bricks {
 		Object& operator =(const Object& object) { referenceCount = object.referenceCount; return *this; }
 
 	public:
-		Object() { BRICKS_FEATURE_LOGGING_MEMLEAK(); BRICKS_FEATURE_LOG_HEAVY(" %p [%d]", this, GetReferenceCount());}
-		virtual ~Object() { }
+		Object() { BRICKS_FEATURE_LOGGING_MEMLEAK(); BRICKS_FEATURE_LOG_HEAVY("> %p [%d]", this, GetReferenceCount());}
+		virtual ~Object() { BRICKS_FEATURE_LOG_HEAVY("< %p [%d]", this, GetReferenceCount()); }
 
 #ifdef BRICKS_CONFIG_RTTI
 		ReturnPointer<Class> GetClass() const;
