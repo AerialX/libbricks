@@ -19,9 +19,9 @@ namespace Bricks { namespace Collections {
 	class Iterator
 	{
 	public:
-		virtual Pointer< T > GetCurrent() const = 0;
+		virtual T& GetCurrent() const = 0;
 		virtual bool MoveNext() = 0;
-		virtual AutoPointer< Collection< T > > GetAllObjects() { throw NotImplementedException(); };
+		virtual ReturnPointer< Collection< T > > GetAllObjects() { throw NotImplementedException(); };
 	};
 
 	template<typename T>
@@ -30,7 +30,7 @@ namespace Bricks { namespace Collections {
 	public:
 		typedef T IteratorType;
 
-		virtual AutoPointer< Iterator< T > > GetIterator() const = 0;
+		virtual ReturnPointer< Iterator< T > > GetIterator() const = 0;
 
 		void Iterate(const Delegate<bool(T&)>& delegate);
 	};
@@ -47,19 +47,19 @@ namespace Bricks { namespace Collections { namespace Internal {
 	struct IteratorType : public IteratorTypeBase
 	{
 		AutoPointer< Iterator<T> > value;
-		IteratorType(const Pointer< Iterator<T> >& value) : IteratorTypeBase(), value(value) { }
+		IteratorType(const Pointer< Iterator<T> >& value) : value(value) { }
 	};
 	template<typename T>
-	inline IteratorType<T> IteratorContainerPack(const Iterable<T>& t) { return IteratorType<T>(t.GetIterator()); }
+	static inline IteratorType<T> IteratorContainerPack(const Iterable<T>& t) { return IteratorType<T>(t.GetIterator()); }
 	template<typename T>
-	inline IteratorType<typename T::IteratorType> IteratorContainerPack(const Pointer<T>& t) { return IteratorContainerPack(*t); }
+	static inline IteratorType<typename T::IteratorType> IteratorContainerPack(const Pointer<T>& t) { return IteratorContainerPack(*t); }
 
 	template<typename T>
-	inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>& dummy, const IteratorTypeBase& t) { return *static_cast<const IteratorType<T>&>(t).value; }
+	static inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>& dummy, const IteratorTypeBase& t) { return *static_cast<const IteratorType<T>&>(t).value; }
 	template<typename T>
-	inline Iterator<typename T::IteratorType>& IteratorContainerUnpack(const Pointer<T>& dummy, const IteratorTypeBase& t) { return IteratorContainerUnpack(*dummy, t); }
+	static inline Iterator<typename T::IteratorType>& IteratorContainerUnpack(const Pointer<T>& dummy, const IteratorTypeBase& t) { return IteratorContainerUnpack(*dummy, t); }
 } } }
 #define foreach_container Bricks::Collections::Internal::IteratorContainerPack
 #define foreach_iterator Bricks::Collections::Internal::IteratorContainerUnpack
 #define foreach_basetype const Bricks::Collections::Internal::IteratorTypeBase&
-#define foreach(val, list) for (foreach_basetype iter = foreach_container(list); foreach_iterator(list, iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = *foreach_iterator(list, iter).GetCurrent(); !iter.state; iter.state = true)
+#define foreach(val, list) for (foreach_basetype iter = foreach_container(list); foreach_iterator(list, iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = foreach_iterator(list, iter).GetCurrent(); !iter.state; iter.state = true)

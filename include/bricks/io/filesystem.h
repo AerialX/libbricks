@@ -40,7 +40,7 @@ namespace Bricks { namespace IO {
 		virtual void Close(FileHandle fd) = 0;
 
 		virtual FileHandle OpenDirectory(const String& path) = 0;
-		virtual AutoPointer<FileNode> ReadDirectory(FileHandle fd) = 0;
+		virtual ReturnPointer<FileNode> ReadDirectory(FileHandle fd) = 0;
 		virtual size_t TellDirectory(FileHandle fd) = 0;
 		virtual void SeekDirectory(FileHandle fd, size_t offset) = 0;
 		virtual void CloseDirectory(FileHandle fd) = 0;
@@ -109,7 +109,7 @@ namespace Bricks { namespace IO {
 		void Truncate(FileHandle fd, u64 length);
 		
 		FileHandle OpenDirectory(const String& path);
-		AutoPointer<FileNode> ReadDirectory(FileHandle fd);
+		ReturnPointer<FileNode> ReadDirectory(FileHandle fd);
 		size_t TellDirectory(FileHandle fd);
 		void SeekDirectory(FileHandle fd, size_t offset);
 		void CloseDirectory(FileHandle fd);
@@ -159,7 +159,7 @@ namespace Bricks { namespace IO {
 		FilePath GetFilePath() const { return path; }
 
 		FileInfo GetParent() const { return filesystem->Stat(path.GetDirectory()); }
-		Pointer<Filesystem> GetFilesystem() const { return filesystem; }
+		ReturnPointer<Filesystem> GetFilesystem() const { return filesystem; }
 	};
 
 	class FilesystemNodeIterator;
@@ -197,11 +197,11 @@ namespace Bricks { namespace IO {
 			*this = this->filesystem->Stat(path);
 		}
 
-		AutoPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullName()).GetDirectory(), filesystem); }
+		ReturnPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullName()).GetDirectory(), filesystem); }
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; throw NotSupportedException(); }
-		AutoPointer<Stream> OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
+		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
 
-		AutoPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
+		ReturnPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
 	};
 
 	class FilesystemNodeIterator : public Object, public Bricks::Collections::Iterator<FileNode>
@@ -218,9 +218,9 @@ namespace Bricks { namespace IO {
 			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetFullName())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
-		Pointer< FileNode > GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return current; }
+		FileNode& GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return *current; }
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	
-	inline AutoPointer< Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
+	inline ReturnPointer< Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
 } }

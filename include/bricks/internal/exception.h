@@ -9,10 +9,15 @@ namespace Bricks {
 		String Message;
 
 	public:
-		Exception() : Message(String::Empty) { }
-		Exception(const String& message) : Message(message) { }
+		Exception(const String& message = String::Empty) : Message(message) { }
 
 		String GetMessage() const { return Message; }
+	};
+
+	class InternalInconsistencyException : public Exception
+	{
+	public:
+		InternalInconsistencyException(const String& message = String::Empty) : Exception(message) { }
 	};
 
 	class InvalidArgumentException : public Exception

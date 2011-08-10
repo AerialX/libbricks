@@ -101,7 +101,7 @@ namespace Bricks { namespace Collections {
 		void Clear() { map.clear(); }
 		
 		// Iterator
-		AutoPointer< Iterator< Pair< TKey, TValue > > > GetIterator() const { return autonew dictiter(const_cast<dicttype&>(*this)); }
+		ReturnPointer< Iterator< Pair< TKey, TValue > > > GetIterator() const { return autonew dictiter(const_cast<dicttype&>(*this)); }
 		
 		TValue& operator[](const TKey& key) { return GetItem(key); }
 		const TValue& operator[](const TKey& key) const { return GetItem(key); }
@@ -120,7 +120,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
-		virtual Pointer< Pair< TKey, TValue > > GetCurrent() const { if (!first || position == end) throw InvalidIteratorException(); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
+		virtual Pair< TKey, TValue >& GetCurrent() const { if (!first || position == end) throw InvalidIteratorException(); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
 		virtual bool MoveNext() { if (!first) return (first = true) && position != end; return position != end && ++position != end; }
 	};
 } }

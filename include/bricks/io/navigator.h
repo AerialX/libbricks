@@ -34,7 +34,7 @@ namespace Bricks { namespace IO {
 		void SetPosition(u64 position) { stream->SetPosition(position); }
 		u64 GetLength() { return stream->GetLength(); }
 		bool IsEndOfFile() { return GetPosition() == GetLength(); }
-		Pointer<Stream> GetStream() { return stream; }
+		ReturnPointer<Stream> GetStream() { return stream; }
 	};
 
 	class StreamReader : public StreamNavigator

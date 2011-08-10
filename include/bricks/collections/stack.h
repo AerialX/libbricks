@@ -61,7 +61,7 @@ namespace Bricks { namespace Collections {
 		const T& Peek() const { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
 
 		// Iterator
-		virtual AutoPointer< Iterator< T > > GetIterator() const { return autonew StackIterator< T, V >(const_cast<Stack< T, V >&>(*this)); }
+		virtual ReturnPointer< Iterator< T > > GetIterator() const { return autonew StackIterator< T, V >(const_cast<Stack< T, V >&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return stack.size(); };
@@ -93,7 +93,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
-		virtual Pointer< T > GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 } }

@@ -3,6 +3,8 @@ This document lists libbricks design decisions that have not been made yet.
 alloc vs. Alloc<>
 =================
 
+Winner: new, autonew
+
 alloc, autoalloc
 ----------------
  - Pros
@@ -40,7 +42,7 @@ The approach is to define autonew as new preceeded by an operator overload, allo
 inheritance vs. virtual inheritance
 ===================================
 
-This is likely learning toward a conversion back to standard inheritance.
+Winner: standard inheritance
 
 Inheritance
 -----------

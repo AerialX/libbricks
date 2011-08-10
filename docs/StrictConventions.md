@@ -1,11 +1,12 @@
 This is like Conventions.md, but hard rules. Consider Conventions.md scribbled notes, these are teh rulez.
 
 Calling Conventions For Public Interfaces
- - Types are preferably passed by reference (ideally const reference when applicable).
- - Types may be passed by Pointer<> instead, but only when a NULL value is valid in the context.
- - Types may not be passed by value, unless they are a designated value type (in which case, const references are still preferred).
- - No C pointers for non-value types (and prefer void* for raw data).
- - These same rules apply to return values, with the addition of AutoPointer<> being used when returning a temporary.
+ - Value types are preferably passed by const reference, otherwise by value.
+ - Non-value types are always passed by const Pointer<>&.
+ - Use void* (preferably const void* if possible) for raw data.
+ - Similar rules apply to return types, except in the case of non-value types:
+    - Non-value types are preferably returned as ReturnPointer<>s. It is up to the implementation whether it is to be autoreleased upon return or not.
+    - Non-value types may otherwise be returned as C pointers or Pointer<>s if and only if they are meant to be weak pointers. Keep in mind that ReturnPointer<> may be used as a weak pointer, and is thus preferred when defining class public interfaces.
 
 Value Types
  - You may use any libbricks class as a value on the stack, or privately as class members in cases when polymorphism is unnecessary.

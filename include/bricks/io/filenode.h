@@ -50,9 +50,9 @@ namespace Bricks { namespace IO {
 		virtual FileType::Enum GetType() const { return type; }
 		virtual const String GetName() const { return path.GetFileName(); }
 		virtual const String GetFullName() const { if (!path.IsPathRooted()) throw NotSupportedException(); return path; }
-		virtual AutoPointer<FileNode> GetParent() const = 0;
+		virtual ReturnPointer<FileNode> GetParent() const = 0;
 		virtual u64 GetSize() const = 0;
-		virtual AutoPointer<Stream> OpenStream(
+		virtual ReturnPointer<Stream> OpenStream(
 			FileOpenMode::Enum createmode = FileOpenMode::Create,
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite

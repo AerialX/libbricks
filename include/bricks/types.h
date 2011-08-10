@@ -115,6 +115,8 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #define BRICKS_FEATURE_LOG_HEAVY(...)
 #endif
 
+#define BRICKS_FEATURE_ASSERT(cond) if (cond) (void)0; else throw InternalInconsistencyException("Assert failed: " # cond)
+
 /* Missing Features */
 #ifdef BRICKS_FEATURE_MINGW
 #define S_IRWXG	00070

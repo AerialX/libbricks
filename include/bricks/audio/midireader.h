@@ -25,7 +25,7 @@ namespace Bricks { namespace Audio {
 		void ReadTrack();
 
 	public:
-		MidiReader(Pointer<IO::Stream> stream);
+		MidiReader(const Pointer<IO::Stream>& stream);
 		~MidiReader();
 
 		bool EndOfFile() const { return trackIndex >= trackCount; }
@@ -33,9 +33,9 @@ namespace Bricks { namespace Audio {
 
 		void NextTrack();
 		void SeekTrack(u32 index);
-		AutoPointer<IO::Stream> GetTrackStream();
+		ReturnPointer<IO::Stream> GetTrackStream();
 
-		AutoPointer<MidiEvent> ReadEvent();
+		ReturnPointer<MidiEvent> ReadEvent();
 
 		MidiType::Enum GetMidiType() const { return midiType; }
 		u16 GetTrackCount() const { return trackCount; }

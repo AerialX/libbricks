@@ -7,12 +7,6 @@ namespace Bricks {
 	namespace Internal {
 		ObjectGlobalAlloc Global;
 	}
-#ifdef BRICKS_CONFIG_RTTI
-	AutoPointer<Class> Object::GetClass() const
-	{
-		return autonew Class(this);
-	}
-#endif
 
 #ifdef BRICKS_CONFIG_LOGGING_MEMLEAK
 	typedef Array< Pointer<Object> > MemleakArray;
@@ -65,18 +59,14 @@ namespace Bricks {
 
 		memleaksAllocLock = true;
 
-		{
-			ObjectPool pool;
+		if (memleaks->GetCount())
+			BRICKS_FEATURE_LOG("MEMORY LEAKS");
 
-			if (memleaks->GetCount())
-				BRICKS_FEATURE_LOG("MEMORY LEAKS");
-
-			foreach (const Pointer<Object>& object, memleaks) {
-				BRICKS_FEATURE_LOG("= %p [%d] %s", object.GetValue(), object->GetReferenceCount() - 1, object->GetDebugString().CString());
-			}
-
-			memleaks->Release();
+		foreach (const Pointer<Object>& object, memleaks) {
+			BRICKS_FEATURE_LOG("= %p [%d] %s", object.GetValue(), object->GetReferenceCount() - 1, object->GetDebugString().CString());
 		}
+
+		memleaks->Release();
 
 		memleaksAllocLock = false;
 	}

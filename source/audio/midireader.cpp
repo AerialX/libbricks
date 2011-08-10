@@ -4,27 +4,27 @@ using namespace Bricks;
 using namespace Bricks::IO;
 using namespace Bricks::Audio;
 
-static int ReadInteger(Stream& stream)
+static int ReadInteger(const Pointer<Stream>& stream)
 {
 	int ret = 0;
 	u8 num;
 	do {
-		num = stream.ReadByte();
+		num = stream->ReadByte();
 		ret <<= 7;
 		ret |= num & 0x7F;
 	} while (num & 0x80);
 	return ret;
 }
 
-static AutoPointer<MidiTimeDivision> ReadDivision(StreamReader& reader)
+static ReturnPointer<MidiTimeDivision> ReadDivision(const Pointer<StreamReader>& reader)
 {
-	u16 division = reader.ReadInt16();
+	u16 division = reader->ReadInt16();
 	if (division & 0x8000)
 		return autonew MidiFramesPerSecondDivision((division & 0x7F00) >> 8, division & 0xFF);
 	return autonew MidiTicksPerBeatDivision(division & 0x7FFF);
 }
 
-MidiReader::MidiReader(Pointer<Stream> stream)
+MidiReader::MidiReader(const Pointer<Stream>& stream)
 {
 	reader = autonew StreamReader(stream, Endian::BigEndian);
 
@@ -88,7 +88,7 @@ void MidiReader::SeekTrack(u32 index)
 		NextTrack();
 }
 
-AutoPointer<Stream> MidiReader::GetTrackStream()
+ReturnPointer<Stream> MidiReader::GetTrackStream()
 {
 	if (EndOfFile())
 		throw InvalidOperationException();
@@ -130,7 +130,7 @@ static AutoPointer<MidiChannelEvent> CreateChannelEvent(u32 delta, MidiEventType
 	}
 }
 
-AutoPointer<MidiEvent> MidiReader::ReadEvent()
+ReturnPointer<MidiEvent> MidiReader::ReadEvent()
 {
 	if (EndOfTrack())
 		throw InvalidOperationException();

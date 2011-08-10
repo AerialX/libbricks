@@ -204,7 +204,7 @@ namespace Bricks { namespace IO {
 		return (FileHandle)dir;
 	}
 	
-	AutoPointer<FileNode> PosixFilesystem::ReadDirectory(FileHandle fd)
+	ReturnPointer<FileNode> PosixFilesystem::ReadDirectory(FileHandle fd)
 	{
 		errno = 0;
 		struct dirent* dir = readdir((DIR*)fd);
@@ -299,7 +299,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 	
-	AutoPointer<Stream> FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
+	ReturnPointer<Stream> FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
 	{
 		return autonew FileStream(GetFullName(), createmode, mode, permissions, filesystem);
 	}

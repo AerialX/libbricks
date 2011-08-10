@@ -24,7 +24,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		ArrayIterator(Array< T, V >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
-		virtual Pointer< T > GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 
@@ -63,7 +63,7 @@ namespace Bricks { namespace Collections {
 		virtual ~Array() { }
 
 		// Iterator
-		virtual AutoPointer< Iterator< T > > GetIterator() const { return autonew ArrayIterator< T, V >(const_cast<Array< T, V >&>(*this)); }
+		virtual ReturnPointer< Iterator< T > > GetIterator() const { return autonew ArrayIterator< T, V >(const_cast<Array< T, V >&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); };
