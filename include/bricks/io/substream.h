@@ -45,8 +45,8 @@ namespace Bricks { namespace IO {
 		}
 
 		u64 GetStreamOffset(const Pointer<Stream>& parent = NULL) {
-			Pointer<Substream> substream = dynamic_cast<Substream&>(*stream);
-			if (substream && substream != parent)
+			Pointer<Substream> substream = stream.AsType<Substream>();
+			if (substream && stream != parent)
 				return substream->GetStreamOffset(parent) + offset;
 			return offset;
 		}

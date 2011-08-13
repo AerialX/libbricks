@@ -19,7 +19,6 @@ Misc
  - Start separating namespaces into their own libraries (Bricks::Audio carries too much bulk)
  - Find a good build system.
  - Decide on a keyword to #define as (*this), self is taken by ObjC. myself?
- - Pointer<T>::AsType<U>() static_casts or dynamic_casts to a Pointer<U>. Use in substream.h
  - Add operator[] forwarding to Pointer<>
  - Add a SFINAE specialization of ReturnPointer<> for native types, where it just inherits from Pointer<> instead.
  - Add a RELEASE type define that removes debug-type behaviour (null pointer checks, asserts, etc).

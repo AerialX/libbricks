@@ -120,6 +120,16 @@ namespace Bricks {
 		operator bool() const { return value; }
 
 		void Swap(const Pointer< T >& t) { value = t.value; }
+
+		bool operator==(const Pointer< T >& t) { return value == t.value; }
+		bool operator!=(const Pointer< T >& t) { return value != t.value; }
+		template<typename U> bool operator==(const Pointer< U >& t) { return value == t.GetValue(); }
+		template<typename U> bool operator!=(const Pointer< U >& t) { return value != t.GetValue(); }
+
+		template<typename U> bool IsType() { return AsType<U>(); }
+
+		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { if (!value) return Pointer<U>::Null; return static_cast<U*>(value); }
+		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { if (!value) return Pointer<U>::Null; return dynamic_cast<U*>(value); }
 	};
 	template<typename T> Pointer< T > Pointer< T >::Null = Pointer< T >(NULL);
 	
@@ -129,10 +139,8 @@ namespace Bricks {
 	template<typename T> class AutoPointer : public Pointer< T >
 	{
 	private:
-		template<typename U> static void Retain(AutoPointer<U>& ptr, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) static_cast<Object*>(ptr.GetValue())->Retain(); }
-		template<typename U> static void Release(AutoPointer<U>& ptr, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) static_cast<Object*>(ptr.GetValue())->Release(); }
-		template<typename U> static void Retain(AutoPointer<U>& ptr, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) dynamic_cast<Object*>(ptr.GetValue())->Retain(); }
-		template<typename U> static void Release(AutoPointer<U>& ptr, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<Object, U>::Value>::Type* dummy = NULL) { if (ptr) dynamic_cast<Object*>(ptr.GetValue())->Release(); }
+		template<typename U> static void Retain(const Pointer<U>& ptr) { if (ptr) ptr.template AsType<Object>()->Retain(); }
+		template<typename U> static void Release(const Pointer<U>& ptr) { if (ptr) ptr.template AsType<Object>()->Release(); }
 
 	public:
 		AutoPointer() { }
