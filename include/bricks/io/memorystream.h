@@ -19,6 +19,10 @@ namespace Bricks { namespace IO {
 	public:
 		MemoryStream() : data(NULL), length(0), position(0), allocated(0) { }
 		MemoryStream(unsigned long size) : data(NULL), length(0), position(0), allocated(0) { Allocate(size); }
+		MemoryStream(const MemoryStream& stream) : data(NULL), length(stream.length), allocated(0) { Allocate(length); memcpy(data, stream.data, length); }
+		~MemoryStream() { free(data); }
+
+		MemoryStream& operator =(const MemoryStream& stream) { length = stream.length; Allocate(length); memcpy(data, stream.data, length); return *this; }
 
 		void Allocate(unsigned long size) {
 			allocated = BRICKS_FEATURE_ROUND_UP(size, BlockSize);
