@@ -32,5 +32,4 @@ Designated Value Types
 Operator Overloading
  - Use alternatives such as EqualTo() instead.
  - Overloaded operators will only be used for value types.
-    - Exception: Pointer<> types will forward along operator[], so feel free to overload that.
-    - And remember to still overload the assignment operator.
+    - But remember to still overload the assignment operator.
