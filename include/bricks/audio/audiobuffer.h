@@ -20,7 +20,7 @@ namespace Bricks { namespace Audio {
 				buffer[i] = new AudioSample[size];
 		}
 
-		void Destruct(u32 channels, u32 size) {
+		void Destruct() {
 			for (u32 i = 0; i < channels; i++)
 				delete[] buffer[i];
 			delete[] buffer;
