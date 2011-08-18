@@ -21,8 +21,8 @@ namespace Bricks { namespace Audio {
 			Marker				= 0x06,
 			CuePoint			= 0x07,
 
-			NoteOn				= 0x08,
-			NoteOff				= 0x09,
+			NoteOff				= 0x08,
+			NoteOn				= 0x09,
 			NoteAftertouch		= 0x0a,
 			Controller			= 0x0b,
 			ProgramChange		= 0x0c,
