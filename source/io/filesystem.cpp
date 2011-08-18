@@ -172,7 +172,7 @@ namespace Bricks { namespace IO {
 
 	u64 PosixFilesystem::Tell(FileHandle fd) const
 	{
-		off64_t ret = lseek64((int)fd, 0, SEEK_SET);
+		off64_t ret = lseek64((int)fd, 0, SEEK_CUR);
 		if (ret == (off64_t)-1)
 			ThrowErrno();
 		return (u64)ret;
