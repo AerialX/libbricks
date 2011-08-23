@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bricks/object.h"
+#include "bricks/io/endian.h"
 
 namespace Bricks { namespace Audio {
 	namespace MidiType {
@@ -50,6 +51,7 @@ namespace Bricks { namespace Audio {
 
 		u32 GetDeltaTime() const { return deltaTime; }
 		MidiEventType::Enum GetType() const { return type; }
+		void SetType(MidiEventType::Enum value) { type = value; }
 	};
 
 	struct MidiMetaEvent : public MidiEvent
@@ -61,7 +63,8 @@ namespace Bricks { namespace Audio {
 	public:
 		MidiMetaEvent(u32 deltaTime, MidiEventType::Enum type, u32 length, const void* data) : MidiEvent(deltaTime, type), length(length) {
 			this->data = new u8[length];
-			memcpy(this->data, data, length);
+			if (data)
+				memcpy(this->data, data, length);
 		}
 
 		MidiMetaEvent(const MidiMetaEvent& event) : MidiEvent(event) {
@@ -148,7 +151,13 @@ namespace Bricks { namespace Audio {
 
 	struct MidiTempoEvent : public MidiMetaEvent
 	{
+		MidiTempoEvent(u32 deltaTime, u32 mpqn) : MidiMetaEvent(deltaTime, MidiEventType::Tempo, 3, NULL) { u8 subdata[4]; Bricks::IO::EndianConvertBE32(subdata, mpqn); memcpy(data, subdata + 1, 3); }
 		MidiTempoEvent(const MidiMetaEvent& event) : MidiMetaEvent(event) { }
+		
+		static const u32 MicrosecondsPerMinute = 60000000;
+		
+		u32 GetMicrosecondsPerQuarterNote() const { u8 subdata[4]; subdata[0] = 0; memcpy(subdata + 1, data, 3); return Bricks::IO::EndianConvertBE32(subdata); }
+		float GetBeatsPerMinute() const { return (float)MicrosecondsPerMinute / GetMicrosecondsPerQuarterNote(); }
 	};
 
 	struct MidiTimeSignatureEvent : public MidiMetaEvent

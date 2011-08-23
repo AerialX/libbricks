@@ -53,7 +53,7 @@ void MidiReader::ReadTrack()
 	if (reader->ReadInt32() != MagicTrackHeader)
 		throw FormatException();
 
-	trackSize = reader->ReadInt32() - sizeof(u32) * 2;
+	trackSize = reader->ReadInt32();
 
 	trackPosition = reader->GetPosition();
 

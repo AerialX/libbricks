@@ -37,6 +37,7 @@ namespace Bricks { namespace Audio {
 
 		ReturnPointer<MidiEvent> ReadEvent();
 
+		ReturnPointer<MidiTimeDivision> GetDivision() const { return division; }
 		MidiType::Enum GetMidiType() const { return midiType; }
 		u16 GetTrackCount() const { return trackCount; }
 		u16 GetCurrentTrack() const { return trackIndex; }
