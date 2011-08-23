@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 namespace Bricks {
-//	const Pointer<String>& String::Empty = GlobalAlloc<String>();
 	const String String::Empty;
 
 	String String::Format(const char* format, ...)
