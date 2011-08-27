@@ -40,7 +40,6 @@ MidiReader::MidiReader(const Pointer<Stream>& stream)
 	trackIndex = 0;
 	ReadTrack();
 
-	reader->Retain();
 	this->reader = reader;
 }
 
