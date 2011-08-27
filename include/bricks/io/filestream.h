@@ -28,5 +28,8 @@ namespace Bricks { namespace IO {
 		void Seek(s64 offset, SeekType::Enum whence) { System->Seek(Handle, offset, whence); }
 		void Flush() { System->Flush(Handle); }
 		void Close() { System->Close(Handle); }
+
+		ReturnPointer<Filesystem> GetFilesystem() const { return System; }
+		FileHandle GetHandle() const { return Handle; }
 	};
 } }
