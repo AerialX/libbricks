@@ -2,7 +2,7 @@ TARGET		:=	libbricks.so
 ATARGET		:=	libbricks.a
 BUILD		:=	build
 DATA		:=	data
-SOURCES		:=	source source/io source/threading source/audio
+SOURCES		:=	source source/io source/compression source/threading source/audio
 INCLUDES	:=	include
 PCHSOURCES	:=	source
 

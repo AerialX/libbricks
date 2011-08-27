@@ -1,5 +1,6 @@
 #include "bricks.hpp"
 #include "bricks/io.hpp"
+#include "bricks/compression.hpp"
 #include "bricks/threading.hpp"
 #include "bricks/collections.hpp"
 #include "bricks/audio.hpp"
