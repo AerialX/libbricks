@@ -232,7 +232,12 @@ namespace Bricks {
 		ObjectPoolLeakException(const String& message = String::Empty) : Exception(message) { }
 	};
 
+#ifdef BRICKS_FEATURE_RELEASE
+	template<typename T> inline T& Pointer< T >::operator*() const { return *value; }
+#else
 	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
+#endif
+
 #ifdef BRICKS_CONFIG_RTTI
 	inline ReturnPointer<Class> Object::GetClass() const { return autonew Class(this); }
 	inline String Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetClass()->GetName().CString(), this, GetReferenceCount()); }
@@ -250,8 +255,10 @@ namespace Bricks {
 	inline void* Object::mallocthrowable(size_t size)
 	{
 		void* data = malloc(size);
+#ifndef BRICKS_FEATURE_RELEASE
 		if (!data)
 			throw OutOfMemoryException();
+#endif
 		return data;
 	}
 	template<typename T> template<typename U> inline Pointer< T >::Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy) : value(&const_cast<U&>(t)) { throw InvalidArgumentException(); }

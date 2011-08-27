@@ -43,12 +43,12 @@ static void testFilesystem()
 	AutoPointer<FileStream> rstream = autonew FileStream("test.bin", FileOpenMode::Open, FileMode::ReadOnly);
 	AutoPointer<StreamReader> reader = autonew StreamReader(rstream, Endian::LittleEndian);
 	u32 num = reader->ReadInt32(Endian::BigEndian);
-	assert(num == 0x1337BAAD);
+	BRICKS_FEATURE_ASSERT(num == 0x1337BAAD);
 	String str = reader->ReadString();
-	assert(str == "ohai");
+	BRICKS_FEATURE_ASSERT(str == "ohai");
 	u16 num2 = reader->ReadInt16();
-	assert(num2 == 0xF33D);
-	//assert(reader->IsEndOfFile()); // Not implemented yet, fail.
+	BRICKS_FEATURE_ASSERT(num2 == 0xF33D);
+	//BRICKS_FEATURE_ASSERT(reader->IsEndOfFile()); // Not implemented yet, fail.
 	rstream->Close();
 
 	Console::Default->Out->WriteLine(String::Format("Success! Read back 0x%08x, \"%s\", and 0x%04x from file.", num, str.CString(), num2));
@@ -61,7 +61,7 @@ static void testFilesystem()
 	path = path.Combine("sup");
 	path = path.RootPath("/test");
 #ifndef BRICKS_FEATURE_WINDOWS
-	assert(!path.Compare("/test/lol/sup"));
+	BRICKS_FEATURE_ASSERT(!path.Compare("/test/lol/sup"));
 #endif
 	Console::Default->Out->WriteLine(String::Format("Result: %s, filename is %s", path.CString(), path.GetFileName().CString()));
 	Console::Default->Out->WriteLine(String::Format("Directory is: %s", path.GetDirectory().CString()));
@@ -155,7 +155,7 @@ static void testDelegates()
 	// Remove the delegate (as many times as it's been added), and make sure the event is empty.
 	*event -= delegate;
 	*event -= test;
-	assert(!*event);
+	BRICKS_FEATURE_ASSERT(!*event);
 	(*event)();
 
 	// Cleanup

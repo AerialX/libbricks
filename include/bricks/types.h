@@ -83,6 +83,10 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_WINDOWS
 #endif
 
+#ifdef NDEBUG
+#define BRICKS_FEATURE_RELEASE
+#endif
+
 /* Attributes */
 #ifdef BRICKS_FEATURE_GCC
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
@@ -115,7 +119,11 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #define BRICKS_FEATURE_LOG_HEAVY(...)
 #endif
 
+#ifdef BRICKS_FEATURE_RELEASE
+#define BRICKS_FEATURE_ASSERT(cond) ((void)0)
+#else
 #define BRICKS_FEATURE_ASSERT(cond) if (cond) (void)0; else throw InternalInconsistencyException("Assert failed: " # cond)
+#endif
 
 /* Missing Features */
 #ifdef BRICKS_FEATURE_MINGW
