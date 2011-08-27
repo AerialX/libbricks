@@ -16,7 +16,7 @@ static int ReadInteger(const Pointer<Stream>& stream)
 	return ret;
 }
 
-static ReturnPointer<MidiTimeDivision> ReadDivision(const Pointer<StreamReader>& reader)
+static AutoPointer<MidiTimeDivision> ReadDivision(const Pointer<StreamReader>& reader)
 {
 	u16 division = reader->ReadInt16();
 	if (division & 0x8000)
