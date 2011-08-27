@@ -2,10 +2,6 @@
 
 #include "bricks/config.h"
 
-#define BRICKS_VERSION_MAJOR 0
-#define BRICKS_VERISON_MINOR 1
-#define BRICKS_VERSION "0.1"
-
 #define __STDC_CONSTANT_MACROS
 #define __STDC_LIMIT_MACROS
 #include <stdint.h>

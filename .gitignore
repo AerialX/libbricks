@@ -2,6 +2,3 @@
 *.a
 *.swp
 build/
-test/test
-test/test.bin
-test/core

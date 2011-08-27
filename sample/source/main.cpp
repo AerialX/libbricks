@@ -1,11 +1,7 @@
 // NOTE: This is a special precompiled header libbricks builds for itself.
 //       The sample uses it to speed up the build process, normal libbricks users should use their own.
 
-#ifndef __clang__
 #include <bricksall.hpp>
-#endif
-
-#include <assert.h>
 
 using namespace Bricks;
 using namespace Bricks::IO;
