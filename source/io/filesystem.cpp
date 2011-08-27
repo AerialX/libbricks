@@ -244,12 +244,20 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 	}
 
-	FileInfo PosixFilesystem::Stat(const String& path) const
+	FileInfo PosixFilesystem::Stat(const String& path)
 	{
 		struct stat st;
 		if (stat(path.CString(), &st))
 			ThrowErrno();
-		return FileInfo(st, FilePath(path).RootPath(GetCurrentDirectory()), const_cast<PosixFilesystem*>(this));
+		return FileInfo(st, FilePath(path).RootPath(GetCurrentDirectory()), this);
+	}
+
+	FileInfo PosixFilesystem::FileStat(FileHandle fd)
+	{
+		struct stat st;
+		if (fstat((int)fd, &st))
+			ThrowErrno();
+		return FileInfo(st, String::Empty, this);
 	}
 	
 	bool PosixFilesystem::IsFile(const String& path) const

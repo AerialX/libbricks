@@ -45,7 +45,8 @@ namespace Bricks { namespace IO {
 		virtual void SeekDirectory(FileHandle fd, size_t offset) = 0;
 		virtual void CloseDirectory(FileHandle fd) = 0;
 		
-		virtual FileInfo Stat(const String& path) const = 0;
+		virtual FileInfo Stat(const String& path) = 0;
+		virtual FileInfo FileStat(FileHandle fd) = 0;
 
 		virtual bool IsFile(const String& path) const = 0;
 		virtual bool IsDirectory(const String& path) const = 0;
@@ -114,7 +115,8 @@ namespace Bricks { namespace IO {
 		void SeekDirectory(FileHandle fd, size_t offset);
 		void CloseDirectory(FileHandle fd);
 		
-		FileInfo Stat(const String& path) const;
+		FileInfo Stat(const String& path);
+		FileInfo FileStat(FileHandle fd);
 
 		bool IsFile(const String& path) const;
 		bool IsDirectory(const String& path) const;
