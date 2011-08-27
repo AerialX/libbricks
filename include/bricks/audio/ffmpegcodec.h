@@ -1,13 +1,15 @@
-#ifdef BRICKS_FEATURE_FFMPEG
+#pragma once
+
+#ifdef BRICKS_CONFIG_AUDIO_FFMPEG
 
 #include "bricks/audio/audiocodec.h"
 
-namespace Bricks { namespace Audio {
-	extern "C" {
-		#include <libavcodec/avcodec.h>
-		#include <libavformat/avformat.h>
-	}
+extern "C" {
+	#include <libavcodec/avcodec.h>
+	#include <libavformat/avformat.h>
+}
 
+namespace Bricks { namespace Audio {
 	class FFmpegDecoder : public AudioCodec<s16>
 	{
 	protected:
@@ -28,7 +30,7 @@ namespace Bricks { namespace Audio {
 		~FFmpegDecoder();
 
 		void Seek(s64 sample);
-		int Read(AudioBuffer<s16>& buffer, int count, int offset = 0);
+		u32 Read(AudioBuffer<s16>& buffer, u32 count, u32 offset = 0);
 	};
 } }
 

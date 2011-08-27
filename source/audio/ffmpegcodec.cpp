@@ -1,6 +1,6 @@
 #include "bricksall.hpp"
 
-#ifdef BRICKS_FEATURE_FFMPEG
+#ifdef BRICKS_CONFIG_AUDIO_FFMPEG
 
 #ifdef BRICKS_FEATURE_APPLE
 #define memalign(a, b) malloc(b)
@@ -74,7 +74,7 @@ int FFmpegDecoder::ReadCache(AudioBuffer<s16>& buffer, int count, int offset)
 	return count;
 }
 
-int FFmpegDecoder::Read(AudioBuffer<s16>& buffer, int count, int boffset)
+u32 FFmpegDecoder::Read(AudioBuffer<s16>& buffer, u32 count, u32 boffset)
 {
 	int offset = ReadCache(buffer, count, boffset);
 	count -= offset;
