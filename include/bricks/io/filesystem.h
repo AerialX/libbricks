@@ -136,7 +136,7 @@ namespace Bricks { namespace IO {
 		AutoPointer<Filesystem> filesystem;
 
 	public:
-		FileInfo(struct stat& st, const String& path, const Pointer<Filesystem>& filesystem) :
+		FileInfo(const struct stat& st, const String& path, const Pointer<Filesystem>& filesystem) :
 			st(st), path(path), filesystem(filesystem)
 		{ }
 
