@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bricks/object.h"
+
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -45,4 +47,10 @@ namespace Bricks { namespace IO {
 		Current = SEEK_CUR,
 		End = SEEK_END
 	}; }
+
+	class FileNotFoundException : public Exception
+	{
+	public:
+		FileNotFoundException(const String& message = String::Empty) : Exception(message) { }
+	};
 } }
