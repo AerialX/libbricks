@@ -21,7 +21,7 @@ namespace Bricks { namespace IO {
 		FileStream(FileHandle handle, const Pointer<Filesystem>& filesystem = NULL) : System(filesystem ?: Pointer<Filesystem>(Filesystem::GetDefault())), Handle(handle) { }
 		size_t Read(void* buffer, size_t size) { return System->Read(Handle, buffer, size); }
 		size_t Write(const void* buffer, size_t size) { return System->Write(Handle, buffer, size); }
-		u64 GetLength() const { throw NotImplementedException(); }
+		u64 GetLength() const { return System->FileStat(Handle).GetSize(); }
 		void SetLength(u64 length) { System->Truncate(Handle, length); }
 		u64 GetPosition() const { return System->Tell(Handle); }
 		void SetPosition(u64 position) { Seek(position, SeekType::Beginning); }
