@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef BRICKS_CONFIG_COMPRESSION_LIBZIP
+
 #include "bricks/object.h"
 #include "bricks/io/filesystem.h"
 #include "bricks/io/stream.h"
@@ -67,3 +69,5 @@ namespace Bricks { namespace Compression {
 		String GetCurrentDirectory() const;
 	};
 } }
+
+#endif

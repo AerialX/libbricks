@@ -237,12 +237,15 @@ namespace Bricks { namespace Compression {
 		int index;
 		int position;
 
-		ZipFilesystemDir(int index) : index(index), position(index) { }
+		ZipFilesystemDir(int index) : index(index), position(index + 1) { }
 	};
 
 	FileHandle ZipFilesystem::OpenDirectory(const String& path)
 	{
-		int index = zip_name_locate(zipfile, path.CString(), 0);
+		String zippath = path;
+		if (zippath[zippath.GetLength() - 1] != '/')
+			zippath += "/";
+		int index = zip_name_locate(zipfile, zippath.CString(), 0);
 		if (index < 0)
 			throw FileNotFoundException();
 		const char* dirname = zip_get_name(zipfile, index, 0);
