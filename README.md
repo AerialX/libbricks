@@ -9,7 +9,7 @@ memory management in portable C++ land and it turned into this.
 Building
 --------
 
-Uh, have GCC installed and run...
+Uh, have GCC and cmake installed and run...
 
     make
 
@@ -17,25 +17,21 @@ You may specify an alternate GCC to build for Windows like so...
 
     make CXX=i486-mingw32-g++ AR=i486-mingw32-ar
 
-Or alternatively, use Clang instead...
-
-    make USECLANG=1
-
 
 Configuration
 -------------
 
-There are some options in _include/bricks/config.h_ so feel free to modify
-those as necessary.
+Use cmake to configure and select from the various compilation options,
+including the ability to compile with clang rather than GCC.
 
 
 Testing
 -------
 
-There's a simple test app in the _test/_ folder, it's easy to try:
+There's a simple test app in the _sample/_ folder, it's easy to try:
 
     make run
 
-And for when it inevitably crashes, the following shortcuts to gdb:
+There also exist a few test units, which can be run with:
 
-    make debug
+    make test
