@@ -12,9 +12,6 @@ test: all
 	@sh ./ctest
 
 run: all
-	@$(MAKE) --no-print-directory -C test run
-
-debug: all
-	@$(MAKE) --no-print-directory -C test debug
+	@./build/sample
 
 .PHONY: all clean test run debug
