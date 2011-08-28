@@ -11,6 +11,7 @@ option(BRICKS_CONFIG_LOGGING "Logs various information about libbricks to stderr
 option(BRICKS_CONFIG_LOGGING_HEAVY "A lot more logging. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_LOGGING_MEMLEAK "Report any unreleased objects at program termination. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_STL "Use the STL internally in collections" ON)
+option(USE_GTEST "Build the test units - requires Google Test" ON)
 option(USE_CLANG "Build libbricks with Clang" OFF)
 
 option(BRICKS_CONFIG_AUDIO_FFMPEG "Enable the FFMPEG audio decoder" OFF)
@@ -59,4 +60,6 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION .)
 install(FILES "${PROJECT_BINARY_DIR}/include/bricks/config.h" DESTINATION "include/bricks/")
 install(TARGETS bricks-core bricks-io bricks-threading bricks-audio bricks-compression DESTINATION lib)
 
-add_subdirectory("${PROJECT_SOURCE_DIR}/test")
+if(USE_GTEST)
+	add_subdirectory("${PROJECT_SOURCE_DIR}/test")
+endif(USE_GTEST)
