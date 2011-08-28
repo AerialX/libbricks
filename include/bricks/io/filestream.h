@@ -13,7 +13,7 @@ namespace Bricks { namespace IO {
 	public:
 		FileStream(
 			const String& path,
-			FileOpenMode::Enum createmode = FileOpenMode::Create,
+			FileOpenMode::Enum createmode = FileOpenMode::Open,
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite,
 			const Pointer<Filesystem>& filesystem = NULL
