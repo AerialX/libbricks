@@ -22,6 +22,7 @@ Designated Value Types
     - Bricks::String
     - Bricks::Delegate
     - Bricks::Event
+    - Bricks::IO::FilePath
     - Bricks::IO::FileInfo
     - Bricks::Audio::AudioBuffer<T>
     - Anything that does not derive from Bricks::Object
@@ -29,6 +30,7 @@ Designated Value Types
        - Bricks::Threading::ThreadLocalStorage
  - These types are meant to be considered value types. Though they may derive from Bricks::Object and use reference counting, they are not considered polymorphic. Do not subclass them.
     - Well, if you do, expect them to be copied by value to the original parent type when passed around.
+       - For example, see Bricks::IO::FilePath, which is interchangable with a Bricks::String
  - Feel free to create your own and use them as if they were an official value type.
 
 Operator Overloading
