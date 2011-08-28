@@ -14,4 +14,4 @@ test: all
 run: all
 	@./build/sample
 
-.PHONY: all clean test run debug
+.PHONY: all clean test run
