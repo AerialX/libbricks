@@ -42,9 +42,9 @@ if (USE_CLANG)
 	#SET (CMAKE_RANLIB                   "llvm-ranlib")
 endif(USE_CLANG)
 
-configure_file("${PROJECT_SOURCE_DIR}/config.h.in" "${PROJECT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
-include_directories("include" "source" "${PROJECT_BINARY_DIR}/include")
+include_directories("include" "source" "${CMAKE_CURRENT_BINARY_DIR}/include")
 add_definitions(-Wall)
 
 add_library(bricks-core "source/exception.cpp" "source/object.cpp" "source/string.cpp")
@@ -56,10 +56,10 @@ add_library(bricks-compression "source/compression/zipfilesystem.cpp")
 add_executable(sample "sample/source/main.cpp")
 target_link_libraries(sample bricks-io bricks-core)
 
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION .)
-install(FILES "${PROJECT_BINARY_DIR}/include/bricks/config.h" DESTINATION "include/bricks/")
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include" DESTINATION .)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" DESTINATION "include/bricks/")
 install(TARGETS bricks-core bricks-io bricks-threading bricks-audio bricks-compression DESTINATION lib)
 
 if(USE_GTEST)
-	add_subdirectory("${PROJECT_SOURCE_DIR}/test")
+	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
 endif(USE_GTEST)
