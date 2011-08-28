@@ -59,4 +59,4 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION .)
 install(FILES "${PROJECT_BINARY_DIR}/include/bricks/config.h" DESTINATION "include/bricks/")
 install(TARGETS bricks-core bricks-io bricks-threading bricks-audio bricks-compression DESTINATION lib)
 
-add_test(sample sample)
+add_subdirectory("${PROJECT_SOURCE_DIR}/test")

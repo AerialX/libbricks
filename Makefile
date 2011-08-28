@@ -8,6 +8,9 @@ android:
 clean:
 	@$(MAKE) --no-print-directory -C build clean
 
+test: all
+	@sh ./ctest
+
 run: all
 	@$(MAKE) --no-print-directory -C test run
 
