@@ -19,9 +19,9 @@ static void testFilesystem()
 		Console::Default->Out->WriteLine(String::Format("Ohnoes! We got a %s! %s", ex.GetDebugString().CString(), ex.GetMessage().CString()));
 	}
 
-	Console::Default->Out->WriteLine("Writing test.bin...");
+	Console::Default->Out->WriteLine("Writing test file...");
 
-	Pointer<FileStream> stream = new FileStream("test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
+	Pointer<FileStream> stream = new FileStream("/tmp/libbricks-test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
 
 	Pointer<StreamWriter> writer = new StreamWriter(stream, Endian::BigEndian);
 	writer->WriteInt32(0x1337BAAD);
@@ -34,9 +34,9 @@ static void testFilesystem()
 	writer->Release();
 	stream->Release();
 
-	Console::Default->Out->WriteLine("Reading test.bin...");
+	Console::Default->Out->WriteLine("Reading test file...");
 
-	AutoPointer<FileStream> rstream = autonew FileStream("test.bin", FileOpenMode::Open, FileMode::ReadOnly);
+	AutoPointer<FileStream> rstream = autonew FileStream("/tmp/libbricks-test.bin", FileOpenMode::Open, FileMode::ReadOnly);
 	AutoPointer<StreamReader> reader = autonew StreamReader(rstream, Endian::LittleEndian);
 	u32 num = reader->ReadInt32(Endian::BigEndian);
 	BRICKS_FEATURE_ASSERT(num == 0x1337BAAD);
