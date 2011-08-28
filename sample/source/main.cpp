@@ -14,7 +14,6 @@ static void testFilesystem()
 	try {
 		Console::Default->Out->WriteLine("Trying to open nonexistent file...");
 		FileStream stream("lolnonexistent", FileOpenMode::Open, FileMode::ReadOnly);
-		stream.Close();
 	} catch (const Exception& ex) {
 		Console::Default->Out->WriteLine(String::Format("Ohnoes! We got a %s! %s", ex.GetDebugString().CString(), ex.GetMessage().CString()));
 	}
@@ -28,7 +27,6 @@ static void testFilesystem()
 	writer->WriteString("ohai");
 	writer->WriteByte('\0');
 	writer->WriteInt16(0xF33D, Endian::LittleEndian);
-	stream->Close();
 
 	// Manually delete these objects from memory.
 	writer->Release();
@@ -45,7 +43,7 @@ static void testFilesystem()
 	u16 num2 = reader->ReadInt16();
 	BRICKS_FEATURE_ASSERT(num2 == 0xF33D);
 	//BRICKS_FEATURE_ASSERT(reader->IsEndOfFile()); // Not implemented yet, fail.
-	rstream->Close();
+	rstream.Release();
 
 	Console::Default->Out->WriteLine(String::Format("Success! Read back 0x%08x, \"%s\", and 0x%04x from file.", num, str.CString(), num2));
 

@@ -7,8 +7,8 @@ namespace Bricks { namespace IO {
 	class FileStream : public Object, public Stream
 	{
 	protected:
-		AutoPointer<Filesystem> System;
-		FileHandle Handle;
+		AutoPointer<Filesystem> system;
+		FileHandle handle;
 
 	public:
 		FileStream(
@@ -17,19 +17,19 @@ namespace Bricks { namespace IO {
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite,
 			const Pointer<Filesystem>& filesystem = NULL
-		) : System(filesystem ?: Filesystem::GetDefault()), Handle(System->Open(path, createmode, mode)) { }
-		FileStream(FileHandle handle, const Pointer<Filesystem>& filesystem = NULL) : System(filesystem ?: Pointer<Filesystem>(Filesystem::GetDefault())), Handle(handle) { }
-		size_t Read(void* buffer, size_t size) { return System->Read(Handle, buffer, size); }
-		size_t Write(const void* buffer, size_t size) { return System->Write(Handle, buffer, size); }
-		u64 GetLength() const { return System->FileStat(Handle).GetSize(); }
-		void SetLength(u64 length) { System->Truncate(Handle, length); }
-		u64 GetPosition() const { return System->Tell(Handle); }
+		) : system(filesystem ?: Filesystem::GetDefault()), handle(system->Open(path, createmode, mode)) { }
+		FileStream(FileHandle handle, const Pointer<Filesystem>& filesystem = NULL) : system(filesystem ?: Pointer<Filesystem>(Filesystem::GetDefault())), handle(system->Duplicate(handle)) { }
+		~FileStream() { system->Close(handle); }
+		size_t Read(void* buffer, size_t size) { return system->Read(handle, buffer, size); }
+		size_t Write(const void* buffer, size_t size) { return system->Write(handle, buffer, size); }
+		u64 GetLength() const { return system->FileStat(handle).GetSize(); }
+		void SetLength(u64 length) { system->Truncate(handle, length); }
+		u64 GetPosition() const { return system->Tell(handle); }
 		void SetPosition(u64 position) { Seek(position, SeekType::Beginning); }
-		void Seek(s64 offset, SeekType::Enum whence) { System->Seek(Handle, offset, whence); }
-		void Flush() { System->Flush(Handle); }
-		void Close() { System->Close(Handle); }
+		void Seek(s64 offset, SeekType::Enum whence) { system->Seek(handle, offset, whence); }
+		void Flush() { system->Flush(handle); }
 
-		ReturnPointer<Filesystem> GetFilesystem() const { return System; }
-		FileHandle GetHandle() const { return Handle; }
+		ReturnPointer<Filesystem> GetFilesystem() const { return system; }
+		FileHandle GetHandle() const { return handle; }
 	};
 } }

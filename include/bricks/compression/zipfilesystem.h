@@ -46,6 +46,7 @@ namespace Bricks { namespace Compression {
 		void Flush(IO::FileHandle fd);
 		void Truncate(IO::FileHandle fd, u64 length);
 		void Close(IO::FileHandle fd);
+		IO::FileHandle Duplicate(IO::FileHandle fd);
 
 		IO::FileHandle OpenDirectory(const String& path);
 		ReturnPointer<IO::FileNode> ReadDirectory(IO::FileHandle fd);

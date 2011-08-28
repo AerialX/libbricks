@@ -15,16 +15,15 @@ TEST(BricksIoNavigatorTest, WriteReadTest) {
 	const String testString = "ohai";
 	const u32 testValue1 = 0x1337BAAD;
 	const u16 testValue2 = 0xF33D;
-	FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
+	{ FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
 	StreamWriter writer(stream, Endian::BigEndian);
 	writer.WriteInt32(testValue1);
 	writer.WriteString(testString);
 	writer.WriteByte('\0');
 	writer.WriteInt16(testValue2, Endian::LittleEndian);
-	EXPECT_EQ(sizeof(testValue1) + sizeof(testValue2) + testString.GetLength() + 1, stream.GetLength()) << "Written file size does not match";
-	stream.Close();
+	EXPECT_EQ(sizeof(testValue1) + sizeof(testValue2) + testString.GetLength() + 1, stream.GetLength()) << "Written file size does not match"; }
 
-	FileStream rstream(path, FileOpenMode::Open, FileMode::ReadOnly);
+	{ FileStream rstream(path, FileOpenMode::Open, FileMode::ReadOnly);
 	StreamReader reader(rstream, Endian::LittleEndian);
 	u32 num = reader.ReadInt32(Endian::BigEndian);
 	EXPECT_EQ(testValue1, num);
@@ -32,8 +31,7 @@ TEST(BricksIoNavigatorTest, WriteReadTest) {
 	EXPECT_EQ(testString, str);
 	u16 num2 = reader.ReadInt16();
 	EXPECT_EQ(testValue2, num2);
-	EXPECT_TRUE(reader.IsEndOfFile()) << "We did not read the entire file";
-	rstream.Close();
+	EXPECT_TRUE(reader.IsEndOfFile()) << "We did not read the entire file"; }
 
 	Filesystem::GetDefault()->DeleteFile(path);
 }

@@ -160,6 +160,7 @@ namespace Bricks {
 		template<typename U> AutoPointer< T >& operator=(const Pointer< U >& t) { Swap(t); return *this; }
 
 		void Swap(const Pointer< T >& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(*this); Pointer< T >::Swap(t); if (retain) Retain(*this); }
+		void Release() { Release(*this); Pointer<T>::Swap(NULL); }
 	};
 
 	template<typename T> class ReturnPointer : public AutoPointer< T >
@@ -187,6 +188,7 @@ namespace Bricks {
 		template<typename U> ReturnPointer< T >& operator=(const AutoPointer< U >& t) { Swap(t, true); return *this; }
 
 		void Swap(const Pointer< T >& t, bool retain = true) { if (!retained && *this) Pointer< T >::Swap(NULL); AutoPointer< T >::Swap(t, retain); retained = retain; }
+		void Release() { if (retained) Release(*this); Pointer<T>::Swap(NULL); }
 	};
 
 	namespace Internal {

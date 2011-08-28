@@ -30,14 +30,17 @@ namespace Bricks { namespace Compression {
 	{
 		// XXX: Hack around our filesystem classes to get the FD libzip requires.
 		int fd;
+		FileHandle fsfd;
 		Pointer<FileStream> filestream = stream.AsType<FileStream>();
+		Pointer<Filesystem> filesystem;
 		if (filestream) {
-			Pointer<PosixFilesystem> posix = filestream->GetFilesystem().AsType<PosixFilesystem>();
-			Pointer<C89Filesystem> c89 = filestream->GetFilesystem().AsType<C89Filesystem>();
+			filesystem = filestream->GetFilesystem();
+			Pointer<PosixFilesystem> posix = filesystem.AsType<PosixFilesystem>();
+			Pointer<C89Filesystem> c89 = filesystem.AsType<C89Filesystem>();
 			if (posix)
-				fd = (int)filestream->GetHandle();
+				fsfd = (int)(fd = filesystem->Duplicate(filestream->GetHandle()));
 			else if (c89)
-				fd = fileno((FILE*)filestream->GetHandle());
+				fd = fileno((FILE*)(fsfd = filesystem->Duplicate(filestream->GetHandle())));
 			else
 				throw NotSupportedException();
 		} else
@@ -45,8 +48,10 @@ namespace Bricks { namespace Compression {
 
 		int error;
 		zipfile = zip_fdopen(fd, 0, &error);
-		if (!zipfile)
+		if (!zipfile) {
+			filesystem->Close(fsfd);
 			throw LibZipException(error);
+		}
 	}
 
 	ZipFilesystem::ZipFilesystem(const String& filepath)
@@ -99,6 +104,16 @@ namespace Bricks { namespace Compression {
 	u64 ZipFilesystem::Tell(FileHandle fd) const
 	{
 		return ((ZipFilesystemFile*)fd)->position;
+	}
+
+	FileHandle ZipFilesystem::Duplicate(FileHandle fd)
+	{
+		ZipFilesystemFile* file = (ZipFilesystemFile*)fd;
+		if (!file)
+			throw InvalidArgumentException();
+
+		ZipFilesystemFile* newfile = new ZipFilesystemFile(file->file, file->index);
+		return (FileHandle)newfile; // TODO: The file's position needs to be updated with the parent's; it currently is not and this will make things go boom
 	}
 
 	void ZipFilesystem::Seek(FileHandle fd, s64 offset, SeekType::Enum whence)

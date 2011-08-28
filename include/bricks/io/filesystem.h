@@ -38,6 +38,7 @@ namespace Bricks { namespace IO {
 		virtual void Flush(FileHandle fd) = 0;
 		virtual void Truncate(FileHandle fd, u64 length) = 0;
 		virtual void Close(FileHandle fd) = 0;
+		virtual FileHandle Duplicate(FileHandle fd) = 0;
 
 		virtual FileHandle OpenDirectory(const String& path) = 0;
 		virtual ReturnPointer<FileNode> ReadDirectory(FileHandle fd) = 0;
@@ -108,6 +109,7 @@ namespace Bricks { namespace IO {
 		void Flush(FileHandle fd);
 		void Close(FileHandle fd);
 		void Truncate(FileHandle fd, u64 length);
+		FileHandle Duplicate(FileHandle fd);
 		
 		FileHandle OpenDirectory(const String& path);
 		ReturnPointer<FileNode> ReadDirectory(FileHandle fd);

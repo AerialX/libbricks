@@ -189,6 +189,14 @@ namespace Bricks { namespace IO {
 		if (close((int)fd))
 			ThrowErrno();
 	}
+
+	FileHandle PosixFilesystem::Duplicate(FileHandle fd)
+	{
+		int newfd = dup((int)fd);
+		if (newfd < 0)
+			ThrowErrno();
+		return (FileHandle)newfd;
+	}
 	
 	void PosixFilesystem::Truncate(FileHandle fd, u64 length)
 	{
@@ -298,7 +306,7 @@ namespace Bricks { namespace IO {
 			FilesystemNode node(path);
 			foreach (FileNode& subnode, node) {
 				if (subnode.GetType() == FileType::Directory)
-					DeleteDirectory(subnode.GetFullName(), true);
+					DeleteDirectory(subnode.GetFullPath(), true);
 				else
 					DeleteFile(path);
 			}
@@ -309,6 +317,6 @@ namespace Bricks { namespace IO {
 	
 	ReturnPointer<Stream> FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
 	{
-		return autonew FileStream(GetFullName(), createmode, mode, permissions, filesystem);
+		return autonew FileStream(GetPath(), createmode, mode, permissions, filesystem);
 	}
 } }
