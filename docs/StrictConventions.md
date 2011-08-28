@@ -22,6 +22,7 @@ Designated Value Types
     - Bricks::String
     - Bricks::Delegate
     - Bricks::Event
+    - Bricks::IO::FileInfo
     - Bricks::Audio::AudioBuffer<T>
     - Anything that does not derive from Bricks::Object
        - Bricks::Pointer, AutoPointer, CopyPointer
