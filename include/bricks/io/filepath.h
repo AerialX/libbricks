@@ -31,7 +31,7 @@ namespace Bricks { namespace IO {
 		const String& GetFullPath() const { return *this; }
 		String GetDirectory() const { return Substring(0, LastIndexOf(DirectorySeparators)); }
 		String GetFileName() const { return Substring(NposOrAdd(LastIndexOf(DirectorySeparators), 1)); }
-		String RootPath(const String& root) { if (IsPathRooted()) return *this; return FilePath(root).Combine(*this); }
+		String RootPath(const String& root) const { if (IsPathRooted()) return *this; return FilePath(root).Combine(*this); }
 //		String GetRoot() const;
 
 		String GetExtension() const { String name = GetFileName(); return name.Substring(NposOrAdd(name.FirstIndexOf(ExtensionSeparator), 1)); }

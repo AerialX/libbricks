@@ -39,7 +39,7 @@ namespace Bricks { namespace IO {
 
 	class FileNode : public Bricks::Collections::Iterable<FileNode>
 	{
-	private:
+	protected:
 		FileType::Enum type;
 		FilePath path;
 
@@ -48,12 +48,13 @@ namespace Bricks { namespace IO {
 		FileNode(FileType::Enum type, const String& path) : type(type), path(path) { }
 
 		virtual FileType::Enum GetType() const { return type; }
-		virtual const String GetName() const { return path.GetFileName(); }
-		virtual const String GetFullName() const { if (!path.IsPathRooted()) throw NotSupportedException(); return path; }
+		virtual String GetPath() const { return path; }
+		virtual String GetName() const { return path.GetFileName(); }
+		virtual String GetFullPath() const { if (!path.IsPathRooted()) throw NotSupportedException(); return path; }
 		virtual ReturnPointer<FileNode> GetParent() const = 0;
 		virtual u64 GetSize() const = 0;
 		virtual ReturnPointer<Stream> OpenStream(
-			FileOpenMode::Enum createmode = FileOpenMode::Create,
+			FileOpenMode::Enum createmode = FileOpenMode::Open,
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite
 		) = 0;

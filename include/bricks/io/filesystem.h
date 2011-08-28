@@ -199,9 +199,10 @@ namespace Bricks { namespace IO {
 			*this = this->filesystem->Stat(path);
 		}
 
-		ReturnPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullName()).GetDirectory(), filesystem); }
+		String GetFullPath() const { if (!path.IsPathRooted()) return path.RootPath(filesystem->GetCurrentDirectory()); return path; }
+		ReturnPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullPath()).GetDirectory(), filesystem); }
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; throw NotSupportedException(); }
-		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions);
+		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode = FileOpenMode::Open, FileMode::Enum mode = FileMode::ReadWrite, FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite);
 
 		ReturnPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
 	};
@@ -217,7 +218,7 @@ namespace Bricks { namespace IO {
 
 	public:
 		FilesystemNodeIterator(const Pointer<const FilesystemNode>& node) :
-			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetFullName())) { }
+			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetPath())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
 		FileNode& GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return *current; }
