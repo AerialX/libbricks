@@ -146,7 +146,7 @@ namespace Bricks { namespace Audio {
 	public:
 		MidiTextEvent(const MidiMetaEvent& event) : MidiMetaEvent(event) { }
 
-		String GetString() const { return String((const char*)data); }
+		String GetString() const { return String((const char*)data, length); }
 	};
 
 	struct MidiTempoEvent : public MidiMetaEvent
