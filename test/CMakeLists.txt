@@ -14,3 +14,7 @@ add_test(bricks-test-io bricks-test-io-navigator)
 add_executable(bricks-test-compression-zipfilesystem compression-zipfilesystem.cpp)
 target_link_libraries(bricks-test-compression-zipfilesystem bricks-compression zip bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-compression bricks-test-compression-zipfilesystem)
+
+add_executable(bricks-test-imaging-png imaging-png.cpp)
+target_link_libraries(bricks-test-imaging-png bricks-imaging bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread ${PNG_LIBRARIES})
+add_test(bricks-test-imaging bricks-test-imaging-png)

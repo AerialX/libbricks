@@ -18,6 +18,8 @@ option(BRICKS_CONFIG_AUDIO_FFMPEG "Enable the FFMPEG audio decoder" OFF)
 
 option(BRICKS_CONFIG_COMPRESSION_LIBZIP "Enable the libzip filesystem" OFF)
 
+option(BRICKS_CONFIG_IMAGING_LIBPNG "Enable libpng image support" OFF)
+
 if (USE_CLANG)
 	SET (CMAKE_C_COMPILER             "clang")
 	SET (CMAKE_C_FLAGS                "-Wall -std=c99")
@@ -47,11 +49,17 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 include_directories("include" "source" "${CMAKE_CURRENT_BINARY_DIR}/include")
 add_definitions(-Wall)
 
+if(BRICKS_CONFIG_IMAGING_LIBPNG)
+	find_package(PNG REQUIRED)
+	add_definitions(${PNG_DEFINITIONS})
+endif(BRICKS_CONFIG_IMAGING_LIBPNG)
+
 add_library(bricks-core "source/exception.cpp" "source/object.cpp" "source/string.cpp")
 add_library(bricks-io "source/io/console.cpp" "source/io/filesystem.cpp")
 add_library(bricks-threading "source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp")
 add_library(bricks-audio "source/audio/midireader.cpp" "source/audio/ffmpegcodec.cpp")
 add_library(bricks-compression "source/compression/zipfilesystem.cpp")
+add_library(bricks-imaging "source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/png.cpp")
 
 add_executable(sample "sample/source/main.cpp")
 target_link_libraries(sample bricks-io bricks-core)
