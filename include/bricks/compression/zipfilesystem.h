@@ -1,7 +1,5 @@
 #pragma once
 
-#ifdef BRICKS_CONFIG_COMPRESSION_LIBZIP
-
 #include "bricks/object.h"
 #include "bricks/io/filesystem.h"
 #include "bricks/io/stream.h"
@@ -10,6 +8,8 @@ struct zip;
 struct zip_file;
 
 namespace Bricks { namespace Compression {
+
+#ifdef BRICKS_CONFIG_COMPRESSION_LIBZIP
 	class LibZipException : public Exception
 	{
 	protected:
@@ -68,6 +68,6 @@ namespace Bricks { namespace Compression {
 
 		String GetCurrentDirectory() const;
 	};
-} }
-
 #endif
+
+} }
