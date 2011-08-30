@@ -16,6 +16,7 @@ namespace Bricks { namespace IO {
 	{
 	public:
 		static const Pointer<Filesystem>& GetDefault();
+		static void SetDefault(const Pointer<Filesystem>& filesystem);
 
 		virtual FileHandle Open(
 			const String& path,

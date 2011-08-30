@@ -19,12 +19,15 @@
 namespace Bricks { namespace IO {
 	const String FilePath::DirectorySeparators = String("/\\");
 
-	static Pointer<Filesystem> defaultFilesystem = NULL;
+	static AutoPointer<Filesystem> defaultFilesystem = NULL;
+	void Filesystem::SetDefault(const Pointer<Filesystem>& filesystem) { defaultFilesystem = filesystem; }
 	const Pointer<Filesystem>& Filesystem::GetDefault()
 	{
-		if (!defaultFilesystem)
+		if (!defaultFilesystem) {
 			//defaultFilesystem = new (Internal::Global)C89Filesystem();
 			defaultFilesystem = new (Internal::Global)PosixFilesystem();
+			defaultFilesystem.AsType<Object>()->Release();
+		}
 		return defaultFilesystem;
 	}
 

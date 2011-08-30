@@ -189,6 +189,8 @@ namespace Bricks {
 
 		void Swap(const Pointer< T >& t, bool retain = true) { if (!retained && *this) Pointer< T >::Swap(NULL); AutoPointer< T >::Swap(t, retain); retained = retain; }
 		void Release() { if (retained) Release(*this); Pointer<T>::Swap(NULL); }
+
+		template<typename U> ReturnPointer<U> AsType() const { if (*this) return ReturnPointer<U>(Pointer<T>::template AsType<U>(), retained); return Pointer<U>::Null; }
 	};
 
 	namespace Internal {
