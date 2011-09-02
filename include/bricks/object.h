@@ -126,7 +126,7 @@ namespace Bricks {
 		template<typename U> bool operator==(const Pointer< U >& t) { return value == t.GetValue(); }
 		template<typename U> bool operator!=(const Pointer< U >& t) { return value != t.GetValue(); }
 
-		template<typename U> bool IsType() { return AsType<U>(); }
+		template<typename U> bool IsType() const { return AsType<U>(); }
 
 		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { if (!value) return Pointer<U>::Null; return static_cast<U*>(value); }
 		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { if (!value) return Pointer<U>::Null; return dynamic_cast<U*>(value); }
