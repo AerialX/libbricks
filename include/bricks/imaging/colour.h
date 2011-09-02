@@ -58,6 +58,7 @@ namespace Bricks { namespace Imaging {
 	public:
 		PixelDescription() { memset(bitDepth, 0, sizeof(bitDepth)); }
 		PixelDescription(u8 bitDepth, ColourTypeMask::Enum mask) { for (int i = 0; i < ColourType::Count; i++) this->bitDepth[i] = (mask & bitDepthMap[i]) ? bitDepth : 0; }
+		ColourTypeMask::Enum GetBitMask() const { int mask = 0; for (int i = 0; i < ColourType::Count; i++) { if (bitDepth[i]) mask |= bitDepthMap[i]; } return (ColourTypeMask::Enum)mask; }
 		u8 GetBitDepth(ColourType::Enum type) const { return bitDepth[(int)type]; }
 		u8 GetPixelDepth() const { u8 ret = 0; for (int i = 0; i < ColourType::Count; i++) ret += bitDepth[i]; return ret; }
 		u8 GetPixelSize() const { return BRICKS_FEATURE_ROUND_UP(GetPixelDepth(), 8) / 8; }
