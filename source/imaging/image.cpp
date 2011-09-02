@@ -40,13 +40,13 @@ namespace Bricks { namespace Imaging {
 
 		Colour colour;
 
-		for (ColourType::Enum i = ColourType::Unknown; i < ColourType::Count; i++) {
-			u8 bitDepth = pixelDescription.GetBitDepth(i);
+		for (int i = 0; i < ColourType::Count; i++) {
+			u8 bitDepth = pixelDescription.GetBitDepth((ColourType::Enum)i);
 			u32 component = pixel << (0x20 - bitDepth);
 			component >>= (0x20 - bitDepth);
 			pixel >>= bitDepth;
 			if (bitDepth) {
-				switch (i) {
+				switch ((ColourType::Enum)i) {
 					case ColourType::Intensity:
 						// TODO: Chroma map
 						colour.R = colour.G = colour.B = component;
