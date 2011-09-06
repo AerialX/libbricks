@@ -43,6 +43,13 @@ namespace Bricks {
 			static const bool Value = BRICKS_SFINAE_TRUE(Condition(MakePointer<U>()));
 		};
 
+		template<typename T> struct IsClassType {
+			template<typename U> static True Condition(void (U::*)());
+			template<typename U> static False Condition(...);
+
+			static const bool Value = BRICKS_SFINAE_TRUE(Condition<T>(0));
+		};
+
 		namespace Internal {
 			template<typename T, typename U> static False operator ==(const T&, const U&);
 			template<typename T, typename U> static False operator >(const T&, const U&);
