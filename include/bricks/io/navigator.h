@@ -56,12 +56,12 @@ namespace Bricks { namespace IO {
 		u8 ReadByte() { u8 data; if (stream->Read(&data, sizeof(data)) != sizeof(data)) throw EndOfStreamException(); return data; }
 		void ReadBytes(void* data, size_t size) { if (stream->Read(data, size) != size) throw EndOfStreamException(); }
 
-		String ReadString() {
+		String ReadCString(int division) {
 			// TODO: StringBuilder, this is fail.
 			String ret;
 			while (true) {
 				int read = stream->ReadByte();
-				if (read <= 0)
+				if (read < 0 || read == division)
 					break;
 				ret += (char)read;
 			}
@@ -73,6 +73,8 @@ namespace Bricks { namespace IO {
 			ReadBytes(buffer, length);
 			return String(buffer, length);
 		}
+
+		String ReadString() { return ReadCString('\0'); }
 		
 		void Pad(u64 size) {
 			u8 padding[0x100];
