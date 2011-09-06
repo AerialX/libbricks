@@ -52,10 +52,14 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T>
 	static inline IteratorType<T> IteratorContainerPack(const Iterable<T>& t) { return IteratorType<T>(t.GetIterator()); }
 	template<typename T>
+	static inline IteratorType<T> IteratorContainerPack(const Iterable<T>* t) { return IteratorType<T>(t->GetIterator()); }
+	template<typename T>
 	static inline IteratorType<typename T::IteratorType> IteratorContainerPack(const Pointer<T>& t) { return IteratorContainerPack(*t); }
 
 	template<typename T>
 	static inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>& dummy, const IteratorTypeBase& t) { return *static_cast<const IteratorType<T>&>(t).value; }
+	template<typename T>
+	static inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>* dummy, const IteratorTypeBase& t) { return *static_cast<const IteratorType<T>&>(t).value; }
 	template<typename T>
 	static inline Iterator<typename T::IteratorType>& IteratorContainerUnpack(const Pointer<T>& dummy, const IteratorTypeBase& t) { return IteratorContainerUnpack(*dummy, t); }
 } } }
