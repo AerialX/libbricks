@@ -141,8 +141,8 @@ static void testDelegates()
 	*event += delegate;
 	*event += delegate;
 	*event += testDelegate;
-	*event += Delegate<void()>(test, &TestDelegateClass::testDelegateFunction);
-	*event += Delegate<void()>(test, &TestDelegateClass::testDelegateFunction);
+	*event += Delegate<void()>(&test, &TestDelegateClass::testDelegateFunction);
+	*event += Delegate<void()>(&test, &TestDelegateClass::testDelegateFunction);
 	*event += MethodDelegate(test, &TestDelegateClass::testDelegateFunction);
 	(*event)(); // Should print the first message thrice, and the second.
 
