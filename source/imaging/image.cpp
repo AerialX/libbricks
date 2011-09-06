@@ -1,5 +1,7 @@
 #include "bricksall.hpp"
 
+using namespace Bricks::IO;
+
 namespace Bricks { namespace Imaging {
 	Colour Image::GetPixel(u32 x, u32 y)
 	{
@@ -13,28 +15,21 @@ namespace Bricks { namespace Imaging {
 				pixel = ((u8*)pixelData)[offset];
 				break;
 			case 16:
-				pixel = ((u16*)pixelData)[offset];
+				pixel = EndianConvertLE16((u16*)pixelData + offset);
 				break;
 			case 32:
-				pixel = ((u32*)pixelData)[offset];
+				pixel = EndianConvertLE32((u32*)pixelData + offset);
 				break;
 			case 64:
-				pixel = ((u64*)pixelData)[offset];
+				pixel = EndianConvertLE64((u64*)pixelData + offset);
 				break;
 			default:
 				offset *= pixelDescription.GetPixelDepth();
-				for (int i = 0; i < ColourType::Count; i++) {
-					u8 bitDepth = pixelDescription.GetBitDepth((ColourType::Enum)i);
-
-					for (int k = 0; k < bitDepth; k++, offset++) {
-						size_t byteOffset = offset / 8;
-						u8 bitOffset = offset % 8;
-						u8 data = ((u8*)pixelData)[byteOffset];
-						data &= 0x80 >> bitOffset;
-						data >>= 7 - bitOffset;
-						pixel |= data << (bitDepth - k - 1);
-					}
+				for (int i = BRICKS_FEATURE_ROUND_UP(pixelDescription.GetPixelDepth(), 8) / 8 - 1; i >= 0; i--) {
+					pixel <<= 8;
+					pixel |= ((u8*)pixelData)[offset / 8 + i];
 				}
+				pixel >>= offset % 8;
 				break;
 		}
 
@@ -80,5 +75,86 @@ namespace Bricks { namespace Imaging {
 		if (x >= width || y >= height)
 			throw InvalidArgumentException();
 		
+		u64 pixel = 0;
+
+		for (int i = 0; i < ColourType::Count; i++) {
+			u8 bitDepth = pixelDescription.GetBitDepth((ColourType::Enum)i);
+			u32 component = 0;
+			if (bitDepth) {
+				switch ((ColourType::Enum)i) {
+					case ColourType::Intensity:
+						// TODO: Chroma map
+						component = (colour.R + colour.G + colour.B) / 3;
+						break;
+					case ColourType::Palette:
+						component = palette->IndexOfItem(colour);
+						break;
+					case ColourType::Red:
+						component = colour.R;
+						break;
+					case ColourType::Green:
+						component = colour.G;
+						break;
+					case ColourType::Blue:
+						component = colour.B;
+						break;
+					case ColourType::Alpha:
+						component = colour.A;
+						break;
+					default:
+						break;
+				}
+			}
+			component = component << (0x20 - bitDepth);
+			component >>= (0x20 - bitDepth);
+			pixel <<= bitDepth;
+			pixel |= component;
+		}
+
+		size_t offset = (size_t)y * width + x;
+		switch (pixelDescription.GetPixelDepth()) {
+			case 8:
+				((u8*)pixelData)[offset] = pixel;
+				break;
+			case 16:
+				EndianConvertBE16((u16*)pixelData + offset, pixel);
+				break;
+			case 32:
+				EndianConvertBE32((u32*)pixelData + offset, pixel);
+				break;
+			case 64:
+				EndianConvertBE64((u64*)pixelData + offset, pixel);
+				break;
+			default:
+				if (pixelDescription.GetPixelDepth() < 8)
+					throw NotSupportedException();
+				// TODO: This won't work for <8 bit depths because overlapping pixels need to be OR'd
+				offset *= pixelDescription.GetPixelDepth();
+				offset /= 8;
+				for (int i = pixelDescription.GetPixelDepth() / 8 - 1; i >= 0; i--) {
+					((u8*)pixelData)[offset + i] = (u8)pixel; 
+					pixel >>= 8;
+				}
+				break;
+		}
+
+	}
+
+	void Image::CopyTo(const Pointer<Image>& image, u32 x, u32 y)
+	{
+		CopyTo(image, x, y, GetWidth(), GetHeight());
+	}
+
+	void Image::CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height)
+	{
+		if (x > image->GetWidth() || y > image->GetHeight())
+			throw InvalidArgumentException();
+		width = BRICKS_FEATURE_MIN(width, image->GetWidth() - x);
+		height = BRICKS_FEATURE_MIN(height, image->GetHeight() - y);
+
+		for (int i = x; i < x + width; i++) {
+			for (int j = y; j < y + height; j++)
+				image->SetPixel(i, j, GetPixel(i, j));
+		}
 	}
 } }
