@@ -21,3 +21,7 @@ Misc
  - Add a SFINAE specialization of ReturnPointer<> for native types, where it just inherits from Pointer<> instead.
  - Crypto
  - Plugin architecture
+ - Bricks::Pointer::AsTypeStatic for when you're certain
+ - Bricks::Pointer::IsType<> SFINAE for simplification
+ - Bricks::Pointer allows for too arbitrary implicit casting at times.
+ - Bricks::Pointer/Object cooperation to detect zombies
