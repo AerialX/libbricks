@@ -52,10 +52,13 @@ namespace Bricks { namespace Imaging {
 		u32 GetHeight() const { return height; }
 		void SetSize(u32 width, u32 height) { this->width = width; this->height = height; AllocateMemory(); }
 
-		Colour GetPixel(u32 x, u32 y);
+		Colour GetPixel(u32 x, u32 y) const;
 		void SetPixel(u32 x, u32 y, const Colour& colour);
 
-		void CopyTo(const Pointer<Image>& image, u32 x = 0, u32 y = 0);
-		void CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height);
+		void CopyTo(const Pointer<Image>& image, u32 x = 0, u32 y = 0) const;
+		void CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const;
+
+		void ColouriseTo(const Pointer<Image>& image, const Colour& colour) const;
+		void Colourise(const Colour& colour) { ColouriseTo(this, colour); }
 	};
 } }
