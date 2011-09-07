@@ -10,7 +10,7 @@ namespace Bricks { namespace Imaging {
 		s32 x = 0;
 		s32 y = 0;
 		AutoPointer<FontGlyph> previous;
-		for (int i = 0; i < value.GetLength(); i++) {
+		for (u32 i = 0; i < value.GetLength(); i++) {
 			String::Character character = value[i];
 			if (character == '\n') {
 				x = 0;
@@ -44,7 +44,7 @@ namespace Bricks { namespace Imaging {
 		Array<s32> lineLengths;
 		RenderedGlyph* glyphs = new RenderedGlyph[value.GetLength()];
 		AutoPointer<FontGlyph> previous;
-		for (int i = 0; i < value.GetLength(); i++) {
+		for (u32 i = 0; i < value.GetLength(); i++) {
 			String::Character character = value[i];
 			if (character == '\n') {
 				lineLengths.AddItem(x);
@@ -65,7 +65,7 @@ namespace Bricks { namespace Imaging {
 		u32 line = 0;
 		s32 offset = (width - lineLengths[line]) / 2;
 		AutoPointer<Image> image = autonew Image(width, lineLengths.GetCount() * GetHeight(), PixelDescription::I8);
-		for (int i = 0; i < value.GetLength(); i++) {
+		for (u32 i = 0; i < value.GetLength(); i++) {
 			if (value[i] == '\n') {
 				line++;
 				offset = (width - lineLengths[line]) / 2;

@@ -152,8 +152,8 @@ namespace Bricks { namespace Imaging {
 		width = BRICKS_FEATURE_MIN(width, image->GetWidth() - x);
 		height = BRICKS_FEATURE_MIN(height, image->GetHeight() - y);
 
-		for (int i = x; i < x + width; i++) {
-			for (int j = y; j < y + height; j++)
+		for (u32 i = x; i < x + width; i++) {
+			for (u32 j = y; j < y + height; j++)
 				image->SetPixel(i, j, GetPixel(i, j));
 		}
 	}
