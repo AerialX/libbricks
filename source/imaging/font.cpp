@@ -31,7 +31,19 @@ namespace Bricks { namespace Imaging {
 		return FontMeasureSize(width, height);
 	}
 
-	ReturnPointer<Image> Font::DrawString(const String& value)
+	static s32 GetLineOffset(FontAlignment::Enum alignment, s32 width, s32 lineLength)
+	{
+		switch (alignment) {
+			case FontAlignment::Centre:
+				return (width - lineLength) / 2;
+			case FontAlignment::Right:
+				return width - lineLength;
+			case FontAlignment::Left:
+				return 0;
+		}
+	}
+
+	ReturnPointer<Image> Font::DrawString(const String& value, FontAlignment::Enum alignment)
 	{
 		s32 x = 0;
 		s32 width = 0;
@@ -65,12 +77,12 @@ namespace Bricks { namespace Imaging {
 		}
 		lineLengths.AddItem(x);
 		u32 line = 0;
-		s32 offset = (width - lineLengths[line]) / 2;
+		s32 offset = GetLineOffset(alignment, width, lineLengths[line]);
 		AutoPointer<Image> image = autonew Image(width, lineLengths.GetCount() * GetHeight(), PixelDescription::I8);
 		for (u32 i = 0; i < value.GetLength(); i++) {
 			if (value[i] == '\n') {
 				line++;
-				offset = (width - lineLengths[line]) / 2;
+				offset = GetLineOffset(alignment, width, lineLengths[line]);
 			}
 
 			Pointer<FontGlyph> glyph = glyphs[i].glyph;

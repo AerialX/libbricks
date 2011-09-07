@@ -7,6 +7,14 @@
 namespace Bricks { namespace Imaging {
 	class FontGlyph;
 
+	namespace FontAlignment {
+		enum Enum {
+			Left = 0,
+			Centre,
+			Right
+		};
+	};
+
 	struct FontMeasureSize
 	{
 	protected:
@@ -40,7 +48,7 @@ namespace Bricks { namespace Imaging {
 
 		FontMeasureSize MeasureString(const String& value);
 
-		ReturnPointer<Image> DrawString(const String& value);
+		ReturnPointer<Image> DrawString(const String& value, FontAlignment::Enum alignment = FontAlignment::Left);
 
 		void ClearCache() { glyphCache.Clear(); }
 		ReturnPointer<FontGlyph> GetGlyph(String::Character character, bool cache = true) { if (glyphCache.ContainsKey(character)) return glyphCache[character]; AutoPointer<FontGlyph> glyph = LoadGlyph(character); if (cache) glyphCache.Add(character, glyph); return glyph; }
