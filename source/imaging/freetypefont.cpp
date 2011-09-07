@@ -58,7 +58,7 @@ namespace Bricks { namespace Imaging {
 
 	void FreeTypeFont::SetPointSize(int pointWidth, int pointHeight, int dpiWidth, int dpiHeight)
 	{
-		if (FT_Set_Char_Size(face, pointWidth * 64, pointHeight * 64, dpiWidth, dpiHeight))
+		if (FT_Set_Char_Size(face, pointWidth << 6, pointHeight << 6, dpiWidth, dpiHeight))
 			throw NotSupportedException();
 		Font::SetPixelSize(face->size->metrics.x_ppem, face->size->metrics.y_ppem);
 	}
@@ -68,7 +68,7 @@ namespace Bricks { namespace Imaging {
 		int index = FT_Get_Char_Index(face, character);
 		if (FT_Load_Glyph(face, index, FT_LOAD_DEFAULT))
 			throw Exception();
-		return autonew FontGlyph(this, character, index, face->glyph->advance.x, face->glyph->metrics.width, face->glyph->metrics.height, face->glyph->metrics.horiBearingX, face->glyph->metrics.horiBearingY);
+		return autonew FontGlyph(this, character, index, face->glyph->advance.x >> 6, face->glyph->metrics.width >> 6, face->glyph->metrics.height >> 6, face->glyph->metrics.horiBearingX >> 6, face->glyph->metrics.horiBearingY >> 6);
 	}
 
 	ReturnPointer<Image> FreeTypeFont::RenderGlyph(const Pointer<FontGlyph>& glyph)
