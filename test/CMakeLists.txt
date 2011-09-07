@@ -22,3 +22,7 @@ add_test(bricks-test-imaging-png bricks-test-imaging-png)
 add_executable(bricks-test-imaging-image imaging-image.cpp)
 target_link_libraries(bricks-test-imaging-image bricks-imaging bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-imaging-image bricks-test-imaging-image)
+
+add_executable(bricks-test-imaging-font imaging-font.cpp)
+target_link_libraries(bricks-test-imaging-font bricks-imaging bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread ${FREETYPE_LIBRARIES})
+add_test(bricks-test-imaging-font bricks-test-imaging-font)

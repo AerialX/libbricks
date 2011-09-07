@@ -8,4 +8,7 @@
 
 #include "bricks/imaging/png.h"
 
+#include "bricks/imaging/font.h"
+#include "bricks/imaging/freetypefont.h"
+
 #endif

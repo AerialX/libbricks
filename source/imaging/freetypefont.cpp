@@ -1,0 +1,100 @@
+#include "bricks/config.h"
+
+#ifdef BRICKS_CONFIG_IMAGING_FREETYPE
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#include "bricksall.hpp"
+
+using namespace Bricks::IO;
+
+namespace Bricks { namespace Imaging {
+	static unsigned long FreeTypeFontRead(FT_Stream data, unsigned long offset, unsigned char* buffer, unsigned long count)
+	{
+		Pointer<Stream> stream = static_cast<Stream*>(data->descriptor.pointer);
+
+		if (stream->GetPosition() != offset)
+			stream->SetPosition(offset);
+
+		if (!count)
+			return 0;
+
+		return stream->Read(buffer, count);
+	}
+
+	FreeTypeFont::FreeTypeFont(const Pointer<Stream>& stream, int faceIndex) : stream(stream)
+	{
+		if (FT_Init_FreeType(&library))
+			throw Exception();
+		FT_Open_Args args;
+		ftstream = new FT_StreamRec();
+		memset(&args, 0, sizeof(args));
+		memset(ftstream, 0, sizeof(FT_StreamRec));
+		args.flags = FT_OPEN_STREAM;
+		args.stream = ftstream;
+		ftstream->descriptor.pointer = static_cast<void*>(stream.GetValue());
+		ftstream->read = &FreeTypeFontRead;
+		ftstream->size = stream->GetLength();
+		if (FT_Open_Face(library, &args, faceIndex, &face)) {
+			FT_Done_FreeType(library);
+			throw Exception();
+		}
+	}
+
+	FreeTypeFont::~FreeTypeFont()
+	{
+		FT_Done_Face(face);
+		FT_Done_FreeType(library);
+		delete ftstream;
+	}
+
+	void FreeTypeFont::SetPixelSize(int pixelWidth, int pixelHeight)
+	{
+		if (FT_Set_Pixel_Sizes(face, pixelWidth, pixelHeight))
+			throw NotSupportedException();
+		Font::SetPixelSize(pixelWidth, pixelHeight);
+	}
+
+	void FreeTypeFont::SetPointSize(int pointWidth, int pointHeight, int dpiWidth, int dpiHeight)
+	{
+		if (FT_Set_Char_Size(face, pointWidth * 64, pointHeight * 64, dpiWidth, dpiHeight))
+			throw NotSupportedException();
+		Font::SetPixelSize(face->size->metrics.x_ppem, face->size->metrics.y_ppem);
+	}
+
+	ReturnPointer<FontGlyph> FreeTypeFont::LoadGlyph(String::Character character)
+	{
+		int index = FT_Get_Char_Index(face, character);
+		if (FT_Load_Glyph(face, index, FT_LOAD_DEFAULT))
+			throw Exception();
+		return autonew FontGlyph(this, character, index, face->glyph->advance.x, face->glyph->metrics.width, face->glyph->metrics.height, face->glyph->metrics.horiBearingX, face->glyph->metrics.horiBearingY);
+	}
+
+	ReturnPointer<Image> FreeTypeFont::RenderGlyph(const Pointer<FontGlyph>& glyph)
+	{
+		if (FT_Load_Glyph(face, glyph->GetIndex(), FT_LOAD_DEFAULT))
+			throw Exception();
+		FT_GlyphSlot slot = face->glyph;
+		if (FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL)) // TODO: FT_RENDER_MODE_LCD / FT_RENDER_MODE_LCD_V ?
+			throw Exception();
+		PixelDescription description;
+		switch (slot->bitmap.pixel_mode) {
+			case FT_PIXEL_MODE_MONO:
+				description = PixelDescription(1, ColourTypeMask::Intensity);
+				break;
+			case FT_PIXEL_MODE_GRAY:
+			case FT_PIXEL_MODE_LCD:
+			case FT_PIXEL_MODE_LCD_V:
+				description = PixelDescription::I8;
+				break;
+			default:
+				throw NotSupportedException();
+		}
+		AutoPointer<Image> image = autonew Image(slot->bitmap.width, slot->bitmap.rows, description);
+		memcpy(image->GetImageData(), slot->bitmap.buffer, image->GetImageDataSize());
+		return image;
+	}
+} }
+
+#endif
