@@ -15,6 +15,7 @@ namespace Bricks { namespace Imaging {
 			if (character == '\n') {
 				x = 0;
 				y += GetHeight();
+				continue;
 			}
 			AutoPointer<FontGlyph> glyph = GetGlyph(character);
 
@@ -49,6 +50,7 @@ namespace Bricks { namespace Imaging {
 			if (character == '\n') {
 				lineLengths.AddItem(x);
 				x = 0;
+				continue;
 			}
 			AutoPointer<FontGlyph> glyph = GetGlyph(character);
 
