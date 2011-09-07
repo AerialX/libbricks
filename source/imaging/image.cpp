@@ -44,7 +44,7 @@ namespace Bricks { namespace Imaging {
 				switch ((ColourType::Enum)i) {
 					case ColourType::Intensity:
 						// TODO: Chroma map
-						colour.R = colour.G = colour.B = component;
+						colour.A = colour.R = colour.G = colour.B = component;
 						break;
 					case ColourType::Palette:
 						colour = palette->GetItem(component);
