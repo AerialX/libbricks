@@ -31,6 +31,8 @@ namespace Bricks { namespace Imaging {
 
 		void SetPixelSize(int pixelWidth, int pixelHeight = 0);
 		void SetPointSize(int pointWidth, int pointHeight = 0, int dpiWidth = 0, int dpiHeight = 0);
+
+		s32 GetKerning(const Pointer<FontGlyph>& glyph, const Pointer<FontGlyph>& previous);
 	};
 } }
 

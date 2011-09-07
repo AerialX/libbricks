@@ -95,6 +95,15 @@ namespace Bricks { namespace Imaging {
 		memcpy(image->GetImageData(), slot->bitmap.buffer, image->GetImageDataSize());
 		return image;
 	}
+
+	s32 FreeTypeFont::GetKerning(const Pointer<FontGlyph>& glyph, const Pointer<FontGlyph>& previous)
+	{
+		if (!previous || !glyph)
+			return 0;
+		FT_Vector kerning;
+		FT_Get_Kerning(face, previous->GetIndex(), glyph->GetIndex(), FT_KERNING_DEFAULT, &kerning);
+		return kerning.x;
+	}
 } }
 
 #endif
