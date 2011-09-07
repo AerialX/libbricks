@@ -15,11 +15,13 @@ namespace Bricks { namespace Imaging {
 			if (character == '\n') {
 				x = 0;
 				y += GetHeight();
+				previous = NULL;
 				continue;
 			}
 			AutoPointer<FontGlyph> glyph = GetGlyph(character);
 
 			x += GetKerning(glyph, previous);
+			previous = glyph;
 
 			x += glyph->GetAdvance();
 
@@ -62,11 +64,13 @@ namespace Bricks { namespace Imaging {
 			if (character == '\n') {
 				lineLengths.AddItem(x);
 				x = 0;
+				previous = NULL;
 				continue;
 			}
 			AutoPointer<FontGlyph> glyph = GetGlyph(character);
 
 			x += GetKerning(glyph, previous);
+			previous = glyph;
 
 			glyphs[i] = RenderedGlyph(glyph, lineLengths.GetCount(), x, lineLengths.GetCount() * GetHeight());
 

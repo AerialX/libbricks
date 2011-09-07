@@ -102,7 +102,7 @@ namespace Bricks { namespace Imaging {
 			return 0;
 		FT_Vector kerning;
 		FT_Get_Kerning(face, previous->GetIndex(), glyph->GetIndex(), FT_KERNING_DEFAULT, &kerning);
-		return kerning.x;
+		return kerning.x >> 6;
 	}
 } }
 
