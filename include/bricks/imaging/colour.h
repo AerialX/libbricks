@@ -15,6 +15,16 @@ namespace Bricks { namespace Imaging {
 		u8 G;
 		u8 B;
 		u8 A;
+
+		Colour operator+(const Colour& rhs) const { return Colour(R + rhs.R, G + rhs.G, B + rhs.B, A + rhs.A); }
+		Colour operator-(const Colour& rhs) const { return Colour(R - rhs.R, G - rhs.G, B - rhs.B, A - rhs.A); }
+		Colour operator*(const Colour& rhs) const { return Colour((int)R * rhs.R / 0xFF, (int)G * rhs.G / 0xFF, (int)B * rhs.B / 0xFF, (int)A * rhs.A / 0xFF); }
+		Colour operator/(const Colour& rhs) const { return Colour((int)R * 0xFF / rhs.R, (int)G * 0xFF / rhs.G, (int)B * 0xFF / rhs.B, (int)A * 0xFF / rhs.A); }
+
+		Colour& operator+=(const Colour& rhs) { *this = *this + rhs; return *this; }
+		Colour& operator-=(const Colour& rhs) { *this = *this / rhs; return *this; }
+		Colour& operator*=(const Colour& rhs) { *this = *this * rhs; return *this; }
+		Colour& operator/=(const Colour& rhs) { *this = *this / rhs; return *this; }
 	};
 
 	typedef Collections::List<Colour> Palette;
