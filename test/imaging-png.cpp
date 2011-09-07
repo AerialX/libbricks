@@ -29,8 +29,8 @@ TEST_F(BricksImagingPngTest, ReadPixels) {
 	if (!image)
 		FAIL();
 
-	for (int x = 0; x < image->GetWidth(); x++) {
-		for (int y = 0; y < image->GetHeight(); y++) {
+	for (u32 x = 0; x < image->GetWidth(); x++) {
+		for (u32 y = 0; y < image->GetHeight(); y++) {
 			Colour pixel = image->GetPixel(x, y);
 			EXPECT_EQ(Colour(0xfa, 0xce, 0xb0, 0xff), pixel);
 		}
@@ -44,8 +44,8 @@ TEST_F(BricksImagingPngTest, ReadTransformedPixels) {
 	if (!image)
 		FAIL();
 
-	for (int x = 0; x < image->GetWidth(); x++) {
-		for (int y = 0; y < image->GetHeight(); y++) {
+	for (u32 x = 0; x < image->GetWidth(); x++) {
+		for (u32 y = 0; y < image->GetHeight(); y++) {
 			Colour pixel = image->GetPixel(x, y);
 			EXPECT_EQ(Colour(0xfa, 0xce, 0xb0, 0xff), pixel);
 		}

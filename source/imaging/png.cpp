@@ -89,12 +89,12 @@ namespace Bricks { namespace Imaging {
 
 		if (transform) {
 			png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
-			for (int i = 0; i < height; i++)
+			for (u32 i = 0; i < height; i++)
 				memcpy((png_bytep)image->GetImageData() + i * width * image->GetPixelDescription().GetPixelSize(), row_pointers[i], width * image->GetPixelDescription().GetPixelSize());
 		} else {
 			png_bytep row_pointers[height];
 
-			for (int i = 0; i < height; i++)
+			for (u32 i = 0; i < height; i++)
 				row_pointers[i] = (png_bytep)image->GetImageData() + i * width * image->GetPixelDescription().GetPixelSize();
 
 			png_set_rows(png_ptr, info_ptr, row_pointers);
