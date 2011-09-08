@@ -11,54 +11,31 @@ namespace Bricks { namespace Imaging {
 		};
 	}
 
-	class Image : public Object, NoCopy
+	class Image
 	{
-	protected:
-		AutoPointer<Palette> palette;
-		PixelDescription pixelDescription;
-		InterlaceType::Enum interlacing;
-		u32 width;
-		u32 height;
-		u8* pixelData;
-
-		static size_t CalculateImageDataSize(u32 width, u32 height, const PixelDescription& description) { return BRICKS_FEATURE_ROUND_UP((size_t)description.GetPixelDepth() * width * height, 8) / 8; }
-
-		void AllocateMemory()
-		{
-			if (pixelData)
-				delete[] pixelData;
-
-			int size = GetImageDataSize();
-			if (size) {
-				pixelData = new u8[size];
-				memset(pixelData, 0, size);
-			} else
-				pixelData = NULL;
-		}
-
 	public:
-		// TODO: Should probably obey some packing rules
-		Image(u32 width = 0, u32 height = 0, const PixelDescription& description = PixelDescription::RGBA8, InterlaceType::Enum interlacing = InterlaceType::None) : pixelDescription(description), interlacing(interlacing), width(width), height(height), pixelData(NULL) {
-			AllocateMemory();
-		}
-		~Image() { if (pixelData) delete[] pixelData; }
-		ReturnPointer<Palette> GetPalette() const { return palette; }
-		void* GetImageData() const { return pixelData; }
-		u32 GetImageDataSize() const { return CalculateImageDataSize(width, height, pixelDescription); }
-		const PixelDescription& GetPixelDescription() const { return pixelDescription; }
-		InterlaceType::Enum GetInterlaceType() const { return interlacing; }
+		virtual u32 GetWidth() const = 0;
+		virtual u32 GetHeight() const = 0;
+		virtual void SetSize(u32 width, u32 height) = 0;
 
-		u32 GetWidth() const { return width; }
-		u32 GetHeight() const { return height; }
-		void SetSize(u32 width, u32 height) { this->width = width; this->height = height; AllocateMemory(); }
-
-		Colour GetPixel(u32 x, u32 y) const;
-		void SetPixel(u32 x, u32 y, const Colour& colour);
+		virtual Colour GetPixel(u32 x, u32 y) const = 0;
+		virtual void SetPixel(u32 x, u32 y, const Colour& colour) = 0;
 
 		void CopyTo(const Pointer<Image>& image, u32 x = 0, u32 y = 0) const;
 		void CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const;
 
 		void ColouriseTo(const Pointer<Image>& image, const Colour& colour) const;
 		void Colourise(const Colour& colour) { ColouriseTo(this, colour); }
+	};
+
+	class BitmapImage : public Image
+	{
+	public:
+		virtual void* GetImageData() const = 0;
+		virtual u32 GetImageDataSize() const = 0;
+		virtual u32 GetImageDataStride() const = 0;
+		virtual const PixelDescription& GetPixelDescription() const = 0;
+		virtual ReturnPointer<Palette> GetPalette() const = 0;
+		virtual InterlaceType::Enum GetInterlaceType() const = 0;
 	};
 } }

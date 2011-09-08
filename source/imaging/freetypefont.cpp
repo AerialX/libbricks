@@ -91,7 +91,7 @@ namespace Bricks { namespace Imaging {
 			default:
 				throw NotSupportedException();
 		}
-		AutoPointer<Image> image = autonew Image(slot->bitmap.width, slot->bitmap.rows, description);
+		AutoPointer<Bitmap> image = autonew Bitmap(slot->bitmap.width, slot->bitmap.rows, description);
 		memcpy(image->GetImageData(), slot->bitmap.buffer, image->GetImageDataSize());
 		return image;
 	}

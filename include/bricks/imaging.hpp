@@ -5,6 +5,7 @@
 
 #include "bricks/imaging/colour.h"
 #include "bricks/imaging/image.h"
+#include "bricks/imaging/bitmap.h"
 
 #include "bricks/imaging/png.h"
 

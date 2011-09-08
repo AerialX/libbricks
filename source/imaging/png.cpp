@@ -22,7 +22,7 @@ namespace Bricks { namespace Imaging {
 
 	// TODO: This should let exceptions propogate past the function, never return NULL
 	//       Also catch exceptions and destroy libpng objects before throwing it along to the caller
-	ReturnPointer<Image> PNG::LoadImage(const Pointer<Stream>& stream, bool transform)
+	ReturnPointer<Bitmap> PNG::LoadImage(const Pointer<Stream>& stream, bool transform)
 	{
 		png_structp png_ptr;
 		png_infop info_ptr;
@@ -85,7 +85,7 @@ namespace Bricks { namespace Imaging {
 		}
 */
 
-		AutoPointer<Image> image = autonew Image(width, height, pixels, InterlaceType::None);
+		AutoPointer<Bitmap> image = autonew Bitmap(width, height, pixels, InterlaceType::None);
 
 		if (transform) {
 			png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);

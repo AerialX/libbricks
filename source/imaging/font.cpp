@@ -82,7 +82,7 @@ namespace Bricks { namespace Imaging {
 		lineLengths.AddItem(x);
 		u32 line = 0;
 		s32 offset = GetLineOffset(alignment, width, lineLengths[line]);
-		AutoPointer<Image> image = autonew Image(width, lineLengths.GetCount() * GetHeight(), PixelDescription::I8);
+		AutoPointer<Bitmap> image = autonew Bitmap(width, lineLengths.GetCount() * GetHeight(), PixelDescription::I8);
 		for (u32 i = 0; i < value.GetLength(); i++) {
 			if (value[i] == '\n') {
 				line++;

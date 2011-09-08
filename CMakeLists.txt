@@ -65,7 +65,7 @@ add_library(bricks-io "source/io/console.cpp" "source/io/filesystem.cpp")
 add_library(bricks-threading "source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp")
 add_library(bricks-audio "source/audio/midireader.cpp" "source/audio/ffmpegcodec.cpp")
 add_library(bricks-compression "source/compression/zipfilesystem.cpp")
-add_library(bricks-imaging "source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/font.cpp" "source/imaging/png.cpp" "source/imaging/freetypefont.cpp")
+add_library(bricks-imaging "source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/bitmap.cpp" "source/imaging/font.cpp" "source/imaging/png.cpp" "source/imaging/freetypefont.cpp")
 
 add_executable(sample "sample/source/main.cpp")
 target_link_libraries(sample bricks-io bricks-core)
