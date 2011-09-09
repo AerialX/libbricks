@@ -25,3 +25,4 @@ Misc
  - Bricks::Pointer::IsType<> SFINAE for simplification
  - Bricks::Pointer allows for too arbitrary implicit casting at times.
  - Bricks::Pointer/Object cooperation to detect zombies
+ - An ImageResize class which runs scaling algorithms on GetPixel()
