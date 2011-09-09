@@ -19,6 +19,8 @@ namespace Bricks { namespace Imaging {
 				continue;
 			}
 			AutoPointer<FontGlyph> glyph = GetGlyph(character);
+			if (!glyph)
+				continue;
 
 			x += GetKerning(glyph, previous);
 			previous = glyph;
@@ -68,6 +70,8 @@ namespace Bricks { namespace Imaging {
 				continue;
 			}
 			AutoPointer<FontGlyph> glyph = GetGlyph(character);
+			if (!glyph)
+				continue;
 
 			x += GetKerning(glyph, previous);
 			previous = glyph;
@@ -82,7 +86,7 @@ namespace Bricks { namespace Imaging {
 		lineLengths.AddItem(x);
 		u32 line = 0;
 		s32 offset = GetLineOffset(alignment, width, lineLengths[line]);
-		AutoPointer<Bitmap> image = autonew Bitmap(width, lineLengths.GetCount() * GetHeight(), PixelDescription::I8);
+		AutoPointer<Bitmap> image = autonew Bitmap(width, lineLengths.GetCount() * GetHeight(), PixelDescription::RGBA8);
 		for (u32 i = 0; i < value.GetLength(); i++) {
 			if (value[i] == '\n') {
 				line++;

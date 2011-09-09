@@ -12,5 +12,6 @@
 
 #include "bricks/imaging/font.h"
 #include "bricks/imaging/freetypefont.h"
+#include "bricks/imaging/atlasfont.h"
 
 #endif

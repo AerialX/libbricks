@@ -71,6 +71,7 @@ namespace Bricks { namespace Imaging {
 
 	public:
 		FontGlyph(const Pointer<Font>& font, String::Character character, int index, s32 advance, s32 width, s32 height, s32 bearingX, s32 bearingY) : font(font), character(character), index(index), advance(advance), width(width), height(height), bearingX(bearingX), bearingY(bearingY) { }
+		FontGlyph(const Pointer<Font>& font, String::Character character, const Pointer<Image>& image, int index, s32 advance, s32 width, s32 height, s32 bearingX, s32 bearingY) : font(font), image(image), character(character), index(index), advance(advance), width(width), height(height), bearingX(bearingX), bearingY(bearingY) { }
 
 		ReturnPointer<Font> GetFont() const { return font; }
 		ReturnPointer<Image> GetImage() { if (image) return image; image = font->RenderGlyph(this); return image; }
