@@ -121,10 +121,12 @@ namespace Bricks {
 
 		void Swap(const Pointer< T >& t) { value = t.value; }
 
-		bool operator==(const Pointer< T >& t) { return value == t.value; }
-		bool operator!=(const Pointer< T >& t) { return value != t.value; }
-		template<typename U> bool operator==(const Pointer< U >& t) { return value == t.GetValue(); }
-		template<typename U> bool operator!=(const Pointer< U >& t) { return value != t.GetValue(); }
+		bool operator==(const Pointer< T >& t) const { return value == t.value; }
+		bool operator!=(const Pointer< T >& t) const { return value != t.value; }
+		bool operator>(const Pointer< T >& t) const { return value > t.value; }
+		bool operator<(const Pointer< T >& t) const { return value < t.value; }
+		template<typename U> bool operator==(const Pointer< U >& t) const { return value == t.GetValue(); }
+		template<typename U> bool operator!=(const Pointer< U >& t) const { return value != t.GetValue(); }
 
 		template<typename U> bool IsType() const { return AsType<U>(); }
 
