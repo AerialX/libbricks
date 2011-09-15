@@ -53,6 +53,7 @@ add_definitions(-Wall)
 if(BRICKS_CONFIG_IMAGING_LIBPNG)
 	find_package(PNG REQUIRED)
 	add_definitions(${PNG_DEFINITIONS})
+	include_directories(${PNG_INCLUDE_DIR})
 endif(BRICKS_CONFIG_IMAGING_LIBPNG)
 
 if (BRICKS_CONFIG_IMAGING_FREETYPE)
