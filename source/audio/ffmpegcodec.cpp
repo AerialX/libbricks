@@ -64,7 +64,7 @@ void FFmpegDecoder::Seek(s64 sample)
 {
 	cacheLength = 0;
 	av_seek_frame(format, streamIndex, stream->time_base.den * sample / stream->time_base.num / samplerate, AVSEEK_FLAG_ANY);
-	AudioCodec::Seek(sample);
+	AudioCodec<s16>::Seek(sample);
 }
 
 int FFmpegDecoder::ReadCache(AudioBuffer<s16>& buffer, int count, int offset)
@@ -112,7 +112,7 @@ u32 FFmpegDecoder::Read(AudioBuffer<s16>& buffer, u32 count, u32 boffset)
 			}
 		}
 	}
-	AudioCodec::Read(buffer, offset);
+	AudioCodec<s16>::Read(buffer, offset);
 	return offset;
 }
 
