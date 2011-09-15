@@ -13,7 +13,7 @@ namespace Bricks {
 			static const String Empty;
 			typedef char Character;
 
-			static String Format(const char* format, ...);
+			static String Format(const String& format, ...);
 
 			BRICKS_COPY_CONSTRUCTOR(String);
 
