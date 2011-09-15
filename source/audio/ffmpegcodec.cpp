@@ -1,4 +1,4 @@
-#include "bricksall.hpp"
+#include "bricks/config.h"
 
 #ifdef BRICKS_CONFIG_AUDIO_FFMPEG
 
@@ -7,6 +7,8 @@
 #else
 #include <malloc.h>
 #endif
+
+#include "bricksall.hpp"
 
 using namespace Bricks;
 using namespace Bricks::Audio;

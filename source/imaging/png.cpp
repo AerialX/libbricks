@@ -1,8 +1,10 @@
-#include "bricksall.hpp"
+#include "bricks/config.h"
 
 #ifdef BRICKS_CONFIG_IMAGING_LIBPNG
 
 #include <png.h>
+
+#include "bricksall.hpp"
 
 using namespace Bricks::IO;
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bricks/config.h"
+
 #ifdef BRICKS_CONFIG_AUDIO_FFMPEG
 
 #include "bricks/audio/audiocodec.h"
