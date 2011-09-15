@@ -70,6 +70,10 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_BSD
 #endif
 
+#ifdef ANDROID
+#define BRICKS_FEATURE_ANDROID
+#endif
+
 #if defined(BRICKS_FEATURE_LINUX) || defined(BRICKS_FEATURE_BSD)
 #define BRICKS_FEATURE_LINUXBSD
 #endif

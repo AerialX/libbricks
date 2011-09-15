@@ -11,7 +11,7 @@ option(BRICKS_CONFIG_LOGGING "Logs various information about libbricks to stderr
 option(BRICKS_CONFIG_LOGGING_HEAVY "A lot more logging. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_LOGGING_MEMLEAK "Report any unreleased objects at program termination. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_STL "Use the STL internally in collections" ON)
-option(USE_GTEST "Build the test units - requires Google Test" ON)
+option(USE_GTEST "Build the test units - requires Google Test" OFF)
 option(USE_CLANG "Build libbricks with Clang" OFF)
 
 option(BRICKS_CONFIG_AUDIO_FFMPEG "Enable the FFMPEG audio decoder" OFF)

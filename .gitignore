@@ -1,4 +1,4 @@
 *.so
 *.a
 *.swp
-build/
+build*/
