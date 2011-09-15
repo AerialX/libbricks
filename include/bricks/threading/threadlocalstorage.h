@@ -12,8 +12,6 @@ namespace Bricks { namespace Threading {
 	template<typename T>
 	class ThreadLocalStorage
 	{
-	private:
-
 	public:
 		ThreadLocalStorage() { }
 		ThreadLocalStorage(const T& value) { Internal::GetStorageDictionary().Add(this, value); }
