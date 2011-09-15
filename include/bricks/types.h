@@ -2,11 +2,13 @@
 
 #include "bricks/config.h"
 
-#define __STDC_CONSTANT_MACROS
-#define __STDC_LIMIT_MACROS
+#ifndef __STDC_LIMIT_MACROS
+	#define __STDC_LIMIT_MACROS
+#endif
+#ifndef __STDC_CONSTANT_MACROS
+	#define __STDC_CONSTANT_MACROS
+#endif
 #include <stdint.h>
-#undef __STDC_CONSTANT_MACROS
-#undef __STDC_LIMIT_MACROS
 
 typedef int8_t		s8;
 typedef uint8_t		u8;
@@ -36,6 +38,7 @@ typedef volatile double		vf64;
 /* Features */
 #define BRICKS_FEATURE_MIN(a, b) ((a) < (b) ? (a) : (b))
 #define BRICKS_FEATURE_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define BRICKS_FEATURE_ABS(a) ((a) < 0 ? -(a) : (a))
 #define BRICKS_FEATURE_ROUND_DOWN(num, round) ((num) / (round) * (round))
 #define BRICKS_FEATURE_ROUND_UP(num, round) (BRICKS_FEATURE_ROUND_DOWN((num) + (round) - 1, round))
 
