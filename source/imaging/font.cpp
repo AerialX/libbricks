@@ -13,6 +13,11 @@ namespace Bricks { namespace Imaging {
 		for (u32 i = 0; i < value.GetLength(); i++) {
 			String::Character character = value[i];
 			if (character == '\n') {
+				if (previous->GetWidth() > previous->GetAdvance()) {
+					x += previous->GetWidth() - previous->GetAdvance();
+					if (x > width)
+						width = x;
+				}
 				x = 0;
 				y += GetHeight();
 				previous = NULL;
@@ -29,8 +34,11 @@ namespace Bricks { namespace Imaging {
 
 			if (x > width)
 				width = x;
-			if (y + glyph->GetHeight() > height)
-				height = y + glyph->GetHeight();
+			if (y + GetHeight() > height)
+				height = y + GetHeight();
+			s32 gheight = glyph->GetHeight() + GetHeight() - glyph->GetBearingY();
+			if (y + gheight > height)
+				height = y + gheight;
 		}
 		return FontMeasureSize(width, height);
 	}
@@ -43,6 +51,7 @@ namespace Bricks { namespace Imaging {
 			case FontAlignment::Right:
 				return width - lineLength;
 			case FontAlignment::Left:
+			default:
 				return 0;
 		}
 	}
@@ -51,6 +60,7 @@ namespace Bricks { namespace Imaging {
 	{
 		s32 x = 0;
 		s32 width = 0;
+		s32 height = 0;
 		struct RenderedGlyph {
 			AutoPointer<FontGlyph> glyph;
 			u32 line;
@@ -64,6 +74,11 @@ namespace Bricks { namespace Imaging {
 		for (u32 i = 0; i < value.GetLength(); i++) {
 			String::Character character = value[i];
 			if (character == '\n') {
+				if (previous->GetWidth() > previous->GetAdvance()) {
+					x += previous->GetWidth() - previous->GetAdvance();
+					if (x > width)
+						width = x;
+				}
 				lineLengths.AddItem(x);
 				x = 0;
 				previous = NULL;
@@ -82,11 +97,17 @@ namespace Bricks { namespace Imaging {
 
 			if (x > width)
 				width = x;
+			s32 y = lineLengths.GetCount() * GetHeight();
+			if (y + GetHeight() > height)
+				height = y + GetHeight();
+			s32 gheight = glyph->GetHeight() + GetHeight() - glyph->GetBearingY();
+			if (y + gheight > height)
+				height = y + gheight;
 		}
 		lineLengths.AddItem(x);
 		u32 line = 0;
 		s32 offset = GetLineOffset(alignment, width, lineLengths[line]);
-		AutoPointer<Bitmap> image = autonew Bitmap(width, lineLengths.GetCount() * GetHeight(), PixelDescription::RGBA8);
+		AutoPointer<Bitmap> image = autonew Bitmap(width, height, PixelDescription::RGBA8);
 		for (u32 i = 0; i < value.GetLength(); i++) {
 			if (value[i] == '\n') {
 				line++;

@@ -40,6 +40,8 @@ namespace Bricks { namespace Imaging {
 		friend class FontGlyph;
 
 	public:
+		Font() : width(0), height(0) { }
+
 		virtual void SetPixelSize(int pixelWidth, int pixelHeight = 0) { width = pixelWidth; height = pixelHeight ?: pixelWidth; }
 		virtual void SetPointSize(int pointWidth, int pointHeight = 0, int dpiWidth = 0, int dpiHeight = 0) { width = pointWidth; height = pointHeight ?: pointWidth; }
 
