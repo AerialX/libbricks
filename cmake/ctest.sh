@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dir="`dirname $0`"
+dir="`dirname $0`/.."
 build=$1
 shift
 

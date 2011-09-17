@@ -1,5 +1,4 @@
 enable_testing()
-find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 add_definitions(-DTEST_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\") 
 
