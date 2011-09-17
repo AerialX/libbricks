@@ -2,13 +2,13 @@
 
 #ifdef BRICKS_CONFIG_AUDIO_FFMPEG
 
+#include "bricksall.hpp"
+
 #ifdef BRICKS_FEATURE_APPLE
 #define memalign(a, b) malloc(b)
 #else
 #include <malloc.h>
 #endif
-
-#include "bricksall.hpp"
 
 using namespace Bricks;
 using namespace Bricks::Audio;
