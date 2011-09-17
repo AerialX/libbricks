@@ -3,25 +3,25 @@ include_directories(${GTEST_INCLUDE_DIRS})
 add_definitions(-DTEST_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\") 
 
 add_executable(bricks-test-audio-midi audio-midi.cpp)
-target_link_libraries(bricks-test-audio-midi bricks-audio bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread)
+target_link_libraries(bricks-test-audio-midi bricks-audio bricks-io ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-audio-midi bricks-test-audio-midi)
 
 add_executable(bricks-test-io-navigator io-navigator.cpp)
-target_link_libraries(bricks-test-io-navigator bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread)
+target_link_libraries(bricks-test-io-navigator bricks-io ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-io-navigator bricks-test-io-navigator)
 
 add_executable(bricks-test-compression-zipfilesystem compression-zipfilesystem.cpp)
-target_link_libraries(bricks-test-compression-zipfilesystem bricks-compression zip bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread)
+target_link_libraries(bricks-test-compression-zipfilesystem bricks-compression ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-compression-zipfilesystem bricks-test-compression-zipfilesystem)
 
 add_executable(bricks-test-imaging-png imaging-png.cpp)
-target_link_libraries(bricks-test-imaging-png bricks-imaging bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread ${PNG_LIBRARIES})
+target_link_libraries(bricks-test-imaging-png bricks-imaging ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-imaging-png bricks-test-imaging-png)
 
 add_executable(bricks-test-imaging-image imaging-image.cpp)
-target_link_libraries(bricks-test-imaging-image bricks-imaging bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread)
+target_link_libraries(bricks-test-imaging-image bricks-imaging ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-imaging-image bricks-test-imaging-image)
 
 add_executable(bricks-test-imaging-font imaging-font.cpp)
-target_link_libraries(bricks-test-imaging-font bricks-imaging bricks-io bricks-core ${GTEST_BOTH_LIBRARIES} pthread ${FREETYPE_LIBRARIES})
+target_link_libraries(bricks-test-imaging-font bricks-imaging ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-imaging-font bricks-test-imaging-font)

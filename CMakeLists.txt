@@ -116,6 +116,12 @@ add_library(bricks-audio "source/audio/midireader.cpp" "source/audio/ffmpegcodec
 add_library(bricks-compression "source/compression/zipfilesystem.cpp")
 add_library(bricks-imaging "source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/bitmap.cpp" "source/imaging/font.cpp" "source/imaging/png.cpp" "source/imaging/freetypefont.cpp")
 
+target_link_libraries(bricks-io bricks-core)
+target_link_libraries(bricks-threading bricks-core)
+target_link_libraries(bricks-audio bricks-io ${FFMPEG_LIBRARIES})
+target_link_libraries(bricks-compression bricks-io ${LIBZIP_LIBRARIES})
+target_link_libraries(bricks-imaging bricks-io ${PNG_LIBRARIES} ${FREETYPE_LIBRARIES})
+
 add_executable(sample "sample/source/main.cpp")
 target_link_libraries(sample bricks-io bricks-core)
 
