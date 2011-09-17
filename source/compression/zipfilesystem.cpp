@@ -183,7 +183,7 @@ namespace Bricks { namespace Compression {
 		memset(&st, 0, sizeof(st));
 		char lastchar = zst.name[strlen(zst.name) - 1];
 		st.st_mode = (lastchar == '/' || lastchar == '\\') ? S_IFDIR : S_IFREG;
-		st.st_dev = (dev_t)zipfile;
+		st.st_dev = (dev_t)(size_t)zipfile;
 //		if (zst.valid & ZIP_STAT_NAME)
 //			st.st_blksize = z;
 		if (zst.valid & ZIP_STAT_INDEX)
