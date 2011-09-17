@@ -37,7 +37,7 @@ else()
 	set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/${OSTYPE}")
 endif()
 set(CMAKE_FIND_ROOT_PATH ${BRICKSLIB_DIR} "${CMAKE_FIND_ROOT_PATH}")
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (IOS)
 	set (CMAKE_FIND_LIBRARY_SUFFIXES ".dylib;.a")
@@ -90,7 +90,11 @@ endif()
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
 include_directories("include" "source" "${CMAKE_CURRENT_BINARY_DIR}/include")
-add_definitions(-Wall)
+
+set(BRICKS_DEFINITIONS "-Wall" PARENT_SCOPE)
+set(BRICKS_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" PARENT_SCOPE)
+
+add_definitions(${BRICKS_DEFINITIONS})
 
 if(BRICKS_CONFIG_IMAGING_LIBPNG)
 	add_definitions(${PNG_DEFINITIONS})
