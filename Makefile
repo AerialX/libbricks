@@ -5,11 +5,11 @@ all:
 	@$(MAKE) --no-print-directory -C build-$(OSTYPE) -j8
 
 android:
-	@sh ./cmake/cmake.sh buildandroid-arm -DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchain.android.cmake -DARM_TARGET=armeabi
+	@sh ./cmake/cmake.sh buildandroid-arm -DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchain.android.cmake -DNDK_CPU_ARM=y
 	@$(MAKE) --no-print-directory -C buildandroid-arm -j8
-	@sh ./cmake/cmake.sh buildandroid-armv7a -DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchain.android.cmake -DARM_TARGET="armeabi-v7a with VFPV3"
+	@sh ./cmake/cmake.sh buildandroid-armv7a -DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchain.android.cmake -DNDK_CPU_ARM_V7A=y -DNDK_CPU_ARM_VFPV3=y
 	@$(MAKE) --no-print-directory -C buildandroid-armv7a -j8
-	@sh ./cmake/cmake.sh buildandroid-x86 -DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchain.android.cmake -DARM_TARGET=x86
+	@sh ./cmake/cmake.sh buildandroid-x86 -DCMAKE_TOOLCHAIN_FILE=$(PWD)/cmake/toolchain.android.cmake -DNDK_CPU_X86=y
 	@$(MAKE) --no-print-directory -C buildandroid-x86 -j8
 
 ifeq ($(OSTYPE),linux-gnu)

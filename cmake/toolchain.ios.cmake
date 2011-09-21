@@ -1,8 +1,12 @@
-set (CMAKE_SYSTEM_NAME Linux)
-set (CMAKE_SYSTEM_VERSION 1)
+set (CMAKE_SYSTEM_NAME Darwin)
+set (CMAKE_SYSTEM_VERSION 9)
+
+if (APPLE)
+	set (HOST_APPLE true)
+endif()
 
 if (IOS_SIMULATOR)
-	if (APPLE)
+	if (HOST_APPLE)
 		set (IOS_SDK_PLATFORM "iPhoneSimulator")
 	else()
 		message (FATAL_ERROR "The Linux toolchain only supports armv6")
@@ -22,7 +26,7 @@ if (NOT DEFINED IOS_SDK_PLATFORM)
 endif()
 
 if (NOT EXISTS "${IOS_SDK_ROOT}")
-	if (APPLE)
+	if (HOST_APPLE)
 		set (IOS_SDK_ROOT "/Developer/Platforms/${IOS_SDK_PLATFORM}.platform/Developer/SDKs")
 	else()
 		message (FATAL_ERROR "You must specify a valid $IOS_SDK_ROOT")
@@ -30,7 +34,7 @@ if (NOT EXISTS "${IOS_SDK_ROOT}")
 endif()
 
 if (NOT EXISTS "${IOS_SDK_BINPATH}")
-	if (APPLE)
+	if (HOST_APPLE)
 		set (IOS_SDK_BINPATH "/Developer/Platforms/${IOS_SDK_PLATFORM}.platform/Developer/usr/bin")
 	else()
 		message (FATAL_ERROR "You must specify a valid $IOS_SDK_BINPATH")
@@ -39,9 +43,9 @@ endif()
 
 # TODO: Support clang
 if (IOS_SIMULATOR)
-set (IOS_SDK_SUPPORTED_COMPILERS llvm i686-apple-darwin9 i686-apple-darwin10)
+	set (IOS_SDK_SUPPORTED_COMPILERS llvm i686-apple-darwin9 i686-apple-darwin10)
 else()
-set (IOS_SDK_SUPPORTED_COMPILERS llvm arm-apple-darwin9 arm-apple-darwin10)
+	set (IOS_SDK_SUPPORTED_COMPILERS llvm arm-apple-darwin9 arm-apple-darwin10)
 endif()
 set (IOS_SDK_SUPPORTED_COMPILER_VERSIONS 4.0.1 4.2 4.2.1)
 if (NOT DEFINED IOS_SDK_TARGET)
@@ -75,7 +79,7 @@ if (NOT DEFINED IOS_SDK_VERSION)
 	endif()
 endif()
 
-if (NOT APPLE)
+if (NOT HOST_APPLE)
 	set (TOOL_OS_SUFFIX "")
 else()
 	set (TOOL_OS_SUFFIX "-${IOS_SDK_TARGET_VERSION}")
@@ -87,7 +91,7 @@ endif()
 
 set (IOS_SDK_PREFIX "${IOS_SDK_TARGET}-")
 
-if (APPLE)
+if (HOST_APPLE)
 	set (TOOL_OS_SUFFIX "")
 	set (IOS_SDK_PREFIX "")
 	
@@ -121,6 +125,8 @@ include_directories(SYSTEM "${IOS_SDK_SYSROOT}/usr/include/c++/${IOS_SDK_TARGET_
 set (LINKER_FLAGS "-L${IOS_SDK_SYSROOT}/usr/lib/gcc/${IOS_SDK_TARGET}/${IOS_SDK_TARGET_VERSION} -L${IOS_SDK_SYSROOT}/usr/lib/system -lgcc -lobjc -lstdc++")
 
 set (CMAKE_FIND_ROOT_PATH "${IOS_SDK_SYSROOT}" "${IOS_SDK_BINPATH}")
+#set (CMAKE_SYSTEM_FRAMEWORK_PATH "/System/Library/Frameworks")
+#set (CMAKE_FIND_FRAMEWORK FIRST)
 
 set (CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
 set (CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -135,13 +141,13 @@ else ()
 	set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -marm")
 endif ()
 
-set (CMAKE_C_FLAGS "--sysroot=\"${IOS_SDK_SYSROOT}\" ${CMAKE_C_FLAGS}")
+set (CMAKE_C_FLAGS "--sysroot=${IOS_SDK_SYSROOT} ${CMAKE_C_FLAGS}")
 
 include (CMakeForceCompiler)
 CMAKE_FORCE_C_COMPILER ("${CMAKE_C_COMPILER}" GNU)
 CMAKE_FORCE_CXX_COMPILER ("${CMAKE_CXX_COMPILER}" GNU)
 
-if (APPLE)
+if (HOST_APPLE)
 	if (IOS_SIMULATOR)
 		set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch i386")
 		set (LINKER_FLAGS "${LINKER_FLAGS} -arch i386")
@@ -160,7 +166,7 @@ set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "c flags")
 
 set (CMAKE_SHARED_LINKER_FLAGS "${LINKER_FLAGS}" CACHE STRING "linker flags" FORCE)
 set (CMAKE_MODULE_LINKER_FLAGS "${LINKER_FLAGS}" CACHE STRING "linker flags" FORCE)
-set (CMAKE_EXE_LINKER_FLAGS "${LINKER_FLAGS}" CACHE STRING "linker flags" FORCE)
+set (CMAKE_EXE_LINKER_FLAGS "${LINKER_FLAGS} -ObjC" CACHE STRING "linker flags" FORCE)
 
 set (IOS true)
 set (BUILD_IOS true)
