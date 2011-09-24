@@ -21,8 +21,7 @@ You may specify an alternate GCC to build for Windows like so...
 Configuration
 -------------
 
-Use cmake to configure and select from the various compilation options,
-including the ability to compile with clang rather than GCC.
+Use cmake to configure and select from the various compilation options.
 
 
 Testing
