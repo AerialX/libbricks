@@ -198,7 +198,7 @@ namespace Bricks {
 	namespace Internal {
 		struct AutoAllocPointer
 		{
-			template<typename U> AutoPointer<U> operator *(U* t) { return AutoPointer<U>(t, false); }
+			template<typename U> typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Object, U>::Value, AutoPointer<U> >::Type operator *(U* t) { return AutoPointer<U>(t, false); }
 		};
 	}
 
