@@ -14,8 +14,6 @@ protected:
 	}
 };
 
-#ifdef BRICKS_CONFIG_IMAGING_LIBPNG
-
 TEST_F(BricksImagingPngTest, InitialParse) {
 	try {
 		EXPECT_TRUE(PNG::LoadImage(fileStream));
@@ -53,8 +51,6 @@ TEST_F(BricksImagingPngTest, ReadTransformedPixels) {
 
 	EXPECT_EQ(0x40 * 0x40, image->GetWidth() * image->GetHeight());
 }
-
-#endif
 
 int main(int argc, char* argv[])
 {

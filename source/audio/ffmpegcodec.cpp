@@ -1,7 +1,3 @@
-#include "bricks/config.h"
-
-#ifdef BRICKS_CONFIG_AUDIO_FFMPEG
-
 #include "bricksall.hpp"
 
 #ifdef BRICKS_FEATURE_APPLE
@@ -115,5 +111,3 @@ u32 FFmpegDecoder::Read(AudioBuffer<s16>& buffer, u32 count, u32 boffset)
 	AudioCodec<s16>::Read(buffer, offset);
 	return offset;
 }
-
-#endif

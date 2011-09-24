@@ -30,8 +30,6 @@ protected:
 	}
 };
 
-#ifdef BRICKS_CONFIG_COMPRESSION_LIBZIP
-
 TEST_F(BricksCompressionZipFilesystemTest, InitialParse) {
 	try {
 		ZipFilesystem zip(fileStream);
@@ -74,8 +72,6 @@ TEST_F(BricksCompressionZipFilesystemTest, ReadChdir) {
 	String str = StreamReader(stream).ReadString();
 	EXPECT_EQ(String("adir/file2\n"), str);
 }
-
-#endif
 
 int main(int argc, char* argv[])
 {

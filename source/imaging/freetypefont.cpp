@@ -1,7 +1,3 @@
-#include "bricks/config.h"
-
-#ifdef BRICKS_CONFIG_IMAGING_FREETYPE
-
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -105,5 +101,3 @@ namespace Bricks { namespace Imaging {
 		return kerning.x >> 6;
 	}
 } }
-
-#endif

@@ -1,7 +1,3 @@
-#include "bricks/config.h"
-
-#ifdef BRICKS_CONFIG_COMPRESSION_LIBZIP
-
 #include "bricksall.hpp"
 
 #include <zip.h>
@@ -328,5 +324,3 @@ namespace Bricks { namespace Compression {
 		currentDirectory = path;
 	}
 } }
-
-#endif
