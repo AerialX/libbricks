@@ -7,20 +7,20 @@ TOOLCHAIN_IOS		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.ios.cmake
 
 all:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)
-	@$(MAKEIT) -C $(CURDIR)/build-$(OSTYPE)
+	@+$(MAKEIT) -C $(CURDIR)/build-$(OSTYPE)
 
 android:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-android-armv5 $(TOOLCHAIN_ANDROID) -DNDK_CPU_ARM=y
-	@$(MAKEIT) -C $(CURDIR)/build-android-armv5
+	@+$(MAKEIT) -C $(CURDIR)/build-android-armv5
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-android-armv7 $(TOOLCHAIN_ANDROID) -DNDK_CPU_ARM_V7A=y -DNDK_CPU_ARM_VFPV3=y
-	@$(MAKEIT) -C $(CURDIR)/build-android-armv7
+	@+$(MAKEIT) -C $(CURDIR)/build-android-armv7
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-android-x86 $(TOOLCHAIN_ANDROID) -DNDK_CPU_X86=y
-	@$(MAKEIT) -C $(CURDIR)/build-android-x86
+	@+$(MAKEIT) -C $(CURDIR)/build-android-x86
 
 ifeq ($(OSTYPE),linux-gnu)
 ios:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-ios-armv6 $(TOOLCHAIN_IOS)
-	@$(MAKEIT) -C $(CURDIR)/build-ios-armv6
+	@+$(MAKEIT) -C $(CURDIR)/build-ios-armv6
 else
 xcode:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)-xcode -G Xcode
@@ -30,9 +30,9 @@ ios-xcode:
 
 ios: ios-xcode
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-ios-universal $(TOOLCHAIN_IOS)
-	@$(MAKEIT) -C $(CURDIR)/build-ios-universal
+	@+$(MAKEIT) -C $(CURDIR)/build-ios-universal
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-ios-simulator $(TOOLCHAIN_IOS) -DIOS_SIMULATOR=y
-	@$(MAKEIT) -C $(CURDIR)/build-ios-simulator
+	@+$(MAKEIT) -C $(CURDIR)/build-ios-simulator
 
 all: xcode
 endif
