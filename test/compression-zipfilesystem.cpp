@@ -66,6 +66,15 @@ TEST_F(BricksCompressionZipFilesystemTest, Read) {
 	EXPECT_EQ(String("adir/file2\n"), str);
 }
 
+TEST_F(BricksCompressionZipFilesystemTest, ReadChdir) {
+	ZipFilesystem zip(fileStream);
+	zip.ChangeCurrentDirectory("adir");
+	FilesystemNode node("file2", zip);
+	AutoPointer<Stream> stream = node.OpenStream();
+	String str = StreamReader(stream).ReadString();
+	EXPECT_EQ(String("adir/file2\n"), str);
+}
+
 #endif
 
 int main(int argc, char* argv[])

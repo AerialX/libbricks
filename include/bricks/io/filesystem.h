@@ -58,6 +58,7 @@ namespace Bricks { namespace IO {
 		virtual void DeleteDirectory(const String& path, bool recursive) = 0;
 
 		virtual String GetCurrentDirectory() const = 0;
+		virtual void ChangeCurrentDirectory(const String& path) = 0;
 	};
 
 	class C89Filesystem : public Object, public Filesystem
@@ -129,6 +130,7 @@ namespace Bricks { namespace IO {
 		void DeleteDirectory(const String& path, bool recursive);
 
 		String GetCurrentDirectory() const;
+		void ChangeCurrentDirectory(const String& path);
 	};
 	
 	struct FileInfo : public Object

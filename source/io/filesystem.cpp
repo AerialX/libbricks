@@ -297,6 +297,12 @@ namespace Bricks { namespace IO {
 		return buffer;
 	}
 
+	void PosixFilesystem::ChangeCurrentDirectory(const String& path)
+	{
+		if (chdir(path.CString()))
+			ThrowErrno();
+	}
+
 	void PosixFilesystem::DeleteFile(const String& path)
 	{
 		if (unlink(path.CString()))

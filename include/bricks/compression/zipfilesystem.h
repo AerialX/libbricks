@@ -29,6 +29,10 @@ namespace Bricks { namespace Compression {
 	{
 	protected:
 		struct zip* zipfile;
+		String currentDirectory;
+
+		String TransformPath(const String& path) const;
+		String TransformPathReverse(const String& path) const;
 
 	public:
 		ZipFilesystem(const Pointer<IO::Stream>& stream);
@@ -67,6 +71,7 @@ namespace Bricks { namespace Compression {
 		void DeleteDirectory(const String& path, bool recursive);
 
 		String GetCurrentDirectory() const;
+		void ChangeCurrentDirectory(const String& path);
 	};
 #endif
 

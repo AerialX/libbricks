@@ -69,6 +69,20 @@ namespace Bricks { namespace Compression {
 		zip_close(zipfile);
 	}
 
+	String ZipFilesystem::TransformPath(const String& path) const
+	{
+		if (currentDirectory.GetLength())
+			return FilePath(currentDirectory) / path;
+		return path;
+	}
+
+	String ZipFilesystem::TransformPathReverse(const String& path) const
+	{
+		if (currentDirectory.GetLength() && !path.Compare(currentDirectory + "/", currentDirectory.GetLength()))
+			return path.Substring(currentDirectory.GetLength() + 1);
+		return path;
+	}
+
 	FileHandle ZipFilesystem::Open(
 			const String& path,
 			FileOpenMode::Enum createmode,
@@ -78,7 +92,7 @@ namespace Bricks { namespace Compression {
 		if (createmode & ~FileOpenMode::Open)
 			throw NotImplementedException();
 
-		int index = zip_name_locate(zipfile, path.CString(), 0);
+		int index = zip_name_locate(zipfile, TransformPath(path).CString(), 0);
 		if (index < 0)
 			throw FileNotFoundException();
 		struct zip_file* file = zip_fopen_index(zipfile, index, 0);
@@ -204,10 +218,10 @@ namespace Bricks { namespace Compression {
 	FileInfo ZipFilesystem::Stat(const String& path)
 	{
 		struct zip_stat zst;
-		int ret = zip_stat(zipfile, path.CString(), 0, &zst);
+		int ret = zip_stat(zipfile, TransformPath(path).CString(), 0, &zst);
 		if (ret < 0)
 			throw FileNotFoundException();
-		return FileInfo(StatFromZipStat(zipfile, zst), zst.name, this);
+		return FileInfo(StatFromZipStat(zipfile, zst), TransformPathReverse(zst.name), this);
 	}
 
 	FileInfo ZipFilesystem::FileStat(FileHandle fd)
@@ -217,7 +231,7 @@ namespace Bricks { namespace Compression {
 		int ret = zip_stat_index(zipfile, file->index, 0, &zst);
 		if (ret < 0)
 			throw FileNotFoundException();
-		return FileInfo(StatFromZipStat(zipfile, zst), zst.name, this);
+		return FileInfo(StatFromZipStat(zipfile, zst), TransformPathReverse(zst.name), this);
 	}
 
 	bool ZipFilesystem::IsFile(const String& path) const
@@ -244,7 +258,7 @@ namespace Bricks { namespace Compression {
 
 	FileHandle ZipFilesystem::OpenDirectory(const String& path)
 	{
-		String zippath = path;
+		String zippath = TransformPath(path);
 		if (zippath[zippath.GetLength() - 1] != '/')
 			zippath += "/";
 		int index = zip_name_locate(zipfile, zippath.CString(), 0);
@@ -306,7 +320,12 @@ namespace Bricks { namespace Compression {
 
 	String ZipFilesystem::GetCurrentDirectory() const
 	{
-		throw NotImplementedException();
+		return currentDirectory;
+	}
+
+	void ZipFilesystem::ChangeCurrentDirectory(const String& path)
+	{
+		currentDirectory = path;
 	}
 } }
 
