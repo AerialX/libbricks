@@ -19,8 +19,10 @@ namespace Bricks {
 #else
 		char dummy[0];
 		int size = vsnprintf(dummy, 0, format.CString(), args);
+		va_end(args);
 		if (size < 0)
 			throw NotSupportedException();
+		va_start(args, format);
 		char temp[size + 1];
 		vsnprintf(temp, size + 1, format.CString(), args);
 		temp[size] = '\0';
