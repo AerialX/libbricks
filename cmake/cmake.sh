@@ -1,10 +1,10 @@
 #!/bin/bash
 
-dir="`dirname $0`/.."
-build="$1"
-shift
+dir="$1"
+build="$2"
+shift 2
 
-mkdir -p "$dir/$build"
-pushd "$dir/$build" >> /dev/null
-cmake ../ "$@"
+mkdir -p "$build"
+pushd "$build" >> /dev/null
+cmake "$dir" "$@"
 popd >> /dev/null

@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 2.6)
 project(libbricks)
 
+macro(xcode_project target)
+	if(APPLE)
+		set_target_properties(${target} PROPERTIES MACOSX_BUNDLE true)
+		set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "$ENV{IOS_SDK_CODESIGN_IDENTITY}")
+		set(CMAKE_OSX_ARCHITECTURES $(ARCHS_STANDARD_32_BIT))
+		set(MACOSX_BUNDLE_GUI_IDENTIFIER "$ENV{IOS_SDK_COMPANY_IDENTIFIER}.\${PRODUCT_NAME:identifier}")
+		if(XCODE AND IOS)
+			set(CMAKE_OSX_SYSROOT iphoneos${IOS_SDK_VERSION})
+		endif()
+	endif()
+endmacro()
+
 set(BRICKS_VERSION_MAJOR 0)
 set(BRICKS_VERSION_MINOR 1)
 set(BRICKS_VERSION "0.1")
@@ -11,36 +23,43 @@ option(BRICKS_CONFIG_LOGGING "Logs various information about libbricks to stderr
 option(BRICKS_CONFIG_LOGGING_HEAVY "A lot more logging. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_LOGGING_MEMLEAK "Report any unreleased objects at program termination. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_STL "Use the STL internally in collections" ON)
-option(USE_CLANG "Build libbricks with Clang" OFF)
 
-set(BRICKSLIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/lib/build")
+set(BRICKSLIB_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/lib/build")
 if(IOS)
-	if(IOS_SIMULATOR)
-		set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/ios-i386")
+	set(BRICKS_LINK_DIRECTORIES "${BRICKSLIB_ROOT}/ios-universal/lib")
+	if(XCODE)
+		set(BRICKS_INCLUDE_DIRS "${BRICKSLIB_ROOT}/ios-universal/\$(PLATFORM_DIR)/include")
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/ios-armv6" "${BRICKSLIB_ROOT}/ios-armv7" "${BRICKSLIB_ROOT}/ios-i386")
+	elseif(IOS_SIMULATOR)
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/ios-i386")
 	elseif(HOST_APPLE)
-		set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/ios-armv6 ${BRICKSLIB_DIR}/ios-armv7")
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/ios-armv6" "${BRICKSLIB_ROOT}/ios-armv7")
 	else()
-		set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/ios-armv6")
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/ios-armv6")
 	endif()
+	set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/ios-universal" ${BRICKSLIB_DIR})
 elseif(ANDROID)
-	if(X86)
-		set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/android-x86")
-	elseif(ARMEABI_V7A)
-		set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/android-armv5")
+	if(NDK_CPU_X86)
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/android-x86")
+	elseif(NDK_CPU_ARM_V7A)
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/android-armv7")
 	else()
-		set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/android-armv7")
+		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/android-armv5")
 	endif()
 else()
 	execute_process(COMMAND echo "echo -n $OSTYPE"
 		COMMAND bash
 		OUTPUT_VARIABLE OSTYPE)
-	set(BRICKSLIB_DIR "${BRICKSLIB_DIR}/${OSTYPE}")
+	set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/${OSTYPE}")
 endif()
+foreach(lib ${BRICKSLIB_DIR})
+	link_directories(${lib}/lib)
+endforeach()
 set(CMAKE_FIND_ROOT_PATH ${BRICKSLIB_DIR} "${CMAKE_FIND_ROOT_PATH}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-if (IOS)
-	set (CMAKE_FIND_LIBRARY_SUFFIXES ".dylib;.a")
+if(IOS)
+	set(CMAKE_FIND_LIBRARY_SUFFIXES ".dylib;.a")
 endif()
 find_package(PNG)
 find_package(Freetype)
@@ -48,99 +67,145 @@ find_package(LibZip)
 find_package(FFMPEG)
 find_package(GTest)
 
-option(BRICKS_CONFIG_AUDIO_FFMPEG "Enable the FFMPEG audio decoder" OFF)
-
 if(PNG_FOUND)
-	set(BRICKS_CONFIG_IMAGING_LIBPNG ON)
-endif()
-if(FREETYPE_FOUND)
-	set(BRICKS_CONFIG_IMAGING_FREETYPE ON)
-endif()
-if(LIBZIP_FOUND)
-	set(BRICKS_CONFIG_COMPRESSION_LIBZIP ON)
-endif()
-if(FFMPEG_FOUND)
-	set(BRICKS_CONFIG_AUDIO_FFMPEG ON)
-endif()
-
-if(USE_CLANG)
-	SET(CMAKE_C_COMPILER             "clang")
-	SET(CMAKE_C_FLAGS                "-Wall -std=c99")
-	SET(CMAKE_C_FLAGS_DEBUG          "-g")
-	SET(CMAKE_C_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-	SET(CMAKE_C_FLAGS_RELEASE        "-O3 -DNDEBUG")
-	#SET(CMAKE_C_FLAGS_RELEASE        "-O4 -DNDEBUG")
-	SET(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
-
-	SET(CMAKE_CXX_COMPILER             "clang++")
-	SET(CMAKE_CXX_FLAGS                "-Wall")
-	SET(CMAKE_CXX_FLAGS_DEBUG          "-g")
-	SET(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
-	SET(CMAKE_CXX_FLAGS_RELEASE        "-O3 -DNDEBUG")
-	#SET(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
-	SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
-
-	#SET(CMAKE_AR                       "llvm-ar")
-	#SET(CMAKE_LINKER                   "llvm-ld")
-	#SET(CMAKE_NM                       "llvm-nm")
-	#SET(CMAKE_OBJDUMP                  "llvm-objdump")
-	#SET(CMAKE_RANLIB                   "llvm-ranlib")
-endif()
-
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
-
-include_directories("include" "source" "${CMAKE_CURRENT_BINARY_DIR}/include")
-
-set(BRICKS_DEFINITIONS "-Wall")
-if (NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-	set(BRICKS_DEFINITIONS "${BRICKS_DEFINITIONS}" PARENT_SCOPE)
-	set(BRICKS_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" PARENT_SCOPE)
-endif()
-
-add_definitions(${BRICKS_DEFINITIONS})
-
-if(BRICKS_CONFIG_IMAGING_LIBPNG)
+	set(BRICKS_CONFIG_IMAGING_LIBPNG true)
 	add_definitions(${PNG_DEFINITIONS})
 	include_directories(${PNG_INCLUDE_DIR})
 endif()
-
-if(BRICKS_CONFIG_IMAGING_FREETYPE)
+if(FREETYPE_FOUND)
+	set(BRICKS_CONFIG_IMAGING_FREETYPE true)
 	include_directories(${FREETYPE_INCLUDE_DIRS})
 
 	# freetype2 may also support bzip2 compressed fonts
 	find_package(BZip2)
-	if (BZIP2_FOUND)
+	if(BZIP2_FOUND)
 		set(FREETYPE_LIBRARIES ${FREETYPE_LIBRARIES} ${BZIP2_LIBRARIES})
 	endif()
 endif()
-
-if(BRICKS_CONFIG_COMPRESSION_LIBZIP)
+if(LIBZIP_FOUND)
+	set(BRICKS_CONFIG_COMPRESSION_LIBZIP true)
 	include_directories(${LIBZIP_INCLUDE_DIRS})
 endif()
-
-if(BRICKS_CONFI_AUDIO_FFMPEG)
+if(FFMPEG_FOUND)
+	set(BRICKS_CONFIG_AUDIO_FFMPEG true)
 	include_directories(${FFMPEG_INCLUDE_DIR})
 endif()
 
-add_library(bricks-core "source/exception.cpp" "source/object.cpp" "source/string.cpp")
-add_library(bricks-io "source/io/console.cpp" "source/io/filesystem.cpp")
-add_library(bricks-threading "source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp")
-add_library(bricks-audio "source/audio/midireader.cpp" "source/audio/ffmpegcodec.cpp")
-add_library(bricks-compression "source/compression/zipfilesystem.cpp")
-add_library(bricks-imaging "source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/bitmap.cpp" "source/imaging/font.cpp" "source/imaging/png.cpp" "source/imaging/freetypefont.cpp")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
-target_link_libraries(bricks-io bricks-core)
-target_link_libraries(bricks-threading bricks-core)
-target_link_libraries(bricks-audio bricks-io ${FFMPEG_LIBRARIES})
-target_link_libraries(bricks-compression bricks-io ${LIBZIP_LIBRARIES})
-target_link_libraries(bricks-imaging bricks-io ${PNG_LIBRARIES} ${FREETYPE_LIBRARIES})
+set(BRICKS_DEFINITIONS "${BRICKS_DEFINITIONS} -Wall")
+
+set(BRICKS_CORE_SOURCE_FILES
+	"source/exception.cpp" "source/object.cpp" "source/string.cpp"
+)
+
+set(BRICKS_IO_LINK_LIBRARIES bricks-core)
+set(BRICKS_IO_SOURCE_FILES
+	"source/io/console.cpp" "source/io/filesystem.cpp"
+)
+
+set(BRICKS_THREADING_LINK_LIBRARIES bricks-core)
+set(BRICKS_THREADING_SOURCE_FILES
+	"source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp"
+)
+
+set(BRICKS_AUDIO_LINK_LIBRARIES bricks-io)
+set(BRICKS_AUDIO_SOURCE_FILES
+	"source/audio/midireader.cpp"
+)
+
+set(BRICKS_IMAGING_LINK_LIBRARIES bricks-io)
+set(BRICKS_IMAGING_SOURCE_FILES
+	"source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/bitmap.cpp"
+	"source/imaging/font.cpp"
+)
+
+set(BRICKS_COMPRESSION_LINK_LIBRARIES bricks-io)
+set(BRICKS_COMPRESSION_SOURCE_FILES
+)
+
+macro(add_any_library libvar libdirvar libs)
+	foreach(lib ${libs})
+		string(REGEX MATCH ".+/" libdir ${lib})
+		string(REGEX MATCH "[^/]+$" libname ${lib})
+		string(FIND ${lib} ".framework" is_framework)
+		if(is_framework GREATER "-1")
+			string(REPLACE ".framework" "" libname ${libname})
+			set(${libvar} ${${libvar}} "-framework ${libname}")
+		else()
+			string(FIND ${lib} "/Developer/Platforms/" is_xcode_path)
+			if(is_xcode_path LESS "0")
+				set(${libdirvar} ${${libdirvar}} ${libdir})
+			endif()
+			string(REGEX REPLACE "\\..+$" "" libname ${libname})
+			string(REGEX REPLACE "^lib" "" libname ${libname})
+			set(${libvar} ${${libvar}} ${libname})
+		endif()
+	endforeach()
+endmacro()
+
+if(BRICKS_CONFIG_IMAGING_LIBPNG)
+	set(BRICKS_IMAGING_SOURCE_FILES ${BRICKS_IMAGING_SOURCE_FILES} "source/imaging/png.cpp")
+	add_any_library(BRICKS_IMAGING_LINK_LIBRARIES BRICKS_LINK_DIRECTORIES "${PNG_LIBRARIES}")
+endif()
+
+if(BRICKS_CONFIG_IMAGING_FREETYPE)
+	set(BRICKS_IMAGING_SOURCE_FILES ${BRICKS_IMAGING_SOURCE_FILES} "source/imaging/freetypefont.cpp")
+	add_any_library(BRICKS_IMAGING_LINK_LIBRARIES BRICKS_LINK_DIRECTORIES "${FREETYPE_LIBRARIES}")
+endif()
+
+if(BRICKS_CONFIG_COMPRESSION_LIBZIP)
+	set(BRICKS_COMPRESSION_SOURCE_FILES ${BRICKS_COMPRESSION_SOURCE_FILES} "source/compression/zipfilesystem.cpp")
+	add_any_library(BRICKS_COMPRESSION_LINK_LIBRARIES BRICKS_LINK_DIRECTORIES "${LIBZIP_LIBRARIES}")
+endif()
+
+if(BRICKS_CONFIG_AUDIO_FFMPEG)
+	set(BRICKS_AUDIO_SOURCE_FILES ${BRICKS_AUDIO_SOURCE_FILES} "source/audio/ffmpegcodec.cpp")
+	add_any_library(BRICKS_AUDIO_LINK_LIBRARIES BRICKS_LINK_DIRECTORIES "${FFMPEG_LIBRARIES}")
+endif()
+
+if(NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+	set(BRICKS_DEFINITIONS "${BRICKS_DEFINITIONS}" PARENT_SCOPE)
+	set(BRICKS_LINK_DIRS "${BRICKS_LINK_DIRECTORIES}" PARENT_SCOPE)
+	set(BRICKS_INCLUDE_DIRS "${BRICKS_INCLUDE_DIRS}" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" PARENT_SCOPE)
+endif()
+
+add_definitions(${BRICKS_DEFINITIONS})
+link_directories(${BRICKS_LINK_DIRECTORIES})
+include_directories("include" "source" "${CMAKE_CURRENT_BINARY_DIR}/include" ${BRICKS_INCLUDE_DIRS})
+
+add_library(bricks-core ${BRICKS_CORE_SOURCE_FILES})
+set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-core)
+
+add_library(bricks-io ${BRICKS_IO_SOURCE_FILES})
+target_link_libraries(bricks-io ${BRICKS_IO_LINK_LIBRARIES})
+set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-io)
+
+add_library(bricks-threading ${BRICKS_THREADING_SOURCE_FILES})
+target_link_libraries(bricks-threading ${BRICKS_THREADING_LINK_LIBRARIES})
+set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-threading)
+
+add_library(bricks-audio ${BRICKS_AUDIO_SOURCE_FILES})
+target_link_libraries(bricks-audio ${BRICKS_AUDIO_LINK_LIBRARIES})
+set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-audio)
+
+if(BRICKS_COMPRESSION_SOURCE_FILES)
+	add_library(bricks-compression ${BRICKS_COMPRESSION_SOURCE_FILES})
+	target_link_libraries(bricks-compression ${BRICKS_COMPRESSION_LINK_LIBRARIES})
+	set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-compression)
+endif()
+
+add_library(bricks-imaging ${BRICKS_IMAGING_SOURCE_FILES})
+target_link_libraries(bricks-imaging ${BRICKS_IMAGING_LINK_LIBRARIES})
+set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-imaging)
 
 add_executable(sample "sample/source/main.cpp")
 target_link_libraries(sample bricks-io bricks-core)
+xcode_project(sample)
 
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include" DESTINATION .)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" DESTINATION "include/bricks/")
-install(TARGETS bricks-core bricks-io bricks-threading bricks-audio bricks-compression DESTINATION lib)
+install(TARGETS ${BRICKS_TARGETS} DESTINATION lib)
 
 if(GTEST_FOUND)
 	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
