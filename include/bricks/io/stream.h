@@ -14,6 +14,8 @@ namespace Bricks { namespace IO {
 		virtual void SetPosition(u64 position) = 0;
 		virtual void Flush() { }
 		virtual int ReadByte() { u8 data; if (Read(&data, sizeof(data)) != sizeof(data)) return -1; return data; }
-		virtual ~Stream() { } // TODO: if (!IsClosed())Close();
+		virtual bool CanSeek() const { return true; }
+		virtual bool CanRead() const { return true; }
+		virtual bool CanWrite() const { return true; }
 	};
 } }

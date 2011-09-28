@@ -22,6 +22,12 @@ if (BRICKS_CONFIG_IMAGING_LIBPNG)
 	add_test(bricks-test-imaging-png bricks-test-imaging-png)
 endif()
 
+if (BRICKS_CONFIG_AUDIO_FFMPEG)
+	add_executable(bricks-test-audio-ffmpeg audio-ffmpeg.cpp)
+	target_link_libraries(bricks-test-audio-ffmpeg bricks-audio ${GTEST_BOTH_LIBRARIES} pthread)
+	add_test(bricks-test-audio-ffmpeg bricks-test-audio-ffmpeg)
+endif()
+
 add_executable(bricks-test-imaging-image imaging-image.cpp)
 target_link_libraries(bricks-test-imaging-image bricks-imaging ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-imaging-image bricks-test-imaging-image)

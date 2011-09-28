@@ -1,12 +1,7 @@
 #include "bricksall.hpp"
 
-#ifdef BRICKS_FEATURE_APPLE
-#define memalign(a, b) malloc(b)
-#else
-#include <malloc.h>
-#endif
-
 using namespace Bricks;
+using namespace Bricks::IO;
 using namespace Bricks::Audio;
 
 BRICKS_FEATURE_CONSTRUCTOR(FFmpegInit)
@@ -15,11 +10,52 @@ static void FFmpegInit()
 	av_register_all();
 }
 
-FFmpegDecoder::FFmpegDecoder(const String& filename)
+static int FFmpegRead(void* userData, uint8_t* buffer, int bufferSize)
 {
-	if (av_open_input_file(&format, filename.CString(), NULL, 0, NULL) < 0)
+	Pointer<Stream> stream(reinterpret_cast<Stream*>(userData));
+	return stream->Read(buffer, bufferSize);
+}
+
+static int FFmpegWrite(void* userData, uint8_t* buffer, int bufferSize)
+{
+	Pointer<Stream> stream(reinterpret_cast<Stream*>(userData));
+	return stream->Write(buffer, bufferSize);
+}
+
+static int64_t FFmpegSeek(void* userData, int64_t offset, int whence)
+{
+	Pointer<Stream> stream(reinterpret_cast<Stream*>(userData));
+	s64 position;
+	switch (whence) {
+		case SEEK_SET:
+			position = offset;
+			break;
+		case SEEK_CUR:
+			position = stream->GetPosition() + offset;
+			break;
+		case SEEK_END:
+			position = stream->GetLength() + offset;
+			break;
+		case AVSEEK_SIZE:
+			return stream->GetLength();
+		default:
+			throw InvalidArgumentException();
+	}
+	stream->SetPosition(position);
+	return stream->GetPosition();
+}
+
+FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioStream(ioStream)
+{
+	format = avformat_alloc_context();
+	format->flags |= AVFMT_FLAG_CUSTOM_IO;
+	ffmpegBuffer = av_malloc(ffmpegBufferSize);
+	ffmpegStream = avio_alloc_context((unsigned char*)ffmpegBuffer, ffmpegBufferSize, 0, reinterpret_cast<void*>(ioStream.GetValue()), &FFmpegRead, &FFmpegWrite, &FFmpegSeek);
+	ffmpegStream->seekable = ioStream->CanSeek() ? AVIO_SEEKABLE_NORMAL : 0;
+	format->pb = ffmpegStream;
+	if (avformat_open_input(&format, "", NULL, NULL) < 0)
 		throw Exception();
-	if (av_find_stream_info(format) < 0)
+	if (avformat_find_stream_info(format, NULL) < 0)
 		throw FormatException();
 	for (streamIndex = 0; streamIndex < format->nb_streams; streamIndex++) {
 		stream = format->streams[streamIndex];
@@ -33,7 +69,7 @@ FFmpegDecoder::FFmpegDecoder(const String& filename)
 	if (!codec)
 		throw FormatException();
 
-	avcodec_open(stream->codec, codec);
+	avcodec_open2(stream->codec, codec, NULL);
 	channels = stream->codec->channels;
 	samplerate = stream->codec->sample_rate;
 	if (stream->duration < 0)
@@ -42,16 +78,16 @@ FFmpegDecoder::FFmpegDecoder(const String& filename)
 		samples = stream->time_base.num * stream->duration * samplerate / stream->time_base.den;
 
 	bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
-	buffer = memalign(0x20, bufferSize);
+	buffer = av_malloc(bufferSize);
 
-	cache = memalign(0x20, bufferSize);
+	cache = av_malloc(bufferSize);
 	cacheLength = 0;
 }
 
 FFmpegDecoder::~FFmpegDecoder()
 {
-	free(cache);
-	free(buffer);
+	av_free(cache);
+	av_free(buffer);
 	avcodec_close(stream->codec);
 	av_close_input_file(format);
 }
