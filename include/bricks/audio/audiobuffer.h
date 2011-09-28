@@ -104,7 +104,7 @@ namespace Bricks { namespace Audio {
 			}
 		}
 
-		void InterlaceTo(AudioSample* dest, u32 count, u32 offset = 0) {
+		void InterlaceTo(AudioSample* dest, u32 count, u32 offset = 0) const {
 			for (u32 k = 0; k < count; k++) {
 				for (u32 i = 0; i < channels; i++)
 					dest[k * channels + i] = buffer[i][k + offset];
