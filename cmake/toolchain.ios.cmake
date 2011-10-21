@@ -68,7 +68,7 @@ if(NOT DEFINED IOS_SDK_TARGET)
 	endif()
 endif()
 
-set(IOS_SDK_SUPPORTED_VERSIONS 4.3 4.2 4.1 4.0 4.2 4.1.2 3.2 3.1 3.1.2)
+set(IOS_SDK_SUPPORTED_VERSIONS 5.0 4.3 4.2 4.1 4.0 4.2 4.1.2 3.2 3.1 3.1.2)
 if(NOT DEFINED IOS_SDK_VERSION)
 	foreach(sdk_version ${IOS_SDK_SUPPORTED_VERSIONS})
 		if(EXISTS "${IOS_SDK_ROOT}/${IOS_SDK_PLATFORM}${sdk_version}.sdk")
@@ -169,10 +169,10 @@ else()
 	set(COMPILER_FLAGS "${COMPILER_FLAGS} -marm")
 endif()
 
-set(LINKER_FLAGS "${LINKER_FLAGS} -lSystem -lgcc -lobjc -lstdc++")
+#set(LINKER_FLAGS "${LINKER_FLAGS} -lSystem -lgcc -lobjc -lstdc++")
 
 set(CMAKE_CXX_FLAGS "${COMPILER_FLAGS}" CACHE STRING "c++ flags")
-set(CMAKE_C_FLAGS "${COMPILER_FLAGS}" CACHE STRING "c flags")
+set(CMAKE_C_FLAGS "${COMPILER_FLAGS} -std=gnu99" CACHE STRING "c flags")
 
 set(CMAKE_SHARED_LINKER_FLAGS "${LINKER_FLAGS}" CACHE STRING "linker flags" FORCE)
 set(CMAKE_MODULE_LINKER_FLAGS "${LINKER_FLAGS}" CACHE STRING "linker flags" FORCE)

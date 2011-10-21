@@ -97,7 +97,7 @@ endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
-set(BRICKS_DEFINITIONS "${BRICKS_DEFINITIONS} -Wall")
+set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall")
 
 set(BRICKS_CORE_SOURCE_FILES
 	"source/exception.cpp" "source/object.cpp" "source/string.cpp"
@@ -169,9 +169,9 @@ if(BRICKS_CONFIG_AUDIO_FFMPEG)
 endif()
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-	set(BRICKS_DEFINITIONS "${BRICKS_DEFINITIONS}" PARENT_SCOPE)
-	set(BRICKS_LINK_DIRS "${BRICKS_LINK_DIRECTORIES}" PARENT_SCOPE)
-	set(BRICKS_INCLUDE_DIRS "${BRICKS_INCLUDE_DIRS}" "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" PARENT_SCOPE)
+	set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} PARENT_SCOPE)
+	set(BRICKS_LINK_DIRS ${BRICKS_LINK_DIRECTORIES} PARENT_SCOPE)
+	set(BRICKS_INCLUDE_DIRS ${BRICKS_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" PARENT_SCOPE)
 endif()
 
 add_definitions(${BRICKS_DEFINITIONS})
@@ -203,14 +203,16 @@ add_library(bricks-imaging ${BRICKS_IMAGING_SOURCE_FILES})
 target_link_libraries(bricks-imaging ${BRICKS_IMAGING_LINK_LIBRARIES})
 set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-imaging)
 
-add_executable(sample "sample/source/main.cpp")
-target_link_libraries(sample bricks-io bricks-core)
-xcode_project(sample)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+	add_executable(sample "sample/source/main.cpp")
+	target_link_libraries(sample bricks-io bricks-core)
+	xcode_project(sample)
+
+	if(GTEST_FOUND)
+		add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
+	endif()
+endif()
 
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include" DESTINATION .)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" DESTINATION "include/bricks/")
 install(TARGETS ${BRICKS_TARGETS} DESTINATION lib)
-
-if(GTEST_FOUND)
-	add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
-endif()
