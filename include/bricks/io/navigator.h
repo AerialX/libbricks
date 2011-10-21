@@ -55,6 +55,7 @@ namespace Bricks { namespace IO {
 #undef BRICKS_STREAM_READ
 		u8 ReadByte() { u8 data; if (stream->Read(&data, sizeof(data)) != sizeof(data)) throw EndOfStreamException(); return data; }
 		void ReadBytes(void* data, size_t size) { if (stream->Read(data, size) != size) throw EndOfStreamException(); }
+		Data ReadBytes(size_t size) { Data data(size); if (stream->Read(data, size) != size) throw EndOfStreamException(); return data; }
 
 		String ReadCString(int division) {
 			// TODO: StringBuilder, this is fail.
