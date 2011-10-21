@@ -15,7 +15,7 @@
 #define autonew Bricks::Internal::AutoAllocPointer() * new
 
 namespace Bricks {
-	class Class;
+	class TypeInfo;
 	class String;
 	class Object;
 	template<typename T> class Pointer;
@@ -72,9 +72,9 @@ namespace Bricks {
 		virtual ~Object() { BRICKS_FEATURE_LOG_HEAVY("< %p [%d]", this, GetReferenceCount()); }
 
 #ifdef BRICKS_CONFIG_RTTI
-		ReturnPointer<Class> GetClass() const;
+		TypeInfo GetTypeInfo() const;
 		template<class T> bool IsSubclassOf() const { return dynamic_cast< T >(this); }
-		template<class T> bool IsClassOf() const { return typeid(this) == typeid(T); }
+		template<class T> bool IsTypeInfoOf() const { return typeid(this) == typeid(T); }
 #endif
 
 		void Retain();
@@ -228,9 +228,9 @@ namespace Bricks {
 }
 
 #include "bricks/internal/string.h"
-#include "bricks/internal/class.h"
 #include "bricks/internal/value.h"
 #include "bricks/internal/data.h"
+#include "bricks/internal/typeinfo.h"
 #include "bricks/internal/exception.h"
 
 namespace Bricks {
@@ -247,8 +247,8 @@ namespace Bricks {
 #endif
 
 #ifdef BRICKS_CONFIG_RTTI
-	inline ReturnPointer<Class> Object::GetClass() const { return autonew Class(this); }
-	inline String Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetClass()->GetName().CString(), this, GetReferenceCount()); }
+	inline TypeInfo Object::GetTypeInfo() const { return TypeInfo(this); }
+	inline String Object::GetDebugString() const { return String::Format("%s <%p> [%d]", GetTypeInfo().GetName().CString(), this, GetReferenceCount()); }
 #else
 	inline String Object::GetDebugString() const { return String::Format("<%p> [%d]", this, GetReferenceCount()); }
 #endif
