@@ -34,7 +34,7 @@ namespace Bricks { namespace Imaging {
 
 			if (x > width)
 				width = x;
-			if (y + GetHeight() > height)
+			if (y + GetHeight() > (u32)height)
 				height = y + GetHeight();
 			s32 gheight = glyph->GetHeight() + GetHeight() - glyph->GetBearingY();
 			if (y + gheight > height)
@@ -98,7 +98,7 @@ namespace Bricks { namespace Imaging {
 			if (x > width)
 				width = x;
 			s32 y = lineLengths.GetCount() * GetHeight();
-			if (y + GetHeight() > height)
+			if (y + GetHeight() > (u32)height)
 				height = y + GetHeight();
 			s32 gheight = glyph->GetHeight() + GetHeight() - glyph->GetBearingY();
 			if (y + gheight > height)
