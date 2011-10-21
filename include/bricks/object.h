@@ -229,6 +229,8 @@ namespace Bricks {
 
 #include "bricks/internal/string.h"
 #include "bricks/internal/class.h"
+#include "bricks/internal/value.h"
+#include "bricks/internal/data.h"
 #include "bricks/internal/exception.h"
 
 namespace Bricks {
