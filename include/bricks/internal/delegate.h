@@ -2,6 +2,10 @@
 #error Use delegate.h
 #endif
 
+#ifdef BRICKS_FEATURE_OBJC
+#include <Block.h>
+#endif
+
 namespace Bricks {
 	template<typename F> class Delegate;
 	template<typename F> class Event;
@@ -12,6 +16,7 @@ namespace Bricks {
 		template<typename F> class Function;
 		template<typename F> class MethodFunctionBase;
 		template<typename T, typename F> class MethodFunction;
+		template<typename F> class ObjCBlock;
 
 		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class BaseDelegate<R(BRICKS_ARGLIST_TYPES)> : public Object
 		{
@@ -81,6 +86,26 @@ namespace Bricks {
 			virtual bool operator==(const Object& rhs) const { const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return this->pointer == delegate->pointer && function == delegate->function; return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
+
+#ifdef BRICKS_FEATURE_OBJC
+		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class ObjCBlock<R(BRICKS_ARGLIST_TYPES)> : public BaseDelegate<R(BRICKS_ARGLIST_TYPES)>
+		{
+		protected:
+			typedef R(^FunctionType)(BRICKS_ARGLIST_TYPES);
+			FunctionType function;
+
+			friend class Delegate<R(BRICKS_ARGLIST_TYPES)>;
+
+		public:
+			ObjCBlock(FunctionType function) : function(Block_copy(function)) { }
+			ObjCBlock(const ObjCBlock<R(BRICKS_ARGLIST_TYPES)>& block) : function(Block_copy(block.function)) { }
+			~ObjCBlock() { Block_release(function); }
+
+			ObjCBlock<R(BRICKS_ARGLIST_TYPES)>& operator =(const ObjCBlock<R(BRICKS_ARGLIST_TYPES)>& block) { Block_release(function); function = Block_copy(function); return *this; }
+
+			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return function(BRICKS_ARGLIST_ARGS); }
+		};
+#endif
 	}
 
 	template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class Delegate<R(BRICKS_ARGLIST_TYPES)> : public Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>

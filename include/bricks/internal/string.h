@@ -1,8 +1,14 @@
 #pragma once
 
+#include "bricks/config.h"
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+#ifdef BRICKS_FEATURE_OBJC
+#include <Foundation/Foundation.h>
+#endif
 
 namespace Bricks {
 	// TODO: Iterable<char>
@@ -45,6 +51,9 @@ namespace Bricks {
 			String(const String& string, size_t off = 0, size_t len = npos) : buffer(NULL) { Construct(string.CString() + off, len); }
 			String(const char* string, size_t len = npos) : buffer(NULL) { Construct(string, len); }
 			String(char character, size_t repeat = 1) : buffer(NULL) { Construct(NULL, repeat); for (size_t i = 0; i < repeat; i++) buffer[i] = character; }
+#ifdef BRICKS_FEATURE_OBJC
+			String(NSString* string, size_t len = npos) : buffer(NULL) { Construct(string.UTF8String, len); }
+#endif
 
 			~String() { free(buffer); buffer = NULL; }
 
