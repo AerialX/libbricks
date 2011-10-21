@@ -2,10 +2,6 @@
 
 #include "bricks/object.h"
 
-namespace Bricks {
-	template<typename F> class Delegate;
-}
-
 namespace Bricks { namespace Collections {
 	class InvalidIteratorException : public Exception
 	{
@@ -30,9 +26,10 @@ namespace Bricks { namespace Collections {
 	public:
 		typedef T IteratorType;
 
-		virtual ReturnPointer< Iterator< T > > GetIterator() const = 0;
+		virtual ReturnPointer< Iterator< IteratorType > > GetIterator() const = 0;
 
-		void Iterate(const Delegate<bool(T&)>& delegate);
+		void Iterate(const Delegate<bool(IteratorType&)>& delegate) const;
+		void Iterate(const Delegate<void(IteratorType&)>& delegate) const;
 	};
 } }
 
@@ -67,3 +64,17 @@ namespace Bricks { namespace Collections { namespace Internal {
 #define foreach_iterator Bricks::Collections::Internal::IteratorContainerUnpack
 #define foreach_basetype const Bricks::Collections::Internal::IteratorTypeBase&
 #define foreach(val, list) for (foreach_basetype iter = foreach_container(list); foreach_iterator(list, iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = foreach_iterator(list, iter).GetCurrent(); !iter.state; iter.state = true)
+
+namespace Bricks { namespace Collections {
+	template<typename T> inline void Iterable<T>::Iterate(const Delegate<bool(Iterable<T>::IteratorType&)>& delegate) const {
+		foreach (IteratorType& t, *this) {
+			if (!delegate.Call(t))
+				break;
+		}
+	}
+
+	template<typename T> inline void Iterable<T>::Iterate(const Delegate<void(Iterable<T>::IteratorType&)>& delegate) const {
+		foreach (IteratorType& t, *this)
+			delegate.Call(t);
+	}
+} }
