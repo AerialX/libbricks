@@ -10,6 +10,7 @@ namespace Bricks {
 		typedef struct { u8 value[3]; } True;
 		typedef struct { u8 value[5]; } False;
 		template<typename T> T* MakePointer();
+		template<typename T> T MakeValue();
 		template<typename T> T& MakeReference();
 		template<typename T> const T& MakeConstReference();
 
@@ -41,6 +42,13 @@ namespace Bricks {
 			static False Condition(...);
 
 			static const bool Value = BRICKS_SFINAE_TRUE(Condition(MakePointer<U>()));
+		};
+
+		template<typename T, typename U> struct IsCompatibleBaseType {
+			static True Condition(T);
+			static False Condition(...);
+
+			static const bool Value = BRICKS_SFINAE_TRUE(Condition(MakeReference<U>()));
 		};
 
 		template<typename T> struct IsClassType {
