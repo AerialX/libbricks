@@ -170,7 +170,7 @@ namespace Bricks { namespace IO {
 	};
 
 	class FilesystemNodeIterator;
-	class FilesystemNode : public Object, public FileNode
+	class FilesystemNode : public FileNode
 	{
 	private:
 		AutoPointer<Filesystem> filesystem;
