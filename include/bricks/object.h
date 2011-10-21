@@ -170,10 +170,13 @@ namespace Bricks {
 	private:
 		bool retained;
 
+		template<typename U> friend class ReturnPointer;
+
 	public:
 		ReturnPointer() : retained(false) { }
 		ReturnPointer(const ReturnPointer< T >& t) : AutoPointer< T >(t, t.retained), retained(t.retained) { }
 		ReturnPointer(const AutoPointer< T >& t, bool retain = true) : AutoPointer< T >(t, retain), retained(retain) { }
+		template<typename U> ReturnPointer(const ReturnPointer< U >& t) : AutoPointer< T >(t, t.retained), retained(t.retained) { }
 		template<typename U> ReturnPointer(const Pointer< U >& t, bool retain = true) : AutoPointer< T >(t, retain), retained(retain) { }
 		ReturnPointer(const Pointer< T >& t, bool retain = false) : AutoPointer< T >(t, retain), retained(retain) { }
 		ReturnPointer(T* t, bool retain = false) : AutoPointer< T >(t, retain), retained(retain) { }
