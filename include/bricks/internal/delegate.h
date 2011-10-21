@@ -30,12 +30,17 @@ namespace Bricks {
 		protected:
 			T value;
 
+			template<typename U>
+			static typename SFINAE::EnableIf<SFINAE::HasEqualityOperator<U, U>::Value, bool>::Type CompareValues(const U& lhs, const U& rhs) { return lhs == rhs; }
+			template<typename U>
+			static typename SFINAE::DisableIf<SFINAE::HasEqualityOperator<U, U>::Value, bool>::Type CompareValues(const U& lhs, const U& rhs) { return &lhs == &rhs; }
+
 		public:
 			Functor(const T& value) : value(value) { }
 
 			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return value(BRICKS_ARGLIST_ARGS); }
 
-			virtual bool operator==(const Object& rhs) const { const Functor<T, R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const Functor<T, R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return value == delegate->value; return Object::operator==(rhs); }
+			virtual bool operator==(const Object& rhs) const { const Functor<T, R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const Functor<T, R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return CompareValues(value, delegate->value); return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
