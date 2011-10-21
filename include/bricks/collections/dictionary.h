@@ -78,7 +78,7 @@ namespace Bricks { namespace Collections {
 
 		TValue& GetItem(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter != map.end()) return iter->second; return map[key] = value; }
 		TValue& GetItem(const TKey& key) { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
-		const TValue& GetItem(const TKey& key) const { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
+		const TValue& GetItem(const TKey& key) const { const_iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
 		const Collection<const TValue&>& GetValues() const;
 		const Collection<const TKey&>& GetKeys() const;
 
