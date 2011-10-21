@@ -55,7 +55,7 @@ namespace Bricks {
 			String(NSString* string, size_t len = npos) : buffer(NULL) { Construct(string.UTF8String, len); }
 #endif
 
-			~String() { free(buffer); buffer = NULL; }
+			~String() { free(buffer); }
 
 			String GetDebugString() const { return Format("\"%s\" [%d]", CString(), GetReferenceCount()); }
 
@@ -89,6 +89,7 @@ namespace Bricks {
 			}
 
 			const char* CString() const { return buffer; }
+			const void* GetBuffer() const { return buffer; }
 
 			char& operator [](size_t index) { return buffer[index]; }
 			const char& operator [](size_t index) const { return buffer[index]; }
