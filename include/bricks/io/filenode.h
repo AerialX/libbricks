@@ -8,6 +8,8 @@
 #include "bricks/collections/iterator.h"
 
 namespace Bricks { namespace IO {
+	class Stream;
+
 	namespace FileType { enum Enum {
 		Unknown = DT_UNKNOWN,
 		File = DT_REG,
