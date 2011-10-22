@@ -33,16 +33,6 @@ namespace Bricks {
 		type = value;
 	}
 
-	void* Value::GetPointerValue() const
-	{
-		switch (type) {
-			case ValueType::Pointer:
-				return *(void**)data;
-			default:
-				throw InvalidArgumentException();
-		}
-	}
-
 	template<typename U, typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleBaseType<U, T>::Value, U>::Type ValueCast(T value)
 	{
 		return value;
@@ -107,6 +97,11 @@ namespace Bricks {
 			default:
 				throw InvalidArgumentException();
 		}
+	}
+
+	void* Value::GetPointerValue() const
+	{
+		return GetValue<void*>(type, data);
 	}
 
 	bool Value::GetBooleanValue() const
