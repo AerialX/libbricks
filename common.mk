@@ -1,7 +1,7 @@
 OSTYPE				:=	$(shell echo $$OSTYPE)
 CMAKE				:=	$(SHELL) $(BRICKSDIR)/cmake/cmake.sh
 CTEST				:=	$(SHELL) $(BRICKSDIR)/cmake/ctest.sh
-MAKEIT				:=	$(MAKE) --no-print-directory $(MAKEFLAGS)
+MAKEIT				:=	$(MAKE) --no-print-directory
 TOOLCHAIN_ANDROID	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.android.cmake
 TOOLCHAIN_IOS		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.ios.cmake
 
