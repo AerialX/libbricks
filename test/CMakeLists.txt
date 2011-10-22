@@ -2,6 +2,10 @@ enable_testing()
 include_directories(${GTEST_INCLUDE_DIRS})
 add_definitions(-DTEST_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\") 
 
+add_executable(bricks-test-core-value core-value.cpp)
+target_link_libraries(bricks-test-core-value bricks-core bricks-io ${GTEST_BOTH_LIBRARIES} pthread)
+add_test(bricks-test-core-value bricks-test-core-value)
+
 add_executable(bricks-test-audio-midi audio-midi.cpp)
 target_link_libraries(bricks-test-audio-midi bricks-audio bricks-io ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-audio-midi bricks-test-audio-midi)
