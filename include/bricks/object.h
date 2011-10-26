@@ -86,7 +86,11 @@ namespace Bricks {
 
 		void* operator new(size_t size, const Internal::ObjectGlobalAlloc& dummy) { return mallocthrowable(size); }
 		void* operator new(size_t size) { BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE(); return mallocthrowable(size); }
+#ifdef BRICKS_CONFIG_LOGGING_ZOMBIES
+		void operator delete(void* data) { }
+#else
 		void operator delete(void* data) { free(data); }
+#endif
 
 		virtual String GetDebugString() const;
 //		virtual int GetHash() const;
@@ -246,7 +250,11 @@ namespace Bricks {
 #ifdef BRICKS_FEATURE_RELEASE
 	template<typename T> inline T& Pointer< T >::operator*() const { return *value; }
 #else
+#ifndef BRICKS_CONFIG_LOGGING_ZOMBIES
 	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
+#else
+	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); const Object* obj = AsType<const Object>().GetValue(); if (obj && obj->GetReferenceCount() <= 0) throw InvalidOperationException(); return *value; }
+#endif
 #endif
 
 #ifdef BRICKS_CONFIG_RTTI
