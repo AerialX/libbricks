@@ -159,7 +159,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "c++ flags")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}" CACHE STRING "c flags")
       
 set(LINKER_FLAGS "-L\"${STL_LIBRARIES_PATH}\" -L\"${CMAKE_INSTALL_PREFIX}/libs/${ANDROID_NDK_CPU_NAME}\" -lstdc++ -lsupc++")
-if(NOT NDK_CPU_X86)
+if(NDK_CPU_ARM OR NDK_CPU_ARM_V7A)
 	set(LINKER_FLAGS "-Wl,--fix-cortex-a8 ${LINKER_FLAGS}")
 endif()
 
