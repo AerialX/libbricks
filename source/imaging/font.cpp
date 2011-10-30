@@ -30,6 +30,10 @@ namespace Bricks { namespace Imaging {
 			x += GetKerning(glyph, previous);
 			previous = glyph;
 
+			s32 gwidth = x + glyph->GetWidth() + glyph->GetBearingX();
+			if (gwidth > width)
+				width = gwidth;
+
 			x += glyph->GetAdvance();
 
 			if (x > width)
@@ -92,6 +96,10 @@ namespace Bricks { namespace Imaging {
 			previous = glyph;
 
 			glyphs[i] = RenderedGlyph(glyph, lineLengths.GetCount(), x, lineLengths.GetCount() * GetHeight());
+
+			s32 gwidth = x + glyph->GetWidth() + glyph->GetBearingX();
+			if (gwidth > width)
+				width = gwidth;
 
 			x += glyph->GetAdvance();
 
