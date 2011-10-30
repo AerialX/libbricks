@@ -10,7 +10,7 @@ namespace Bricks { namespace Imaging {
 
 	void Image::CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const
 	{
-		if (x + width > image->GetWidth() || y > image->GetHeight())
+		if (x > image->GetWidth() || y > image->GetHeight())
 			throw InvalidArgumentException();
 		width = BRICKS_FEATURE_MIN(width, image->GetWidth() - x);
 		height = BRICKS_FEATURE_MIN(height, image->GetHeight() - y);
