@@ -143,4 +143,8 @@ namespace Bricks {
 	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(T* object, R (T::*function)(BRICKS_ARGLIST_TYPES)) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object, function); }
 	template<typename T, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
 	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(T& object, R (T::*function)(BRICKS_ARGLIST_TYPES)) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(&object, function); }
+	template<typename T, typename U, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
+	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(const Pointer<T>& object, R (U::*function)(BRICKS_ARGLIST_TYPES)) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object.GetValue(), function); }
+	template<typename T, typename U, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
+	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(const Pointer<T>& object, R (U::*function)(BRICKS_ARGLIST_TYPES) const) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object.GetValue(), (R(U::*)(BRICKS_ARGLIST_TYPES))function); }
 }
