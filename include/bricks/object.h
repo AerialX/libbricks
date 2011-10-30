@@ -156,7 +156,7 @@ namespace Bricks {
 		AutoPointer(T& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
 		template<typename U> AutoPointer(const U& t, bool retain = true, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL) : Pointer< T >(t) { if (retain) Retain(*this); }
 		template<typename U> AutoPointer(const Pointer< U >& t, bool retain = true) : Pointer< T >(t) { if (retain) Retain(*this); }
-		~AutoPointer() { Release(*this); }
+		~AutoPointer() { Release(); }
 
 		AutoPointer< T >& operator=(const Pointer< T >& t) { Swap(t); return *this; }
 		AutoPointer< T >& operator=(const AutoPointer< T >& t) { Swap(t); return *this; }
