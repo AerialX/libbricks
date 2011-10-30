@@ -72,7 +72,7 @@ namespace Bricks {
 
 			friend class Event<R(BRICKS_ARGLIST_TYPES)>;
 
-			virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { }
+			virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { throw InvalidArgumentException(); }
 		};
 
 		template<typename T, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class MethodFunction<T, R(BRICKS_ARGLIST_TYPES)> : public MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)>
