@@ -100,4 +100,19 @@ namespace Bricks { namespace Imaging {
 		FT_Get_Kerning(face, previous->GetIndex(), glyph->GetIndex(), FT_KERNING_DEFAULT, &kerning);
 		return kerning.x >> 6;
 	}
+
+	s32 FreeTypeFont::GetBaseline() const
+	{
+		return face->size->metrics.ascender >> 6;
+	}
+
+	s32 FreeTypeFont::GetDescender() const
+	{
+		return face->size->metrics.descender >> 6;
+	}
+
+	u32 FreeTypeFont::GetHeight() const
+	{
+		return face->size->metrics.height >> 6;
+	}
 } }

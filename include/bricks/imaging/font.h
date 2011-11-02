@@ -46,7 +46,10 @@ namespace Bricks { namespace Imaging {
 		virtual void SetPointSize(int pointWidth, int pointHeight = 0, int dpiWidth = 0, int dpiHeight = 0) { width = pointWidth; height = pointHeight ?: pointWidth; }
 
 		u32 GetWidth() const { return width; }
-		u32 GetHeight() const { return height; }
+		virtual u32 GetHeight() const { return height; }
+
+		virtual s32 GetBaseline() const { return height; }
+		virtual s32 GetDescender() const { return 0; }
 
 		FontMeasureSize MeasureString(const String& value);
 
