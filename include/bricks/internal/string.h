@@ -104,6 +104,8 @@ namespace Bricks {
 			int Compare(const char* string, size_t len) const { return strncmp(buffer, string, len); }
 			int Compare(size_t off1, const char* string, size_t len) const { return strncmp(buffer + off1, string, len); }
 			bool operator ==(const String& string) const { return !Compare(string); }
+			bool operator >(const String& string) const { return Compare(string) > 0; }
+			bool operator <(const String& string) const { return Compare(string) < 0; }
 
 			String Substring(size_t off = 0, size_t len = npos) const { return String(buffer + (off == npos ? 0 : off), len); }
 
