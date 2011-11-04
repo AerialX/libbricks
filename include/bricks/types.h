@@ -88,6 +88,11 @@ typedef volatile double		vf64;
 
 #ifdef NDEBUG
 #define BRICKS_FEATURE_RELEASE
+#define BRICKS_FEATURE_RELEASE_THROW(ex) (void)0
+#define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) abort()
+#else
+#define BRICKS_FEATURE_RELEASE_THROW(ex) throw ex
+#define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) throw ex
 #endif
 
 /* Attributes */

@@ -77,8 +77,8 @@ namespace Bricks { namespace Collections {
 		virtual ~Dictionary() { }
 
 		TValue& GetItem(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter != map.end()) return iter->second; return map[key] = value; }
-		TValue& GetItem(const TKey& key) { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
-		const TValue& GetItem(const TKey& key) const { const_iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); return iter->second; }
+		TValue& GetItem(const TKey& key) { iterator iter = map.find(key); if (iter == map.end()) BRICKS_FEATURE_RELEASE_THROW(InvalidArgumentException()); return iter->second; }
+		const TValue& GetItem(const TKey& key) const { const_iterator iter = map.find(key); if (iter == map.end()) BRICKS_FEATURE_RELEASE_THROW(InvalidArgumentException()); return iter->second; }
 		const Collection<const TValue&>& GetValues() const;
 		const Collection<const TKey&>& GetKeys() const;
 
@@ -86,7 +86,7 @@ namespace Bricks { namespace Collections {
 		bool ContainsValue(const TValue& value) const { return IteratorOfValue(value) != map.end(); }
 
 		void Add(const TKey& key, const TValue& value) { map[key] = value; }
-		void Set(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter == map.end()) throw InvalidArgumentException(); iter->second = value; }
+		void Set(const TKey& key, const TValue& value) { iterator iter = map.find(key); if (iter == map.end()) BRICKS_FEATURE_RELEASE_THROW(InvalidArgumentException()); iter->second = value; }
 		bool RemoveKey(const TKey& key) { return map.erase(key); }
 		bool RemoveValue(const TValue& value) { iterator iter = IteratorOfValue(value); if (iter == map.end()) return false; map.erase(iter); return true; }
 		
@@ -120,7 +120,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		DictionaryIterator(Dictionary< TKey, TValue >& dictionary) : first(false), position(dictionary.map.begin()), end(dictionary.map.end()) { }
-		virtual Pair< TKey, TValue >& GetCurrent() const { if (!first || position == end) throw InvalidIteratorException(); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
+		virtual Pair< TKey, TValue >& GetCurrent() const { if (!first || position == end) BRICKS_FEATURE_RELEASE_THROW(InvalidIteratorException()); return const_cast<Pair < TKey, TValue >&>(current = Pair< TKey, TValue >(position)); }
 		virtual bool MoveNext() { if (!first) return (first = true) && position != end; return position != end && ++position != end; }
 	};
 } }

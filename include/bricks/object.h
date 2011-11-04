@@ -255,14 +255,10 @@ namespace Bricks {
 		ObjectPoolLeakException(const String& message = String::Empty) : Exception(message) { }
 	};
 
-#ifdef BRICKS_FEATURE_RELEASE
-	template<typename T> inline T& Pointer< T >::operator*() const { return *value; }
-#else
 #ifndef BRICKS_CONFIG_LOGGING_ZOMBIES
-	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); return *value; }
+	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) BRICKS_FEATURE_RELEASE_THROW(NullReferenceException()); return *value; }
 #else
-	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) throw NullReferenceException(); const Object* obj = AsType<const Object>().GetValue(); if (obj && obj->GetReferenceCount() <= 0) throw InvalidOperationException(); return *value; }
-#endif
+	template<typename T> inline T& Pointer< T >::operator*() const { if (!value) BRICKS_FEATURE_RELEASE_THROW(NullReferenceException()); const Object* obj = AsType<const Object>().GetValue(); if (obj && obj->GetReferenceCount() <= 0) throw InvalidOperationException(); return *value; }
 #endif
 
 #ifdef BRICKS_CONFIG_RTTI

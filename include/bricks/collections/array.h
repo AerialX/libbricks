@@ -24,7 +24,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		ArrayIterator(Array< T, V >& array) : first(false), position(array.vector.begin()), end(array.vector.end()) { }
-		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual T& GetCurrent() const { if (!first || position >= end) BRICKS_FEATURE_RELEASE_THROW(InvalidIteratorException()); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 

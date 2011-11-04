@@ -72,7 +72,7 @@ namespace Bricks {
 
 			friend class Event<R(BRICKS_ARGLIST_TYPES)>;
 
-			virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { throw InvalidArgumentException(); }
+			virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { BRICKS_FEATURE_RELEASE_THROW_FATAL(InvalidArgumentException()); }
 		};
 
 		template<typename T, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class MethodFunction<T, R(BRICKS_ARGLIST_TYPES)> : public MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)>
@@ -132,7 +132,7 @@ namespace Bricks {
 
 		BRICKS_COPY_CONSTRUCTOR(Delegate<R(BRICKS_ARGLIST_TYPES)>);
 
-		virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { if (function) return function->Call(BRICKS_ARGLIST_ARGS); throw InvalidArgumentException(); }
+		virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { if (function) return function->Call(BRICKS_ARGLIST_ARGS); BRICKS_FEATURE_RELEASE_THROW_FATAL(InvalidArgumentException()); }
 
 		operator bool() const { return function; }
 		bool operator==(const Object& rhs) const { const Delegate<R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const Delegate<R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return (!function && !delegate->function) || (function && delegate->function && (*function == *delegate->function)); return Object::operator==(rhs); }

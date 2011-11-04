@@ -55,10 +55,10 @@ namespace Bricks { namespace Collections {
 
 		void Push(const T& value) { stack.push_front(value); }
 		void Push(T& value) { stack.push_front(value); }
-		void Pop() { if (stack.empty()) throw StackEmptyException(); stack.pop_front(); }
-		T PopItem() { if (stack.empty()) throw StackEmptyException(); T value = stack.front(); stack.pop_front(); return value; }
-		T& Peek() { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
-		const T& Peek() const { if (stack.empty()) throw StackEmptyException(); return stack.front(); }
+		void Pop() { if (stack.empty()) BRICKS_FEATURE_RELEASE_THROW(StackEmptyException()); stack.pop_front(); }
+		T PopItem() { if (stack.empty()) BRICKS_FEATURE_RELEASE_THROW(StackEmptyException()); T value = stack.front(); stack.pop_front(); return value; }
+		T& Peek() { if (stack.empty()) BRICKS_FEATURE_RELEASE_THROW(StackEmptyException()); return stack.front(); }
+		const T& Peek() const { if (stack.empty()) BRICKS_FEATURE_RELEASE_THROW(StackEmptyException()); return stack.front(); }
 
 		// Iterator
 		virtual ReturnPointer< Iterator< T > > GetIterator() const { return autonew StackIterator< T, V >(const_cast<Stack< T, V >&>(*this)); }
@@ -93,7 +93,7 @@ namespace Bricks { namespace Collections {
 
 	public:
 		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
-		virtual T& GetCurrent() const { if (!first || position >= end) throw InvalidIteratorException(); return *position; }
+		virtual T& GetCurrent() const { if (!first || position >= end) BRICKS_FEATURE_RELEASE_THROW(InvalidIteratorException()); return *position; }
 		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
 	};
 } }

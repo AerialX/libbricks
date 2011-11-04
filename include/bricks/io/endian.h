@@ -79,7 +79,7 @@ namespace Bricks { namespace IO {
 			return EndianConvertBE##bits(data); \
 		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian())) \
 			return EndianConvertLE##bits(data); \
-		throw InvalidArgumentException("endianness"); \
+		throw InvalidArgumentException(); \
 	} \
 	inline void EndianConvertBE##bits(void* dest, u##bits value) { \
 		*reinterpret_cast<u##bits*>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
@@ -92,7 +92,7 @@ namespace Bricks { namespace IO {
 			return EndianConvertBE##bits(data, value); \
 		else if (endianness == Endian::LittleEndian || (endianness == Endian::Native && IsLittleEndian())) \
 			return EndianConvertLE##bits(data, value); \
-		throw InvalidArgumentException("endianness"); \
+		throw InvalidArgumentException(); \
 	}
 
 BRICKS_ENDIAN_CONVERT(16)
