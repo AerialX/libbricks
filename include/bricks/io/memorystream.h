@@ -6,7 +6,7 @@
 #include <string.h>
 
 namespace Bricks { namespace IO {
-	class MemoryStream : public Object, public Stream
+	class MemoryStream : public Stream
 	{
 	protected:
 		u8* data;

@@ -13,7 +13,7 @@ namespace Bricks { namespace Collections {
 	template<typename T, typename V> class Array;
 
 	template<typename T, typename V>
-	class ArrayIterator : public Object, public Iterator< T >
+	class ArrayIterator : public Iterator< T >
 	{
 	private:
 		bool first;

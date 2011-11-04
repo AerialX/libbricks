@@ -3,7 +3,7 @@
 #include "bricks/io/stream.h"
 
 namespace Bricks { namespace IO {
-	class Substream : public Object, public Stream
+	class Substream : public Stream
 	{
 	private:
 		AutoPointer<Stream> stream;

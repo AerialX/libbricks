@@ -108,7 +108,7 @@ namespace Bricks { namespace Collections {
 	};
 	
 	template<typename TKey, typename TValue>
-	class DictionaryIterator : public Object, public Iterator< Pair< TKey, TValue > >
+	class DictionaryIterator : public Iterator< Pair< TKey, TValue > >
 	{
 	private:
 		bool first;

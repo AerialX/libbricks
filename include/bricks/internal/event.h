@@ -12,7 +12,7 @@ namespace Bricks {
 		typedef AutoPointer< EventItem > EventItemStorage;
 
 	private:
-		class EventItemComparison : public Object, public Bricks::Collections::ValueComparison< EventItem >
+		class EventItemComparison : public Bricks::Collections::ValueComparison< EventItem >
 		{
 		public:
 			Bricks::Collections::ComparisonResult::Enum Compare(const EventItem& v1, const EventItem& v2) {

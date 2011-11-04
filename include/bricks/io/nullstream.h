@@ -3,7 +3,7 @@
 #include "bricks/io/stream.h"
 
 namespace Bricks { namespace IO {
-	class NullStream : public Object, public Stream
+	class NullStream : public Stream
 	{
 	public:
 		size_t Read(void* buffer, size_t size) { return 0; }

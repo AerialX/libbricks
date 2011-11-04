@@ -25,7 +25,7 @@ namespace Bricks { namespace Compression {
 		int GetSystemErrorCode() const { return systemError; }
 	};
 
-	class ZipFilesystem : public Object, public IO::Filesystem, public NoCopy
+	class ZipFilesystem : public IO::Filesystem, public NoCopy
 	{
 	protected:
 		struct zip* zipfile;

@@ -73,8 +73,8 @@ namespace Bricks {
 
 #ifdef BRICKS_CONFIG_RTTI
 		TypeInfo GetTypeInfo() const;
-		template<class T> bool IsSubclassOf() const { return dynamic_cast< T >(this); }
-		template<class T> bool IsTypeInfoOf() const { return typeid(this) == typeid(T); }
+		template<class T> bool IsSubclassOf() const { return dynamic_cast<T*>(const_cast<Object*>(this)); }
+		template<class T> bool IsTypeOf() const { return typeid(*this) == typeid(T); }
 #endif
 
 		void Retain();
@@ -110,8 +110,13 @@ namespace Bricks {
 		Pointer(const Pointer< T >& t) : value(t.value) { }
 		Pointer(T* t) : value(t) { }
 		Pointer(T& t) : value(&t) { }
+#ifdef BRICKS_FEATURE_RELEASE
+		template<typename U> Pointer(const Pointer< U >& t, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<T, U>::Value && !SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) : value(dynamic_cast<T*>(t.GetValue())) { }
+		template<typename U> Pointer(const Pointer< U >& t, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<T, U>::Value || SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) : value(static_cast<T*>(t.GetValue())) { }
+#else
 		template<typename U> Pointer(const Pointer< U >& t, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) : value(static_cast<T*>(t.GetValue())) { }
 		template<typename U> Pointer(const Pointer< U >& t, typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) : value(dynamic_cast<T*>(t.GetValue())) { }
+#endif
 		template<typename U> Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy = NULL);
 
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return *this; }
@@ -132,10 +137,13 @@ namespace Bricks {
 		template<typename U> bool operator==(const Pointer< U >& t) const { return value == t.GetValue(); }
 		template<typename U> bool operator!=(const Pointer< U >& t) const { return value != t.GetValue(); }
 
-		template<typename U> bool IsType() const { return AsType<U>(); }
-
-		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { if (!value) return Pointer<U>::Null; return static_cast<U*>(value); }
-		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { if (!value) return Pointer<U>::Null; return dynamic_cast<U*>(value); }
+#ifdef BRICKS_FEATURE_RELEASE
+		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<SFINAE::IsCompatibleType<U, T>::Value || SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) const { return static_cast<U*>(value); }
+		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<U, T>::Value && !SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) const { return dynamic_cast<U*>(value); }
+#else
+		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { return static_cast<U*>(value); }
+		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<U, T>::Value>::Type* dummy = NULL) const { return dynamic_cast<U*>(value); }
+#endif
 	};
 	template<typename T> Pointer< T > Pointer< T >::Null = Pointer< T >(NULL);
 	

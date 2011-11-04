@@ -82,7 +82,7 @@ namespace Bricks { namespace Collections {
 	};
 	
 	template<typename T, typename V>
-	class StackIterator : public Object, public Iterator< T >
+	class StackIterator : public Iterator< T >
 	{
 	private:
 		bool first;

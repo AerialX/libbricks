@@ -12,7 +12,7 @@ namespace Bricks { namespace IO {
 
 	typedef size_t FileHandle;
 
-	class Filesystem
+	class Filesystem : public Object
 	{
 	public:
 		static const Pointer<Filesystem>& GetDefault();
@@ -61,7 +61,7 @@ namespace Bricks { namespace IO {
 		virtual void ChangeCurrentDirectory(const String& path) = 0;
 	};
 
-	class C89Filesystem : public Object, public Filesystem
+	class C89Filesystem : public Filesystem
 	{
 	public:
 		FileHandle Open(
@@ -87,7 +87,7 @@ namespace Bricks { namespace IO {
 		void Truncate(FileHandle fd, u64 length);
 	};
 	
-	class PosixFilesystem : public Object, public Filesystem
+	class PosixFilesystem : public Filesystem
 	{
 	public:
 		FileHandle Open(
@@ -212,7 +212,7 @@ namespace Bricks { namespace IO {
 		ReturnPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
 	};
 
-	class FilesystemNodeIterator : public Object, public Bricks::Collections::Iterator<FileNode>
+	class FilesystemNodeIterator : public Bricks::Collections::Iterator<FileNode>
 	{
 	private:
 		AutoPointer<Filesystem> filesystem;
