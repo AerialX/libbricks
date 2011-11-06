@@ -1,5 +1,9 @@
 #include "bricksall.hpp"
 
+#if LIBAVFORMAT_VERSION_MAJOR <= 53 && LIBAVFORMAT_VERSION_MINOR < 27
+#define BRICKS_FEATURE_FFMPEG_OLD
+#endif
+
 using namespace Bricks;
 using namespace Bricks::IO;
 using namespace Bricks::Audio;
@@ -55,7 +59,11 @@ FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioS
 	format->pb = ffmpegStream;
 	if (avformat_open_input(&format, "", NULL, NULL) < 0)
 		throw Exception();
+#ifdef BRICKS_FEATURE_FFMPEG_OLD
+	if (av_find_stream_info(format) < 0)
+#else
 	if (avformat_find_stream_info(format, NULL) < 0)
+#endif
 		throw FormatException();
 	for (streamIndex = 0; streamIndex < format->nb_streams; streamIndex++) {
 		stream = format->streams[streamIndex];
@@ -69,7 +77,11 @@ FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioS
 	if (!codec)
 		throw FormatException();
 
+#ifdef BRICKS_FEATURE_FFMPEG_OLD
+	avcodec_open(stream->codec, codec);
+#else
 	avcodec_open2(stream->codec, codec, NULL);
+#endif
 	channels = stream->codec->channels;
 	samplerate = stream->codec->sample_rate;
 	if (stream->duration < 0)
