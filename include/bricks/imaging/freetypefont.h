@@ -4,6 +4,10 @@
 
 #ifdef BRICKS_CONFIG_IMAGING_FREETYPE
 
+struct FT_LibraryRec_;
+struct FT_FaceRec_;
+struct FT_StreamRec_;
+
 #include "bricks/imaging/font.h"
 #include "bricks/io/stream.h"
 
@@ -12,15 +16,9 @@ namespace Bricks { namespace Imaging {
 	{
 	protected:
 		AutoPointer<IO::Stream> stream;
-#ifdef FT_FREETYPE_H
-		FT_Library library;
-		FT_Face face;
-		FT_Stream ftstream;
-#else
-		void* library;
-		void* face;
-		void* ftstream;
-#endif
+		FT_LibraryRec_* library;
+		FT_FaceRec_* face;
+		FT_StreamRec_* ftstream;
 
 		ReturnPointer<FontGlyph> LoadGlyph(String::Character character);
 		ReturnPointer<Image> RenderGlyph(const Pointer<FontGlyph>& glyph);
