@@ -278,10 +278,8 @@ namespace Bricks {
 	inline void* Object::mallocthrowable(size_t size)
 	{
 		void* data = malloc(size);
-#ifndef BRICKS_FEATURE_RELEASE
 		if (!data)
-			throw OutOfMemoryException();
-#endif
+			BRICKS_FEATURE_RELEASE_THROW_FATAL(OutOfMemoryException());
 		return data;
 	}
 	template<typename T> template<typename U> inline Pointer< T >::Pointer(const U& t, typename SFINAE::EnableIf<!SFINAE::IsConst<U>::Value && SFINAE::IsSameType<T, U>::Value>::Type* dummy) : value(&const_cast<U&>(t)) { throw InvalidArgumentException(); }
