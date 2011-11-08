@@ -1,9 +1,5 @@
 #include "brickstest.hpp"
 
-TEST(BricksIoStreamTest, NonExistentFile) {
-	EXPECT_THROW(FileStream("lolnonexistent", FileOpenMode::Open, FileMode::ReadOnly), ErrnoException) << "FileStream did not throw on non-existent file";
-}
-
 TEST(BricksIoNavigatorTest, EmptyFile) {
 	FileStream stream(TestPath.Combine("data/empty.bin"), FileOpenMode::Open, FileMode::ReadOnly);
 	StreamReader reader(stream);
