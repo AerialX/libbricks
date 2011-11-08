@@ -9,6 +9,7 @@
 #include "bricks/io/substream.h"
 #include "bricks/io/nullstream.h"
 #include "bricks/io/memorystream.h"
+#include "bricks/io/cachestream.h"
 
 #include "bricks/io/filepath.h"
 #include "bricks/io/filenode.h"
