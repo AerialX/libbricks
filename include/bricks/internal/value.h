@@ -24,8 +24,6 @@ namespace Bricks {
 		u8 data[0x08];
 		ValueType::Enum type;
 
-		static int SizeOfType(ValueType::Enum type);
-
 	public:
 		Value(const void* data, ValueType::Enum type) : type(type) { SetData(data); }
 		Value(const void* value) : type(ValueType::Pointer) { SetData(&value); }
@@ -66,5 +64,7 @@ namespace Bricks {
 		void SetValue(f32 value);
 		void SetValue(f64 value);
 		void SetValue(int value) { SetValue((u32)value); }
+
+		static int SizeOfType(ValueType::Enum type);
 	};
 }
