@@ -17,5 +17,7 @@ namespace Bricks { namespace IO {
 		virtual bool CanSeek() const { return true; }
 		virtual bool CanRead() const { return true; }
 		virtual bool CanWrite() const { return true; }
+		virtual size_t Read(Data& data) { return Read(data.GetData(), data.GetSize()); }
+		virtual size_t Write(const Data& data) { return Write(data.GetData(), data.GetSize()); }
 	};
 } }
