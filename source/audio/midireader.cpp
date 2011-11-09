@@ -29,9 +29,9 @@ MidiReader::MidiReader(const Pointer<Stream>& stream)
 	reader = autonew StreamReader(stream, Endian::BigEndian);
 
 	if (reader->ReadInt32() != MagicHeader1)
-		throw FormatException();
+		BRICKS_FEATURE_THROW(FormatException());
 	if (reader->ReadInt32() != MagicHeader2)
-		throw FormatException();
+		BRICKS_FEATURE_THROW(FormatException());
 
 	midiType = (MidiType::Enum)reader->ReadInt16();
 	trackCount = reader->ReadInt16();
@@ -50,7 +50,7 @@ MidiReader::~MidiReader()
 void MidiReader::ReadTrack()
 {
 	if (reader->ReadInt32() != MagicTrackHeader)
-		throw FormatException();
+		BRICKS_FEATURE_THROW(FormatException());
 
 	trackSize = reader->ReadInt32();
 
@@ -76,7 +76,7 @@ void MidiReader::NextTrack()
 void MidiReader::SeekTrack(u32 index)
 {
 	if (index >= trackCount)
-		throw InvalidArgumentException();
+		BRICKS_FEATURE_THROW(InvalidArgumentException());
 
 	if (index <= trackIndex) {
 		reader->SetPosition(sizeof(MagicHeader1) + sizeof(MagicHeader2) + sizeof(u16) * 3);
@@ -90,7 +90,7 @@ void MidiReader::SeekTrack(u32 index)
 ReturnPointer<Stream> MidiReader::GetTrackStream()
 {
 	if (EndOfFile())
-		throw InvalidOperationException();
+		BRICKS_FEATURE_THROW(InvalidOperationException());
 
 	return autonew Substream(reader->GetStream(), trackPosition, trackSize);
 }
@@ -132,7 +132,7 @@ static AutoPointer<MidiChannelEvent> CreateChannelEvent(u32 delta, MidiEventType
 ReturnPointer<MidiEvent> MidiReader::ReadEvent()
 {
 	if (EndOfTrack())
-		throw InvalidOperationException();
+		BRICKS_FEATURE_THROW(InvalidOperationException());
 
 	u32 delta = ReadInteger(reader->GetStream());
 	u8 identifier = reader->ReadByte();
@@ -145,9 +145,9 @@ ReturnPointer<MidiEvent> MidiReader::ReadEvent()
 			reader->ReadBytes(data, length);
 			return CreateMetaEvent(delta, type, length, data); }
 		case 0xF0:
-			throw NotImplementedException();
+			BRICKS_FEATURE_THROW(NotImplementedException());
 		case 0xF7:
-			throw NotImplementedException();
+			BRICKS_FEATURE_THROW(NotImplementedException());
 		default: {
 			u8 parameter1;
 			if (!(identifier & 0x80)) {
