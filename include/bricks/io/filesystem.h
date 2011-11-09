@@ -199,9 +199,10 @@ namespace Bricks { namespace IO {
 		}
 
 		FilesystemNode(const String& path, const Pointer<Filesystem>& filesystem = NULL) :
-			filesystem(filesystem ?: Filesystem::GetDefault())
+			FileNode(FileType::Unknown, path), filesystem(filesystem ?: Filesystem::GetDefault())
 		{
-			*this = this->filesystem->Stat(path);
+			if (this->filesystem->Exists(path))
+				*this = this->filesystem->Stat(path);
 		}
 
 		String GetFullPath() const { if (!path.IsPathRooted()) return path.RootPath(filesystem->GetCurrentDirectory()); return path; }
