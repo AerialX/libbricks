@@ -79,6 +79,15 @@ TEST(BricksIoStreamTest, WriteReadCacheStreamTest) {
 	Filesystem::GetDefault()->DeleteFile(path);
 }
 
+TEST(BricksIoStreamTest, WriteReadMemoryStreamTest) {
+	{
+		MemoryStream stream;
+		WriteTest(stream);
+		stream.SetPosition(0);
+		ReadTest(stream);
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	testing::InitGoogleTest(&argc, argv);
