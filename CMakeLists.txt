@@ -127,6 +127,11 @@ set(BRICKS_IMAGING_SOURCE_FILES
 	"source/imaging/font.cpp"
 )
 
+set(BRICKS_CRYPTOGRAPHY_LINK_LIBRARIES bricks-io)
+set(BRICKS_CRYPTOGRAPHY_SOURCE_FILES
+	"source/cryptography/hash.cpp"
+)
+
 set(BRICKS_COMPRESSION_LINK_LIBRARIES bricks-io)
 set(BRICKS_COMPRESSION_SOURCE_FILES
 )
@@ -205,6 +210,10 @@ endif()
 add_library(bricks-imaging ${BRICKS_IMAGING_SOURCE_FILES})
 target_link_libraries(bricks-imaging ${BRICKS_IMAGING_LINK_LIBRARIES})
 set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-imaging)
+
+add_library(bricks-cryptography ${BRICKS_CRYPTOGRAPHY_SOURCE_FILES})
+target_link_libraries(bricks-cryptography ${BRICKS_CRYPTOGRAPHY_LINK_LIBRARIES})
+set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-cryptography)
 
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 	add_executable(sample "sample/source/main.cpp")
