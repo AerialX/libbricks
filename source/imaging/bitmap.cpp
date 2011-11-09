@@ -6,7 +6,7 @@ namespace Bricks { namespace Imaging {
 	Colour Bitmap::GetPixel(u32 x, u32 y) const
 	{
 		if (x >= width || y >= height)
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 
 		u64 pixel = 0;
 		size_t offset = (size_t)y * width + x;
@@ -73,7 +73,7 @@ namespace Bricks { namespace Imaging {
 	void Bitmap::SetPixel(u32 x, u32 y, const Colour& colour)
 	{
 		if (x >= width || y >= height)
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 		
 		u64 pixel = 0;
 
@@ -127,7 +127,7 @@ namespace Bricks { namespace Imaging {
 				break;
 			default:
 				if (pixelDescription.GetPixelDepth() < 8)
-					throw NotSupportedException();
+					BRICKS_FEATURE_THROW(NotSupportedException());
 				// TODO: This won't work for <8 bit depths because overlapping pixels need to be OR'd
 				offset *= pixelDescription.GetPixelDepth();
 				offset /= 8;

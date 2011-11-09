@@ -22,7 +22,7 @@ namespace Bricks { namespace Imaging {
 	FreeTypeFont::FreeTypeFont(const Pointer<Stream>& stream, int faceIndex) : stream(stream)
 	{
 		if (FT_Init_FreeType(&library))
-			throw Exception();
+			BRICKS_FEATURE_THROW(Exception());
 		FT_Open_Args args;
 		ftstream = new FT_StreamRec();
 		memset(&args, 0, sizeof(args));
@@ -34,7 +34,7 @@ namespace Bricks { namespace Imaging {
 		ftstream->size = stream->GetLength();
 		if (FT_Open_Face(library, &args, faceIndex, &face)) {
 			FT_Done_FreeType(library);
-			throw Exception();
+			BRICKS_FEATURE_THROW(Exception());
 		}
 	}
 
@@ -48,14 +48,14 @@ namespace Bricks { namespace Imaging {
 	void FreeTypeFont::SetPixelSize(int pixelWidth, int pixelHeight)
 	{
 		if (FT_Set_Pixel_Sizes(face, pixelWidth, pixelHeight))
-			throw NotSupportedException();
+			BRICKS_FEATURE_THROW(NotSupportedException());
 		Font::SetPixelSize(pixelWidth, pixelHeight);
 	}
 
 	void FreeTypeFont::SetPointSize(int pointWidth, int pointHeight, int dpiWidth, int dpiHeight)
 	{
 		if (FT_Set_Char_Size(face, pointWidth << 6, pointHeight << 6, dpiWidth, dpiHeight))
-			throw NotSupportedException();
+			BRICKS_FEATURE_THROW(NotSupportedException());
 		Font::SetPixelSize(face->size->metrics.x_ppem, face->size->metrics.y_ppem);
 	}
 
@@ -63,17 +63,17 @@ namespace Bricks { namespace Imaging {
 	{
 		int index = FT_Get_Char_Index(face, character);
 		if (FT_Load_Glyph(face, index, FT_LOAD_DEFAULT))
-			throw Exception();
+			BRICKS_FEATURE_THROW(Exception());
 		return autonew FontGlyph(this, character, index, face->glyph->advance.x >> 6, face->glyph->metrics.width >> 6, face->glyph->metrics.height >> 6, face->glyph->metrics.horiBearingX >> 6, face->glyph->metrics.horiBearingY >> 6);
 	}
 
 	ReturnPointer<Image> FreeTypeFont::RenderGlyph(const Pointer<FontGlyph>& glyph)
 	{
 		if (FT_Load_Glyph(face, glyph->GetIndex(), FT_LOAD_DEFAULT))
-			throw Exception();
+			BRICKS_FEATURE_THROW(Exception());
 		FT_GlyphSlot slot = face->glyph;
 		if (FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL)) // TODO: FT_RENDER_MODE_LCD / FT_RENDER_MODE_LCD_V ?
-			throw Exception();
+			BRICKS_FEATURE_THROW(Exception());
 		PixelDescription description;
 		switch (slot->bitmap.pixel_mode) {
 			case FT_PIXEL_MODE_MONO:
@@ -85,7 +85,7 @@ namespace Bricks { namespace Imaging {
 				description = PixelDescription::I8;
 				break;
 			default:
-				throw NotSupportedException();
+				BRICKS_FEATURE_THROW(NotSupportedException());
 		}
 		AutoPointer<Bitmap> image = autonew Bitmap(slot->bitmap.width, slot->bitmap.rows, description);
 		memcpy(image->GetImageData(), slot->bitmap.buffer, image->GetImageDataSize());

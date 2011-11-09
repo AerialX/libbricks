@@ -47,25 +47,25 @@ namespace Bricks { namespace IO {
 				break;
 			case FileOpenMode::Create:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					BRICKS_FEATURE_THROW(InvalidArgumentException("mode"));
 				else
 					cmode = "w+b";
 				break;
 			case FileOpenMode::CreateNew:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					BRICKS_FEATURE_THROW(InvalidArgumentException("mode"));
 				else
 					cmode = "w+b";
 				break;
 			case FileOpenMode::Append:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					BRICKS_FEATURE_THROW(InvalidArgumentException("mode"));
 				else
 					cmode = "a+b";
 				break;
 			case FileOpenMode::Truncate:
 				if (mode == FileMode::ReadOnly)
-					throw InvalidArgumentException("mode");
+					BRICKS_FEATURE_THROW(InvalidArgumentException("mode"));
 				else
 					cmode = "w+b";
 				break;
@@ -103,7 +103,7 @@ namespace Bricks { namespace IO {
 	
 	void C89Filesystem::Flush(FileHandle fd)
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 		// TODO: fsync FILE*?
 	}
 	
@@ -129,7 +129,7 @@ namespace Bricks { namespace IO {
 	
 	void C89Filesystem::Truncate(FileHandle fd, u64 length)
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 	
 	FileHandle PosixFilesystem::Open(
@@ -231,7 +231,7 @@ namespace Bricks { namespace IO {
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
 	{
 #ifdef BRICKS_FEATURE_ANDROID
-		throw NotSupportedException();
+		BRICKS_FEATURE_THROW(NotSupportedException());
 #else
 		long ret = telldir((DIR*)fd);
 		if (ret < 0)
@@ -243,7 +243,7 @@ namespace Bricks { namespace IO {
 	void PosixFilesystem::SeekDirectory(FileHandle fd, size_t offset)
 	{
 #ifdef BRICKS_FEATURE_ANDROID
-		throw NotSupportedException();
+		BRICKS_FEATURE_THROW(NotSupportedException());
 #else
 		seekdir((DIR*)fd, offset);
 #endif

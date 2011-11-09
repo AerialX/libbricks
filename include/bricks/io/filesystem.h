@@ -159,8 +159,8 @@ namespace Bricks { namespace IO {
 		blksize_t GetBlockSize() const { return st.st_blksize; }
 		blkcnt_t GetBlockCount() const { return st.st_blocks; }
 #else
-		blksize_t GetBlockSize() const { throw NotSupportedException(); }
-		blkcnt_t GetBlockCount() const { throw NotSupportedException(); }
+		blksize_t GetBlockSize() const { BRICKS_FEATURE_THROW(NotSupportedException()); }
+		blkcnt_t GetBlockCount() const { BRICKS_FEATURE_THROW(NotSupportedException()); }
 #endif
 		FileType::Enum GetFileType() const { return FileStatType(st.st_mode); }
 		FilePath GetFilePath() const { return path; }
@@ -206,7 +206,7 @@ namespace Bricks { namespace IO {
 
 		String GetFullPath() const { if (!path.IsPathRooted()) return path.RootPath(filesystem->GetCurrentDirectory()); return path; }
 		ReturnPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullPath()).GetDirectory(), filesystem); }
-		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; throw NotSupportedException(); }
+		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; BRICKS_FEATURE_THROW(NotSupportedException()); }
 		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode = FileOpenMode::Open, FileMode::Enum mode = FileMode::ReadWrite, FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite);
 
 		ReturnPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
@@ -226,7 +226,7 @@ namespace Bricks { namespace IO {
 			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetPath())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
-		FileNode& GetCurrent() const { if (!current) throw Bricks::Collections::InvalidIteratorException(); return *current; }
+		FileNode& GetCurrent() const { if (!current) BRICKS_FEATURE_THROW(Bricks::Collections::InvalidIteratorException()); return *current; }
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	

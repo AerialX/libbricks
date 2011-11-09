@@ -43,7 +43,7 @@ static int64_t FFmpegSeek(void* userData, int64_t offset, int whence)
 		case AVSEEK_SIZE:
 			return stream->GetLength();
 		default:
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 	}
 	stream->SetPosition(position);
 	return stream->GetPosition();
@@ -58,13 +58,13 @@ FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioS
 	ffmpegStream->seekable = ioStream->CanSeek() ? AVIO_SEEKABLE_NORMAL : 0;
 	format->pb = ffmpegStream;
 	if (avformat_open_input(&format, "", NULL, NULL) < 0)
-		throw Exception();
+		BRICKS_FEATURE_THROW(Exception());
 #ifdef BRICKS_FEATURE_FFMPEG_OLD
 	if (av_find_stream_info(format) < 0)
 #else
 	if (avformat_find_stream_info(format, NULL) < 0)
 #endif
-		throw FormatException();
+		BRICKS_FEATURE_THROW(FormatException());
 	for (streamIndex = 0; streamIndex < format->nb_streams; streamIndex++) {
 		stream = format->streams[streamIndex];
 		if (!stream)
@@ -75,7 +75,7 @@ FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioS
 		}
 	}
 	if (!codec)
-		throw FormatException();
+		BRICKS_FEATURE_THROW(FormatException());
 
 #ifdef BRICKS_FEATURE_FFMPEG_OLD
 	avcodec_open(stream->codec, codec);

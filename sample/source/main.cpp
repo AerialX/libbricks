@@ -11,10 +11,10 @@ static void testFilesystem()
 {
 	Console::Default->Out->WriteLine(" ==== Filesystem Tests ==== ");
 
-	try {
+	BRICKS_FEATURE_TRY {
 		Console::Default->Out->WriteLine("Trying to open nonexistent file...");
 		FileStream stream("lolnonexistent", FileOpenMode::Open, FileMode::ReadOnly);
-	} catch (const Exception& ex) {
+	} BRICKS_FEATURE_CATCH_EXCEPTION (const Exception, ex) {
 		Console::Default->Out->WriteLine(String::Format("Ohnoes! We got a %s! %s", ex.GetDebugString().CString(), ex.GetMessage().CString()));
 	}
 

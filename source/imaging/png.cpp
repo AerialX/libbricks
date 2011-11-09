@@ -10,12 +10,12 @@ namespace Bricks { namespace Imaging {
 		Pointer<Stream> stream(static_cast<Stream*>(png_get_io_ptr(png_ptr)));
 
 		if (stream->Read(data, length) != length)
-			throw InvalidArgumentException(); // Eh, bad idea to do from inside libpng?
+			BRICKS_FEATURE_THROW(InvalidArgumentException()); // Eh, bad idea to do from inside libpng?
 	}
 
 	static void libpng_error(png_structp png_pt, png_const_charp message)
 	{
-		throw Exception(message);
+		BRICKS_FEATURE_THROW(Exception(message));
 	}
 
 	// TODO: This should let exceptions propogate past the function, never return NULL
@@ -66,7 +66,7 @@ namespace Bricks { namespace Imaging {
 				pixels = PixelDescription(bitDepth, ColourTypeMask::RGBA);
 				break;
 			default:
-				throw NotSupportedException();
+				BRICKS_FEATURE_THROW(NotSupportedException());
 		}
 
 /* I believe libpng handles this for us somewhat
@@ -79,7 +79,7 @@ namespace Bricks { namespace Imaging {
 				interlacing = InterlaceType::Adam7;
 				break;
 			default:
-				throw NotSupportedException();
+				BRICKS_FEATURE_THROW(NotSupportedException());
 		}
 */
 

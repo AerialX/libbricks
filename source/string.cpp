@@ -13,7 +13,7 @@ namespace Bricks {
 #ifdef _GNU_SOURCE
 		char* temp = NULL;
 		if (vasprintf(&temp, format.CString(), args) < 0)
-			throw OutOfMemoryException();
+			BRICKS_FEATURE_THROW(OutOfMemoryException());
 		String ret(temp);
 		free(temp);
 #else
@@ -21,7 +21,7 @@ namespace Bricks {
 		int size = vsnprintf(dummy, 0, format.CString(), args);
 		va_end(args);
 		if (size < 0)
-			throw NotSupportedException();
+			BRICKS_FEATURE_THROW(NotSupportedException());
 		va_start(args, format);
 		char temp[size + 1];
 		vsnprintf(temp, size + 1, format.CString(), args);

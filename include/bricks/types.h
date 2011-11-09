@@ -86,13 +86,34 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_WINDOWS
 #endif
 
+#ifdef __EXCEPTIONS
+#define BRICKS_FEATURE_EXCEPTIONS
+#endif
+
 #ifdef NDEBUG
 #define BRICKS_FEATURE_RELEASE
+#endif
+
+#ifdef BRICKS_FEATURE_EXCEPTIONS
+#define BRICKS_FEATURE_THROW(ext) throw ext
+#define BRICKS_FEATURE_TRY try
+#define BRICKS_FEATURE_CATCH(ext) catch(ext)
+#define BRICKS_FEATURE_CATCH_EXCEPTION(ext, ex) catch(ext& ext)
+#define BRICKS_FEATURE_CATCH_ALL catch(...)
+#else
+#define BRICKS_FEATURE_THROW(ext) abort()
+#define BRICKS_FEATURE_TRY if(true)
+#define BRICKS_FEATURE_CATCH(ex) while(false)
+#define BRICKS_FEATURE_CATCH_EXCEPTION(ext, ex) for(ext ex;0;)
+#define BRICKS_FEATURE_CATCH_ALL while(false)
+#endif
+
+#ifdef BRICKS_FEATURE_RELEASE
 #define BRICKS_FEATURE_RELEASE_THROW(ex) (void)0
 #define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) abort()
 #else
-#define BRICKS_FEATURE_RELEASE_THROW(ex) throw ex
-#define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) throw ex
+#define BRICKS_FEATURE_RELEASE_THROW(ex) BRICKS_FEATURE_THROW(ex)
+#define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) BRICKS_FEATURE_THROW(ex)
 #endif
 
 /* Attributes */
@@ -128,7 +149,7 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #ifdef BRICKS_FEATURE_RELEASE
 #define BRICKS_FEATURE_ASSERT(cond) ((void)0)
 #else
-#define BRICKS_FEATURE_ASSERT(cond) if (cond) (void)0; else throw InternalInconsistencyException("Assert failed: " # cond)
+#define BRICKS_FEATURE_ASSERT(cond) if (cond) (void)0; else BRICKS_FEATURE_THROW(InternalInconsistencyException("Assert failed: " # cond))
 #endif
 
 /* Missing Features */

@@ -17,7 +17,7 @@ namespace Bricks { namespace Collections {
 	public:
 		virtual T& GetCurrent() const = 0;
 		virtual bool MoveNext() = 0;
-		virtual ReturnPointer< Collection< T > > GetAllObjects() { throw NotImplementedException(); };
+		virtual ReturnPointer< Collection< T > > GetAllObjects() { BRICKS_FEATURE_THROW(NotImplementedException()); };
 	};
 
 	template<typename T>

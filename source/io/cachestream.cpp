@@ -31,7 +31,7 @@ namespace Bricks { namespace IO {
 	{
 		if (cacheDirty) {
 			if (cacheOffset && stream->Write(cache, cacheOffset) != cacheOffset)
-				throw Exception();
+				BRICKS_FEATURE_THROW(Exception());
 		}
 
 		cachePosition += cacheLength;

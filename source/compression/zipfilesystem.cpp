@@ -40,15 +40,15 @@ namespace Bricks { namespace Compression {
 			else if (c89)
 				fd = fileno((FILE*)(fsfd = filesystem->Duplicate(filestream->GetHandle())));
 			else
-				throw NotSupportedException();
+				BRICKS_FEATURE_THROW(NotSupportedException());
 		} else
-			throw NotSupportedException();
+			BRICKS_FEATURE_THROW(NotSupportedException());
 
 		int error;
 		zipfile = zip_fdopen(fd, 0, &error);
 		if (!zipfile) {
 			filesystem->Close(fsfd);
-			throw LibZipException(error);
+			BRICKS_FEATURE_THROW(LibZipException(error));
 		}
 	}
 
@@ -57,7 +57,7 @@ namespace Bricks { namespace Compression {
 		int error;
 		zipfile = zip_open(filepath.CString(), 0, &error);
 		if (!zipfile)
-			throw LibZipException(error);
+			BRICKS_FEATURE_THROW(LibZipException(error));
 	}
 
 	ZipFilesystem::~ZipFilesystem()
@@ -86,14 +86,14 @@ namespace Bricks { namespace Compression {
 			FilePermissions::Enum permissions)
 	{
 		if (createmode & ~FileOpenMode::Open)
-			throw NotImplementedException();
+			BRICKS_FEATURE_THROW(NotImplementedException());
 
 		int index = zip_name_locate(zipfile, TransformPath(path).CString(), 0);
 		if (index < 0)
-			throw FileNotFoundException();
+			BRICKS_FEATURE_THROW(FileNotFoundException());
 		struct zip_file* file = zip_fopen_index(zipfile, index, 0);
 		if (!file)
-			throw LibZipException(zipfile);
+			BRICKS_FEATURE_THROW(LibZipException(zipfile));
 		ZipFilesystemFile* ret = new ZipFilesystemFile(file, index);
 		return (FileHandle)ret;
 	}
@@ -103,14 +103,14 @@ namespace Bricks { namespace Compression {
 		ZipFilesystemFile* file = (ZipFilesystemFile*)fd;
 		s64 ret = zip_fread(file->file, buffer, size);
 		if (ret < 0)
-			throw LibZipException(file->file);
+			BRICKS_FEATURE_THROW(LibZipException(file->file));
 		file->position += ret;
 		return ret;
 	}
 
 	size_t ZipFilesystem::Write(FileHandle fd, const void* buffer, size_t size)
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	u64 ZipFilesystem::Tell(FileHandle fd) const
@@ -122,7 +122,7 @@ namespace Bricks { namespace Compression {
 	{
 		ZipFilesystemFile* file = (ZipFilesystemFile*)fd;
 		if (!file)
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 
 		ZipFilesystemFile* newfile = new ZipFilesystemFile(file->file, file->index);
 		return (FileHandle)newfile; // TODO: The file's position needs to be updated with the parent's; it currently is not and this will make things go boom
@@ -139,7 +139,7 @@ namespace Bricks { namespace Compression {
 				struct zip_stat st;
 				int ret = zip_stat_index(zipfile, file->index, 0, &st);
 				if (ret < 0)
-					throw LibZipException(zipfile);
+					BRICKS_FEATURE_THROW(LibZipException(zipfile));
 				offset += st.size;
 				break; }
 			default:
@@ -151,7 +151,7 @@ namespace Bricks { namespace Compression {
 			file->position = 0;
 			file->file = zip_fopen_index(zipfile, file->index, 0);
 			if (!file->file)
-				throw LibZipException(zipfile);
+				BRICKS_FEATURE_THROW(LibZipException(zipfile));
 		} else
 			offset -= file->position;
 
@@ -160,10 +160,10 @@ namespace Bricks { namespace Compression {
 			int toread = BRICKS_FEATURE_MIN(sizeof(buffer), (u64)offset);
 			s64 ret = zip_fread(file->file, buffer, toread);
 			if (ret < 0)
-				throw LibZipException(file->file);
+				BRICKS_FEATURE_THROW(LibZipException(file->file));
 			file->position += ret;
 			if (ret != toread)
-				throw InternalInconsistencyException();
+				BRICKS_FEATURE_THROW(InternalInconsistencyException());
 		}
 	}
 
@@ -174,14 +174,14 @@ namespace Bricks { namespace Compression {
 
 	void ZipFilesystem::Truncate(FileHandle fd, u64 length)
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	void ZipFilesystem::Close(FileHandle fd)
 	{
 		ZipFilesystemFile* file = (ZipFilesystemFile*)fd;
 		if (!file)
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 		if (file->file)
 			zip_fclose(file->file);
 		delete file;
@@ -216,7 +216,7 @@ namespace Bricks { namespace Compression {
 		struct zip_stat zst;
 		int ret = zip_stat(zipfile, TransformPath(path).CString(), 0, &zst);
 		if (ret < 0)
-			throw FileNotFoundException();
+			BRICKS_FEATURE_THROW(FileNotFoundException());
 		return FileInfo(StatFromZipStat(zipfile, zst), TransformPathReverse(zst.name), this);
 	}
 
@@ -226,23 +226,23 @@ namespace Bricks { namespace Compression {
 		struct zip_stat zst;
 		int ret = zip_stat_index(zipfile, file->index, 0, &zst);
 		if (ret < 0)
-			throw FileNotFoundException();
+			BRICKS_FEATURE_THROW(FileNotFoundException());
 		return FileInfo(StatFromZipStat(zipfile, zst), TransformPathReverse(zst.name), this);
 	}
 
 	bool ZipFilesystem::IsFile(const String& path) const
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	bool ZipFilesystem::IsDirectory(const String& path) const
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	bool ZipFilesystem::Exists(const String& path) const
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	struct ZipFilesystemDir {
@@ -259,11 +259,11 @@ namespace Bricks { namespace Compression {
 			zippath += "/";
 		int index = zip_name_locate(zipfile, zippath.CString(), 0);
 		if (index < 0)
-			throw FileNotFoundException();
+			BRICKS_FEATURE_THROW(FileNotFoundException());
 		const char* dirname = zip_get_name(zipfile, index, 0);
 		char lastchar = dirname[strlen(dirname) - 1];
 		if (lastchar != '/' && lastchar != '\\')
-			throw FileNotFoundException();
+			BRICKS_FEATURE_THROW(FileNotFoundException());
 		ZipFilesystemDir* dir = new ZipFilesystemDir(index);
 		return (FileHandle)dir;
 	}
@@ -299,19 +299,19 @@ namespace Bricks { namespace Compression {
 	void ZipFilesystem::CloseDirectory(FileHandle fd)
 	{
 		if (!fd)
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 		ZipFilesystemDir* dir = (ZipFilesystemDir*)fd;
 		delete dir;
 	}
 
 	void ZipFilesystem::DeleteFile(const String& path)
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	void ZipFilesystem::DeleteDirectory(const String& path, bool recursive)
 	{
-		throw NotImplementedException();
+		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 
 	String ZipFilesystem::GetCurrentDirectory() const

@@ -27,7 +27,7 @@ namespace Bricks { namespace IO {
 		StreamNavigator(const Pointer<Stream>& stream, Endian::Enum endianness) : stream(stream), endianness(endianness) { }
 
 		virtual void Pad(u64 size) = 0;
-		void PadTo(u64 position) { if (position < stream->GetPosition()) throw InvalidArgumentException("position"); Pad(position - stream->GetPosition()); }
+		void PadTo(u64 position) { if (position < stream->GetPosition()) BRICKS_FEATURE_THROW(InvalidArgumentException("position")); Pad(position - stream->GetPosition()); }
 		void PadToMultiple(int round) { PadTo(BRICKS_FEATURE_ROUND_UP(stream->GetPosition(), round)); }
 
 		u64 GetPosition() { return stream->GetPosition(); }
@@ -46,16 +46,16 @@ namespace Bricks { namespace IO {
 		u##size ReadInt##size(Endian::Enum endian = Endian::Unknown) { \
 			char data[sizeof(u##size)]; \
 			if (stream->Read(data, sizeof(u##size)) != sizeof(u##size)) \
-				throw EndOfStreamException(); \
+				BRICKS_FEATURE_THROW(EndOfStreamException()); \
 			return EndianConvert##size<u##size>(endian ?: endianness, data); \
 		}
 		BRICKS_STREAM_READ(16);
 		BRICKS_STREAM_READ(32);
 		BRICKS_STREAM_READ(64);
 #undef BRICKS_STREAM_READ
-		u8 ReadByte() { u8 data; if (stream->Read(&data, sizeof(data)) != sizeof(data)) throw EndOfStreamException(); return data; }
-		void ReadBytes(void* data, size_t size) { if (stream->Read(data, size) != size) throw EndOfStreamException(); }
-		Data ReadBytes(size_t size) { Data data(size); if (stream->Read(data, size) != size) throw EndOfStreamException(); return data; }
+		u8 ReadByte() { u8 data; if (stream->Read(&data, sizeof(data)) != sizeof(data)) BRICKS_FEATURE_THROW(EndOfStreamException()); return data; }
+		void ReadBytes(void* data, size_t size) { if (stream->Read(data, size) != size) BRICKS_FEATURE_THROW(EndOfStreamException()); }
+		Data ReadBytes(size_t size) { Data data(size); if (stream->Read(data, size) != size) BRICKS_FEATURE_THROW(EndOfStreamException()); return data; }
 
 		String ReadCString(int division) {
 			// TODO: StringBuilder, this is fail.
@@ -82,7 +82,7 @@ namespace Bricks { namespace IO {
 			while (size > 0) {
 				size_t sz = BRICKS_FEATURE_MIN(sizeof(padding), size);
 				if (stream->Read(padding, sz) != sz)
-					throw EndOfStreamException();
+					BRICKS_FEATURE_THROW(EndOfStreamException());
 				size -= sz;
 			}
 		}
@@ -98,14 +98,14 @@ namespace Bricks { namespace IO {
 			u##size data; \
 			EndianConvert##size(endian ?: endianness, &data, value); \
 			if (stream->Write(&data, sizeof(u##size)) != sizeof(u##size)) \
-				throw StreamException(); \
+				BRICKS_FEATURE_THROW(StreamException()); \
 		}
 		BRICKS_STREAM_WRITE(16);
 		BRICKS_STREAM_WRITE(32);
 		BRICKS_STREAM_WRITE(64);
 #undef BRICKS_STREAM_WRITE
-		void WriteByte(u8 data) { if (stream->Write(&data, sizeof(data)) != sizeof(data)) throw StreamException(); }
-		void WriteBytes(const void* data, size_t size) { if (stream->Write(data, size) != size) throw StreamException(); }
+		void WriteByte(u8 data) { if (stream->Write(&data, sizeof(data)) != sizeof(data)) BRICKS_FEATURE_THROW(StreamException()); }
+		void WriteBytes(const void* data, size_t size) { if (stream->Write(data, size) != size) BRICKS_FEATURE_THROW(StreamException()); }
 		void WriteString(const String& str, size_t size = String::npos) {
 			if (size == String::npos)
 				size = str.GetSize();
@@ -119,7 +119,7 @@ namespace Bricks { namespace IO {
 			while (size > 0) {
 				size_t sz = BRICKS_FEATURE_MIN(sizeof(padding), size);
 				if (stream->Write(padding, sz) != sz)
-					throw StreamException();
+					BRICKS_FEATURE_THROW(StreamException());
 				size -= sz;
 			}
 		}

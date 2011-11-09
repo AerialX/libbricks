@@ -26,7 +26,7 @@ namespace Bricks { namespace Imaging {
 	void Image::ColouriseTo(const Pointer<Image>& image, const Colour& colour) const
 	{
 		if (image->GetWidth() != GetWidth() || image->GetHeight() != GetHeight())
-			throw InvalidArgumentException();
+			BRICKS_FEATURE_THROW(InvalidArgumentException());
 
 		for (u32 x = 0; x < image->GetWidth(); x++)
 			for (u32 y = 0; y < image->GetHeight(); y++)

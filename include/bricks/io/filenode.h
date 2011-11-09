@@ -52,7 +52,7 @@ namespace Bricks { namespace IO {
 		virtual FileType::Enum GetType() const { return type; }
 		virtual String GetPath() const { return path; }
 		virtual String GetName() const { return path.GetFileName(); }
-		virtual String GetFullPath() const { if (!path.IsPathRooted()) throw NotSupportedException(); return path; }
+		virtual String GetFullPath() const { if (!path.IsPathRooted()) BRICKS_FEATURE_THROW(NotSupportedException()); return path; }
 		virtual ReturnPointer<FileNode> GetParent() const = 0;
 		virtual u64 GetSize() const = 0;
 		virtual ReturnPointer<Stream> OpenStream(

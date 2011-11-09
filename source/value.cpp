@@ -63,7 +63,7 @@ namespace Bricks {
 			case ValueType::Float64:
 				return ValueCast<T>(*(f64*)data);
 			default:
-				throw InvalidArgumentException();
+				BRICKS_FEATURE_THROW(InvalidArgumentException());
 		}
 	}
 
@@ -95,7 +95,7 @@ namespace Bricks {
 				*(f64*)data = ValueCast<f64>(value);
 				break;
 			default:
-				throw InvalidArgumentException();
+				BRICKS_FEATURE_THROW(InvalidArgumentException());
 		}
 	}
 
