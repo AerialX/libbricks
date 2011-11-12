@@ -98,7 +98,7 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_THROW(ext) throw ext
 #define BRICKS_FEATURE_TRY try
 #define BRICKS_FEATURE_CATCH(ext) catch(ext)
-#define BRICKS_FEATURE_CATCH_EXCEPTION(ext, ex) catch(ext& ext)
+#define BRICKS_FEATURE_CATCH_EXCEPTION(ext, ex) catch(ext& ex)
 #define BRICKS_FEATURE_CATCH_ALL catch(...)
 #else
 #define BRICKS_FEATURE_THROW(ext) abort()

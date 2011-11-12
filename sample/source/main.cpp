@@ -14,7 +14,7 @@ static void testFilesystem()
 	BRICKS_FEATURE_TRY {
 		Console::Default->Out->WriteLine("Trying to open nonexistent file...");
 		FileStream stream("lolnonexistent", FileOpenMode::Open, FileMode::ReadOnly);
-	} BRICKS_FEATURE_CATCH_EXCEPTION (const Exception, ex) {
+	} BRICKS_FEATURE_CATCH_EXCEPTION (Exception, ex) {
 		Console::Default->Out->WriteLine(String::Format("Ohnoes! We got a %s! %s", ex.GetDebugString().CString(), ex.GetMessage().CString()));
 	}
 
