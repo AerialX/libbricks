@@ -20,7 +20,7 @@ namespace Bricks { namespace Collections {
 	template<typename T, typename V> class StackIterator;
 
 	template<typename T, typename V = T>
-	class Stack : public Object, public Collection< T >
+	class Stack : public Object, public Collection< T >, public IterableFast<StackIterator<T, V> >
 	{
 	private:
 		AutoPointer< ValueComparison< T > > comparison;
@@ -50,8 +50,6 @@ namespace Bricks { namespace Collections {
 		Stack(const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison) { }
 		Stack(const Stack< T, V >& stack, const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison ?: stack.comparison), stack(stack.stack) { }
 		Stack(const Collection< T >& collection, const Pointer< ValueComparison< T > >& comparison = autonew OperatorValueComparison< T >()) : comparison(comparison) { AddItems(collection); }
-		
-		virtual ~Stack() { }
 
 		void Push(const T& value) { stack.push_front(value); }
 		void Push(T& value) { stack.push_front(value); }
@@ -61,18 +59,19 @@ namespace Bricks { namespace Collections {
 		const T& Peek() const { if (stack.empty()) BRICKS_FEATURE_RELEASE_THROW(StackEmptyException()); return stack.front(); }
 
 		// Iterator
-		virtual ReturnPointer< Iterator< T > > GetIterator() const { return autonew StackIterator< T, V >(const_cast<Stack< T, V >&>(*this)); }
+		ReturnPointer< Iterator< T > > GetIterator() const { return autonew StackIterator< T, V >(const_cast<Stack< T, V >&>(*this)); }
+		StackIterator<T, V> GetIteratorFast() const { return StackIterator<T, V>(const_cast<Stack<T, V>&>(*this)); }
 
 		// Collection
-		virtual long GetCount() const { return stack.size(); };
+		long GetCount() const { return stack.size(); };
 
-		virtual bool ContainsItem(const T& value) const { return IteratorOfItem(value) != stack.end(); }
+		 bool ContainsItem(const T& value) const { return IteratorOfItem(value) != stack.end(); }
 
-		virtual void AddItem(const T& value) { Push(value); }
-		virtual void AddItem(T& value) { Push(value); }
-		virtual void AddItems(const Iterable< T >& values) { foreach (const T& item, values) AddItem(item); }
-		virtual void Clear() { stack.clear(); }
-		virtual bool RemoveItem(const T& value) {
+		void AddItem(const T& value) { Push(value); }
+		void AddItem(T& value) { Push(value); }
+		void AddItems(const Iterable< T >& values) { foreach (const T& item, values) AddItem(item); }
+		void Clear() { stack.clear(); }
+		bool RemoveItem(const T& value) {
 			iterator iter = IteratorOfItem(value);
 			if (iter == stack.end())
 				return false;
@@ -85,15 +84,14 @@ namespace Bricks { namespace Collections {
 	class StackIterator : public Iterator< T >
 	{
 	private:
-		bool first;
 		typename Stack< T, V >::iterator position;
 		typename Stack< T, V >::iterator end;
 
 		friend class Stack< T, V >;
 
 	public:
-		StackIterator(Stack< T, V >& stack) : first(false), position(stack.stack.begin()), end(stack.stack.end()) { }
-		virtual T& GetCurrent() const { if (!first || position >= end) BRICKS_FEATURE_RELEASE_THROW(InvalidIteratorException()); return *position; }
-		virtual bool MoveNext() { if (!first) return (first = true) && position < end; return ++position < end; }
+		StackIterator(Stack< T, V >& stack) : position(stack.stack.begin() - 1), end(stack.stack.end()) { }
+		T& GetCurrent() const { return *position; }
+		bool MoveNext() { return ++position < end; }
 	};
 } }

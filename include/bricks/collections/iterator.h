@@ -3,6 +3,10 @@
 #include "bricks/object.h"
 
 namespace Bricks { namespace Collections {
+	namespace Internal {
+		class IterableBase { };
+		class IterableFastBase { };
+	}
 	class InvalidIteratorException : public Exception
 	{
 	public:
@@ -15,13 +19,15 @@ namespace Bricks { namespace Collections {
 	class Iterator : public Object
 	{
 	public:
+		typedef T IteratorType;
+
 		virtual T& GetCurrent() const = 0;
 		virtual bool MoveNext() = 0;
 		virtual ReturnPointer< Collection< T > > GetAllObjects() { BRICKS_FEATURE_THROW(NotImplementedException()); };
 	};
 
 	template<typename T>
-	class Iterable
+	class Iterable : public Internal::IterableBase
 	{
 	public:
 		typedef T IteratorType;
@@ -31,39 +37,50 @@ namespace Bricks { namespace Collections {
 		void Iterate(const Delegate<bool(IteratorType&)>& delegate) const;
 		void Iterate(const Delegate<void(IteratorType&)>& delegate) const;
 	};
+
+	template<typename T>
+	class IterableFast : public Internal::IterableFastBase
+	{
+	public:
+		typedef T IteratorFastType;
+
+		virtual T GetIteratorFast() const = 0;
+	};
 } }
 
 namespace Bricks { namespace Collections { namespace Internal {
-	struct IteratorTypeBase
+	template<typename T>
+	struct IteratorType
 	{
-		mutable bool state;
-		operator bool() const { return state; }
-		IteratorTypeBase() : state(true) { }
+		template<typename U> IteratorType(const U& list, typename SFINAE::DisableIf<!SFINAE::IsCompatibleType<IterableBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list.GetIterator()) { }
+		template<typename U> IteratorType(const U* list) : state(true), iter(list->GetIterator()) { }
+		template<typename U> IteratorType(const Pointer<U>& list) : state(true), iter(list->GetIterator()) { }
+		bool state;
+		AutoPointer<Iterator<T> > iter;
+		inline bool MoveNext() const { return iter->MoveNext(); }
+		inline T& GetCurrent() const { return iter->GetCurrent(); }
 	};
 	template<typename T>
-	struct IteratorType : public IteratorTypeBase
+	struct IteratorFastType
 	{
-		AutoPointer< Iterator<T> > value;
-		IteratorType(const Pointer< Iterator<T> >& value) : value(value) { }
+		template<typename U> IteratorFastType(const U& list, typename SFINAE::DisableIf<!SFINAE::IsCompatibleType<IterableFastBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list.GetIteratorFast()) { }
+		template<typename U> IteratorFastType(const U* list) : state(true), iter(list->GetIteratorFast()) { }
+		template<typename U> IteratorFastType(const Pointer<U>& list) : state(true), iter(list->GetIteratorFast()) { }
+		bool state;
+		T iter;
+		inline bool MoveNext() const { return const_cast<T&>(iter).MoveNext(); }
+		inline typename T::IteratorType& GetCurrent() const { return iter.GetCurrent(); }
 	};
-	template<typename T>
-	static inline IteratorType<T> IteratorContainerPack(const Iterable<T>& t) { return IteratorType<T>(t.GetIterator()); }
-	template<typename T>
-	static inline IteratorType<T> IteratorContainerPack(const Iterable<T>* t) { return IteratorType<T>(t->GetIterator()); }
-	template<typename T>
-	static inline IteratorType<typename T::IteratorType> IteratorContainerPack(const Pointer<T>& t) { return IteratorContainerPack(*t); }
 
-	template<typename T>
-	static inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>& dummy, const IteratorTypeBase& t) { return *static_cast<const IteratorType<T>&>(t).value; }
-	template<typename T>
-	static inline Iterator<T>& IteratorContainerUnpack(const Iterable<T>* dummy, const IteratorTypeBase& t) { return *static_cast<const IteratorType<T>&>(t).value; }
-	template<typename T>
-	static inline Iterator<typename T::IteratorType>& IteratorContainerUnpack(const Pointer<T>& dummy, const IteratorTypeBase& t) { return IteratorContainerUnpack(*dummy, t); }
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, T>::Value && !SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const T& t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, T>::Value && !SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const T* t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, T>::Value && !SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const Pointer<T>& t);
+
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const T& t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const T* t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const Pointer<T>& t);
 } } }
-#define foreach_container Bricks::Collections::Internal::IteratorContainerPack
-#define foreach_iterator Bricks::Collections::Internal::IteratorContainerUnpack
-#define foreach_basetype const Bricks::Collections::Internal::IteratorTypeBase&
-#define foreach(val, list) for (foreach_basetype iter = foreach_container(list); foreach_iterator(list, iter).MoveNext() && iter.state;) if (!(iter.state = false)) for (val = foreach_iterator(list, iter).GetCurrent(); !iter.state; iter.state = true)
+#define foreach(val, list) for (typeof(Bricks::Collections::Internal::IteratorContainerType(list)) iter(list); iter.MoveNext() && iter.state;) if (!(iter.state = false)) for (val = iter.GetCurrent(); !iter.state; iter.state = true)
 
 namespace Bricks { namespace Collections {
 	template<typename T> inline void Iterable<T>::Iterate(const Delegate<bool(Iterable<T>::IteratorType&)>& delegate) const {
