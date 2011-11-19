@@ -94,6 +94,7 @@ namespace Bricks { namespace Imaging {
 		foreach (const RenderedGlyph& glyph, glyphs) {
 			while (line < glyph.line) {
 				lineLengths.AddItem(width);
+				line++;
 				width = 0;
 			}
 			width = glyph.x + glyph.glyph->GetAdvance();
