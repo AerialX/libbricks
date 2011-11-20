@@ -9,6 +9,7 @@ namespace Bricks { namespace IO {
 	protected:
 		AutoPointer<Filesystem> system;
 		FileHandle handle;
+		String path;
 
 	public:
 		FileStream(
@@ -17,7 +18,7 @@ namespace Bricks { namespace IO {
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite,
 			const Pointer<Filesystem>& filesystem = NULL
-		) : system(filesystem ? filesystem : Filesystem::GetDefault()), handle(system->Open(path, createmode, mode)) { }
+		) : system(filesystem ? filesystem : Filesystem::GetDefault()), handle(system->Open(path, createmode, mode)), path(path) { }
 		FileStream(FileHandle handle, const Pointer<Filesystem>& filesystem = NULL) : system(filesystem ? filesystem : Pointer<Filesystem>(Filesystem::GetDefault())), handle(system->Duplicate(handle)) { }
 		~FileStream() { system->Close(handle); }
 		size_t Read(void* buffer, size_t size) { return system->Read(handle, buffer, size); }
@@ -31,5 +32,7 @@ namespace Bricks { namespace IO {
 
 		ReturnPointer<Filesystem> GetFilesystem() const { return system; }
 		FileHandle GetHandle() const { return handle; }
+
+		const String& GetPath() const { return path; }
 	};
 } }
