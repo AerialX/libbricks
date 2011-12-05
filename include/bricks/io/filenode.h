@@ -54,6 +54,10 @@ namespace Bricks { namespace IO {
 		virtual String GetName() const { return path.GetFileName(); }
 		virtual String GetFullPath() const { if (!path.IsPathRooted()) BRICKS_FEATURE_THROW(NotSupportedException()); return path; }
 		virtual ReturnPointer<FileNode> GetParent() const = 0;
+		virtual ReturnPointer<FileNode> GetLeaf(const String& path) const = 0;
+		virtual void CreateFile(FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite) = 0;
+		virtual void CreateDirectory(FilePermissions::Enum permissions = FilePermissions::OwnerReadWriteExecute) = 0;
+		virtual bool Exists() const = 0;
 		virtual u64 GetSize() const = 0;
 		virtual ReturnPointer<Stream> OpenStream(
 			FileOpenMode::Enum createmode = FileOpenMode::Open,

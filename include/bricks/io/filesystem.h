@@ -57,6 +57,9 @@ namespace Bricks { namespace IO {
 		virtual void DeleteFile(const String& path) = 0;
 		virtual void DeleteDirectory(const String& path, bool recursive) = 0;
 
+		virtual void CreateFile(const String& path, FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite) = 0;
+		virtual void CreateDirectory(const String& path, FilePermissions::Enum permissions = FilePermissions::OwnerReadWriteExecute) = 0;
+
 		virtual String GetCurrentDirectory() const = 0;
 		virtual void ChangeCurrentDirectory(const String& path) = 0;
 	};
@@ -129,6 +132,9 @@ namespace Bricks { namespace IO {
 		void DeleteFile(const String& path);
 		void DeleteDirectory(const String& path, bool recursive);
 
+		void CreateFile(const String& path, FilePermissions::Enum permissions);
+		void CreateDirectory(const String& path, FilePermissions::Enum permissions);
+
 		String GetCurrentDirectory() const;
 		void ChangeCurrentDirectory(const String& path);
 	};
@@ -170,7 +176,7 @@ namespace Bricks { namespace IO {
 	};
 
 	class FilesystemNodeIterator;
-	class FilesystemNode : public FileNode
+	class FilesystemNode : public FileNode, public Collections::IterableFast<FilesystemNodeIterator>
 	{
 	private:
 		AutoPointer<Filesystem> filesystem;
@@ -207,10 +213,15 @@ namespace Bricks { namespace IO {
 
 		String GetFullPath() const { if (!path.IsPathRooted()) return path.RootPath(filesystem->GetCurrentDirectory()); return path; }
 		ReturnPointer<FileNode> GetParent() const { return autonew FilesystemNode(FilePath(GetFullPath()).GetDirectory(), filesystem); }
+		ReturnPointer<FileNode> GetLeaf(const String& path) const { return autonew FilesystemNode(FilePath(GetPath()).Combine(path), filesystem); }
+		void CreateFile(FilePermissions::Enum permissions) { filesystem->CreateFile(GetPath(), permissions); }
+		void CreateDirectory(FilePermissions::Enum permissions) { filesystem->CreateDirectory(GetPath(), permissions); }
+		bool Exists() const { return filesystem->Exists(GetPath()); }
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; BRICKS_FEATURE_THROW(NotSupportedException()); }
 		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode = FileOpenMode::Open, FileMode::Enum mode = FileMode::ReadWrite, FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite);
 
 		ReturnPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
+		FilesystemNodeIterator GetIteratorFast() const;
 	};
 
 	class FilesystemNodeIterator : public Bricks::Collections::Iterator<FileNode>
@@ -232,4 +243,5 @@ namespace Bricks { namespace IO {
 	};
 	
 	inline ReturnPointer< Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
+	inline FilesystemNodeIterator FilesystemNode::GetIteratorFast() const { return FilesystemNodeIterator(this); }
 } }

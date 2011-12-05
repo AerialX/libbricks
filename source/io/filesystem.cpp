@@ -89,7 +89,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return ret;
 	}
-	
+
 	size_t C89Filesystem::Write(
 			FileHandle fd,
 			const void* buffer,
@@ -100,13 +100,13 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return ret;
 	}
-	
+
 	void C89Filesystem::Flush(FileHandle fd)
 	{
 		BRICKS_FEATURE_THROW(NotImplementedException());
 		// TODO: fsync FILE*?
 	}
-	
+
 	void C89Filesystem::Seek(FileHandle fd, s64 offset, SeekType::Enum whence)
 	{
 		if (fseek((FILE*)fd, offset, (int)whence))
@@ -120,18 +120,18 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return (u64)ret;
 	}
-	
+
 	void C89Filesystem::Close(FileHandle fd)
 	{
 		if (fclose((FILE*)fd))
 			ThrowErrno();
 	}
-	
+
 	void C89Filesystem::Truncate(FileHandle fd, u64 length)
 	{
 		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
-	
+
 	FileHandle PosixFilesystem::Open(
 			const String& path,
 			FileOpenMode::Enum createmode,
@@ -155,7 +155,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return ret;
 	}
-	
+
 	size_t PosixFilesystem::Write(
 			FileHandle fd,
 			const void* buffer,
@@ -166,7 +166,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return ret;
 	}
-	
+
 	void PosixFilesystem::Seek(FileHandle fd, s64 offset, SeekType::Enum whence)
 	{
 		if (lseek64((int)fd, offset, (int)whence) == (off64_t)-1)
@@ -180,13 +180,13 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return (u64)ret;
 	}
-	
+
 	void PosixFilesystem::Flush(FileHandle fd)
 	{
 		if (fsync((int)fd))
 			ThrowErrno();
 	}
-	
+
 	void PosixFilesystem::Close(FileHandle fd)
 	{
 		if (close((int)fd))
@@ -200,13 +200,13 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return (FileHandle)newfd;
 	}
-	
+
 	void PosixFilesystem::Truncate(FileHandle fd, u64 length)
 	{
 		if (ftruncate64((int)fd, length))
 			ThrowErrno();
 	}
-	
+
 	FileHandle PosixFilesystem::OpenDirectory(const String& path)
 	{
 		DIR* dir = opendir(path.CString());
@@ -214,7 +214,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return (FileHandle)dir;
 	}
-	
+
 	ReturnPointer<FileNode> PosixFilesystem::ReadDirectory(FileHandle fd)
 	{
 		errno = 0;
@@ -227,7 +227,7 @@ namespace Bricks { namespace IO {
 			return ReadDirectory(fd); // Not interested in this crap
 		return autonew FilesystemNode(*dir);
 	}
-	
+
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
 	{
 #ifdef BRICKS_FEATURE_ANDROID
@@ -270,7 +270,7 @@ namespace Bricks { namespace IO {
 			ThrowErrno();
 		return FileInfo(st, String::Empty, this);
 	}
-	
+
 	bool PosixFilesystem::IsFile(const String& path) const
 	{
 		struct stat st;
@@ -323,7 +323,22 @@ namespace Bricks { namespace IO {
 		if (rmdir(path.CString()))
 			ThrowErrno();
 	}
-	
+
+	void PosixFilesystem::CreateFile(const String& path, FilePermissions::Enum permissions)
+	{
+		int fd = open(path.CString(), O_CREAT, permissions);
+		if (fd < 0)
+			ThrowErrno();
+		else
+			close(fd);
+	}
+
+	void PosixFilesystem::CreateDirectory(const String& path, FilePermissions::Enum permissions)
+	{
+		if (mkdir(path.CString(), permissions))
+			ThrowErrno();
+	}
+
 	ReturnPointer<Stream> FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)
 	{
 		return autonew FileStream(GetPath(), createmode, mode, permissions, filesystem);
