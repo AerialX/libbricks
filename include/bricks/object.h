@@ -122,6 +122,8 @@ namespace Bricks {
 		Pointer< T >& operator=(const Pointer< T >& t) { Swap(t); return *this; }
 		Pointer< T >& operator=(T* t) { value = t; return *this; }
 		Pointer< T >& operator=(T& t) { value = &t; return *this; }
+		template<typename U> Pointer< T >& operator=(const Pointer<U>& t) { Swap(t); return *this; }
+
 		T* operator->() const { return &**this; }
 		T& operator*() const;
 		T* GetValue() const { return value; }
