@@ -134,8 +134,6 @@ namespace Bricks {
 		bool operator!=(const Pointer< T >& t) const { return value != t.value; }
 		bool operator>(const Pointer< T >& t) const { return value > t.value; }
 		bool operator<(const Pointer< T >& t) const { return value < t.value; }
-		template<typename U> bool operator==(const Pointer< U >& t) const { return value == t.GetValue(); }
-		template<typename U> bool operator!=(const Pointer< U >& t) const { return value != t.GetValue(); }
 
 #ifdef BRICKS_FEATURE_RELEASE
 		template<typename U> Pointer<U> AsType(typename SFINAE::EnableIf<SFINAE::IsCompatibleType<U, T>::Value || SFINAE::IsCompatibleType<T, U>::Value>::Type* dummy = NULL) const { return static_cast<U*>(value); }
@@ -149,6 +147,8 @@ namespace Bricks {
 	
 	template<typename T, typename T2> static bool operator==(const Pointer< T >& t1, const Pointer< T2 >& t2) { return t1.GetValue() == t2.GetValue(); }
 	template<typename T, typename T2> static bool operator!=(const Pointer< T >& t1, const Pointer< T2 >& t2) { return t1.GetValue() != t2.GetValue(); }
+	template<typename T, typename T2> static bool operator>(const Pointer< T >& t1, const Pointer< T2 >& t2) { return t1.GetValue() > t2.GetValue(); }
+	template<typename T, typename T2> static bool operator<(const Pointer< T >& t1, const Pointer< T2 >& t2) { return t1.GetValue() < t2.GetValue(); }
 
 	template<typename T> class AutoPointer : public Pointer< T >
 	{
