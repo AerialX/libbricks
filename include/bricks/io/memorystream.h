@@ -20,6 +20,8 @@ namespace Bricks { namespace IO {
 		MemoryStream() : data(NULL), length(0), position(0), allocated(0) { }
 		MemoryStream(unsigned long size) : data(NULL), length(0), position(0), allocated(0) { Allocate(size); }
 		MemoryStream(const MemoryStream& stream) : data(NULL), length(stream.length), allocated(0) { Allocate(length); memcpy(data, stream.data, length); }
+		MemoryStream(const Data& data) : data(NULL), length(data.GetLength()), allocated(0) { Allocate(length); memcpy(this->data, data.GetData(), length); }
+		MemoryStream(const void* data, unsigned long length) : data(NULL), length(length), allocated(0) { Allocate(length); memcpy(this->data, data, length); }
 		~MemoryStream() { free(data); }
 
 		MemoryStream& operator =(const MemoryStream& stream) { length = stream.length; Allocate(length); memcpy(data, stream.data, length); return *this; }
