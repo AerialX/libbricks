@@ -21,8 +21,8 @@ namespace Bricks { namespace Imaging {
 		virtual Colour GetPixel(u32 x, u32 y) const = 0;
 		virtual void SetPixel(u32 x, u32 y, const Colour& colour) = 0;
 
-		void CopyTo(const Pointer<Image>& image, u32 x = 0, u32 y = 0) const;
-		void CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const;
+		virtual void CopyTo(const Pointer<Image>& image, u32 x = 0, u32 y = 0) const;
+		virtual void CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const;
 
 		void ColouriseTo(const Pointer<Image>& image, const Colour& colour) const;
 		void Colourise(const Colour& colour) { ColouriseTo(this, colour); }

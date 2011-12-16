@@ -138,4 +138,31 @@ namespace Bricks { namespace Imaging {
 				break;
 		}
 	}
+
+	void Bitmap::CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const
+	{
+		Pointer<Bitmap> bitmap;
+		bool compatible = image.AsType<Object>()->IsTypeOf<Bitmap>();
+		const PixelDescription& description = GetPixelDescription();
+		if (compatible) {
+			bitmap = image;
+			compatible = bitmap->GetPixelDescription() == description;
+		}
+
+		if (!compatible) {
+			Image::CopyTo(image, x, y, width, height);
+			return;
+		}
+
+		const u8* idata = (const u8*)GetImageData();
+		u8* odata = (u8*)bitmap->GetImageData();
+		u32 pixel = description.GetPixelSize();
+		u32 stride = width * pixel;
+		u32 istride = GetWidth() * pixel;
+		u32 ostride = image->GetWidth() * pixel;
+		u32 oindex = ostride * y + x * pixel;
+		u32 index = 0;
+		for (u32 i = y; i < height; i++, index += istride, oindex += ostride)
+			memcpy(odata + oindex, idata + index, stride);
+	}
 } }

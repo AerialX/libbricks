@@ -40,7 +40,7 @@ namespace Bricks { namespace Imaging {
 		png_set_keep_unknown_chunks(png_ptr, 1, NULL, 0);
 
 		if (transform)
-			png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING | PNG_TRANSFORM_SHIFT | PNG_TRANSFORM_STRIP_16, NULL);
+			png_read_png(png_ptr, info_ptr, PNG_TRANSFORM_PACKING | PNG_TRANSFORM_SHIFT | PNG_TRANSFORM_STRIP_16 | PNG_TRANSFORM_EXPAND, NULL);
 		else
 			png_read_info(png_ptr, info_ptr);
 
