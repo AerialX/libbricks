@@ -72,6 +72,9 @@ namespace Bricks { namespace Compression {
 
 		String GetCurrentDirectory() const;
 		void ChangeCurrentDirectory(const String& path);
+
+		void CreateFile(const String& path, IO::FilePermissions::Enum permissions);
+		void CreateDirectory(const String& path, IO::FilePermissions::Enum permissions);
 	};
 #endif
 

@@ -323,4 +323,14 @@ namespace Bricks { namespace Compression {
 	{
 		currentDirectory = path;
 	}
+
+	void ZipFilesystem::CreateFile(const String& path, FilePermissions::Enum permissions)
+	{
+		BRICKS_FEATURE_THROW(NotImplementedException());
+	}
+
+	void ZipFilesystem::CreateDirectory(const String& path, FilePermissions::Enum permissions)
+	{
+		BRICKS_FEATURE_THROW(NotImplementedException());
+	}
 } }
