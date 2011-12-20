@@ -11,6 +11,7 @@ namespace Bricks { namespace Audio {
 	
 	protected:
 		AudioSample** buffer;
+		u32 allocated;
 		u32 channels;
 		u32 size;
 
@@ -18,6 +19,7 @@ namespace Bricks { namespace Audio {
 			buffer = new AudioSample*[channels];
 			for (u32 i = 0; i < channels; i++)
 				buffer[i] = new AudioSample[size];
+			allocated = size;
 		}
 
 		void Destruct() {
@@ -55,6 +57,19 @@ namespace Bricks { namespace Audio {
 		u32 GetChannels() const { return channels; }
 		u32 GetSize() const { return size; }
 		AudioSample** GetBuffer() const { return buffer; }
+		
+		void SetSize(u32 value) {
+			size = value;
+			if (allocated < size) {
+				for (u32 i = 0; i < channels; i++) {
+					AudioSample* newbuffer = new AudioSample[size];
+					memcpy(newbuffer, buffer[i], allocated * sizeof(AudioSample));
+					delete[] buffer[i];
+					buffer[i] = newbuffer;
+				}
+				allocated = size;
+			}
+		}
 
 		int CopyTo(AudioBuffer<AudioSample>& dest, u32 sourcechannel = 0, u32 sourceindex = 0, u32 destchannel = 0, u32 destindex = 0, s32 count = -1) const {
 			if (count < 0)
