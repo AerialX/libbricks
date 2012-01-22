@@ -3,7 +3,7 @@
 #include "bricks/audio/audiobuffer.h"
 
 namespace Bricks { namespace Audio {
-	template<typename T>
+	template<typename T = s16>
 	class AudioCodec
 	{
 	protected:
@@ -28,7 +28,7 @@ namespace Bricks { namespace Audio {
 		virtual void Write(const AudioBuffer<T>& buffer, u32 count, u32 offset = 0) { position += count; }
 	};
 
-	template<typename T>
+	template<typename T = s16>
 	class NullCodec : public Object, public AudioCodec<T>
 	{
 	public:
@@ -43,7 +43,7 @@ namespace Bricks { namespace Audio {
 		}
 	};
 
-	template<typename T>
+	template<typename T = s16>
 	class Subcodec : public Object, public AudioCodec<T>
 	{
 	protected:
@@ -62,7 +62,7 @@ namespace Bricks { namespace Audio {
 		u32 Read(AudioBuffer<T>& buffer, u32 count, u32 offset = 0) { return codec->Read(buffer, count, offset); }
 	};
 
-	template<typename T>
+	template<typename T = s16>
 	class AmplifyCodec : public Subcodec<T>
 	{
 	protected:
@@ -95,7 +95,7 @@ namespace Bricks { namespace Audio {
 		}
 	};
 
-	template<typename Tdest, typename Tsrc>
+	template<typename Tsrc, typename Tdest = s16>
 	class ConversionCodec : public Object, public AudioCodec<Tdest>
 	{
 	protected:

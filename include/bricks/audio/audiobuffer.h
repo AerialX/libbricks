@@ -3,7 +3,7 @@
 #include "bricks/object.h"
 
 namespace Bricks { namespace Audio {
-	template<typename T>
+	template<typename T = s16>
 	class AudioBuffer : public Object
 	{
 	public:
