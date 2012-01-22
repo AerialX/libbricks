@@ -65,7 +65,7 @@ namespace Bricks { namespace Collections {
 		ArrayIterator<T, V> GetIteratorFast() const { return ArrayIterator<T, V>(const_cast<Array<T, V>&>(*this)); }
 
 		// Collection
-		long GetCount() const { return vector.size(); };
+		long GetCount() const { return vector.size(); }
 
 		bool ContainsItem(const T& value) const { return IteratorOfItem(value) != vector.end(); }
 
