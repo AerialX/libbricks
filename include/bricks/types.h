@@ -54,9 +54,6 @@ typedef volatile double		vf64;
 #ifdef __clang__
 #define BRICKS_FEATURE_CLANG
 #endif
-#ifdef __OBJC__
-#define BRICKS_FEATURE_OBJC
-#endif
 #ifdef __APPLE__
 #define BRICKS_FEATURE_APPLE
 #endif
@@ -68,6 +65,12 @@ typedef volatile double		vf64;
 #endif
 #ifdef __BSD__
 #define BRICKS_FEATURE_BSD
+#endif
+#ifdef __OBJC__
+#define BRICKS_FEATURE_OBJC
+#if defined(BRICKS_FEATURE_APPLE) || defined(BRICKS_FEATURE_CLANG)
+#define BRICKS_FEATURE_OBJC_BLOCKS
+#endif
 #endif
 
 #ifdef ANDROID
