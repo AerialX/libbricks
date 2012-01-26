@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/autopointer.h"
 #include "bricks/collections/dictionary.h"
 
 namespace Bricks { namespace Threading {
@@ -18,7 +18,7 @@ namespace Bricks { namespace Threading {
 		~ThreadLocalStorage() { Internal::GetStorageDictionary().RemoveKey(this); }
 
 		bool HasValue() const { return Internal::GetStorageDictionary().ContainsKey(this); }
-		Pointer< T > GetValue() const { return dynamic_cast<T*>(Internal::GetStorageDictionary()[this].GetValue()); }
-		void SetValue(const Pointer< T >& value) { Internal::GetStorageDictionary().Add(this, value); }
+		T* GetValue() const { return dynamic_cast<T*>(Internal::GetStorageDictionary()[this].GetValue()); }
+		void SetValue(T* value) { Internal::GetStorageDictionary().Add(this, value); }
 	};
 } }

@@ -8,15 +8,15 @@ namespace Bricks { namespace Imaging {
 	{
 	protected:
 		AutoPointer<Image> image;
-		Pointer<BitmapImage> bitmap;
+		BitmapImage* bitmap;
 		u32 offsetX;
 		u32 offsetY;
 		u32 width;
 		u32 height;
 
 	public:
-		Subimage(const Pointer<BitmapImage>& image, u32 offsetX = 0, u32 offsetY = 0, u32 width = 0, u32 height = 0) : image(image), bitmap(image), offsetX(offsetX), offsetY(offsetY), width(width), height(height) { if (bitmap && bitmap->GetInterlaceType() != InterlaceType::None) BRICKS_FEATURE_THROW(NotSupportedException()); }
-		Subimage(const Pointer<Image>& image, u32 offsetX = 0, u32 offsetY = 0, u32 width = 0, u32 height = 0) : image(image), bitmap(image.AsType<BitmapImage>()), offsetX(offsetX), offsetY(offsetY), width(width), height(height) { if (bitmap && bitmap->GetInterlaceType() != InterlaceType::None) BRICKS_FEATURE_THROW(NotSupportedException()); }
+		Subimage(BitmapImage* image, u32 offsetX = 0, u32 offsetY = 0, u32 width = 0, u32 height = 0) : image(image), bitmap(image), offsetX(offsetX), offsetY(offsetY), width(width), height(height) { if (bitmap && bitmap->GetInterlaceType() != InterlaceType::None) BRICKS_FEATURE_THROW(NotSupportedException()); }
+		Subimage(Image* image, u32 offsetX = 0, u32 offsetY = 0, u32 width = 0, u32 height = 0) : image(image), bitmap(CastToDynamic<BitmapImage>(image)), offsetX(offsetX), offsetY(offsetY), width(width), height(height) { if (bitmap && bitmap->GetInterlaceType() != InterlaceType::None) BRICKS_FEATURE_THROW(NotSupportedException()); }
 		void* GetImageData() const { if (!bitmap) BRICKS_FEATURE_THROW(NotSupportedException()); return bitmap->GetImageData(); }
 		u32 GetImageDataSize() const { if (!bitmap) BRICKS_FEATURE_THROW(NotSupportedException()); return Bitmap::CalculateImageDataSize(image->GetWidth(), height, bitmap->GetPixelDescription()); }
 		u32 GetImageDataStride() const { if (!bitmap) BRICKS_FEATURE_THROW(NotSupportedException()); return bitmap->GetImageDataStride(); }

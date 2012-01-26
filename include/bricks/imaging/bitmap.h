@@ -1,5 +1,7 @@
 #pragma once
 
+#include "bricks/core/copypointer.h"
+#include "bricks/core/returnpointer.h"
 #include "bricks/imaging/image.h"
 
 namespace Bricks { namespace Imaging {
@@ -32,7 +34,7 @@ namespace Bricks { namespace Imaging {
 			AllocateMemory();
 		}
 		~Bitmap() { if (pixelData) delete[] pixelData; }
-		ReturnPointer<Palette> GetPalette() const { return palette; }
+		Palette* GetPalette() const { return palette; }
 		void* GetImageData() const { return pixelData; }
 		u32 GetImageDataSize() const { return CalculateImageDataSize(width, height, pixelDescription); }
 		u32 GetImageDataStride() const { return CalculateImageDataStride(width, pixelDescription); }
@@ -46,7 +48,7 @@ namespace Bricks { namespace Imaging {
 		Colour GetPixel(u32 x, u32 y) const;
 		void SetPixel(u32 x, u32 y, const Colour& colour);
 
-		void CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const;
+		void CopyTo(Image* image, u32 x, u32 y, u32 width, u32 height) const;
 
 		static size_t CalculateImageDataSize(u32 width, u32 height, const PixelDescription& description) { return BRICKS_FEATURE_ROUND_UP((size_t)description.GetPixelDepth() * width * height, 8) / 8; }
 		static size_t CalculateImageDataStride(u32 width, const PixelDescription& description) { return BRICKS_FEATURE_ROUND_UP((size_t)description.GetPixelDepth() * width, 8) / 8; }

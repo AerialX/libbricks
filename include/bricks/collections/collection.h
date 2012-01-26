@@ -12,8 +12,7 @@ namespace Bricks { namespace Collections {
 		virtual bool ContainsItem(const T& value) const = 0;
 
 		virtual void AddItem(const T& value) = 0;
-		virtual void AddItem(T& value) { AddItem(const_cast<const T&>(value)); }
-		virtual void AddItems(const Iterable< T >& values) { foreach (const T& value, values) AddItem(value); }
+		virtual void AddItems(Iterable<T>* values) { foreach (const T& value, values) AddItem(value); }
 		virtual bool RemoveItem(const T& value) = 0;
 		virtual void RemoveItems(const T& value) { while (RemoveItem(value)) ; }
 		virtual void Clear() = 0;

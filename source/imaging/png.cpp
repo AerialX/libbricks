@@ -1,6 +1,9 @@
-#include <png.h>
+#include "bricks/core/exception.h"
+#include "bricks/io/filestream.h"
+#include "bricks/imaging/png.h"
+#include "bricks/imaging/bitmap.h"
 
-#include "bricksall.hpp"
+#include <png.h>
 
 using namespace Bricks::IO;
 
@@ -20,7 +23,7 @@ namespace Bricks { namespace Imaging {
 
 	// TODO: This should let exceptions propogate past the function, never return NULL
 	//       Also catch exceptions and destroy libpng objects before throwing it along to the caller
-	ReturnPointer<Bitmap> PNG::LoadImage(const Pointer<Stream>& stream, bool transform)
+	ReturnPointer<Bitmap> PNG::LoadImage(Stream* stream, bool transform)
 	{
 		png_structp png_ptr;
 		png_infop info_ptr;
@@ -36,7 +39,7 @@ namespace Bricks { namespace Imaging {
 			return NULL;
 		}
 
-		png_set_read_fn(png_ptr, static_cast<void*>(stream.GetValue()), libpng_read);
+		png_set_read_fn(png_ptr, static_cast<void*>(stream), libpng_read);
 		png_set_keep_unknown_chunks(png_ptr, 1, NULL, 0);
 
 		if (transform)
@@ -104,5 +107,10 @@ namespace Bricks { namespace Imaging {
 		png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
 
 		return image;
+	}
+
+	ReturnPointer<Bitmap> PNG::LoadImage(const String& path, bool transform, Filesystem* filesystem)
+	{
+		return LoadImage(autonew FileStream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite, filesystem), transform);
 	}
 } }

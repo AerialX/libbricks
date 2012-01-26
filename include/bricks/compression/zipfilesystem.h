@@ -1,11 +1,14 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
+#include "bricks/core/exception.h"
+#include "bricks/core/copypointer.h"
 #include "bricks/io/filesystem.h"
-#include "bricks/io/stream.h"
 
 struct zip;
 struct zip_file;
+
+namespace Bricks { namespace IO { class Stream; } }
 
 namespace Bricks { namespace Compression {
 
@@ -35,7 +38,7 @@ namespace Bricks { namespace Compression {
 		String TransformPathReverse(const String& path) const;
 
 	public:
-		ZipFilesystem(const Pointer<IO::Stream>& stream);
+		ZipFilesystem(IO::Stream* stream);
 		ZipFilesystem(const String& filepath);
 		~ZipFilesystem();
 

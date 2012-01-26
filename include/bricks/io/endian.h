@@ -1,6 +1,7 @@
 #pragma once
 
-#include "bricks/types.h"
+#include "bricks/core/types.h"
+#include "bricks/core/pointer.h"
 
 #ifdef __GLIBC__
 #include <endian.h>
@@ -62,13 +63,13 @@ namespace Bricks { namespace IO {
 
 #define BRICKS_ENDIAN_CONVERT(bits) \
 	inline u##bits EndianConvertBE##bits(const void* data) { \
-		const u##bits* const src = reinterpret_cast<const u##bits* const>(data); \
+		const u##bits* const src = CastToRaw<const u##bits>(data); \
 		if (IsBigEndian()) \
 			return *src; \
 		return BRICKS_ENDIAN_SWAP##bits(*src); \
 	} \
 	inline u##bits EndianConvertLE##bits(const void* data) { \
-		const u##bits* const src = reinterpret_cast<const u##bits* const>(data); \
+		const u##bits* const src = CastToRaw<const u##bits>(data); \
 		if (IsLittleEndian()) \
 			return *src; \
 		return BRICKS_ENDIAN_SWAP##bits(*src); \
@@ -82,10 +83,10 @@ namespace Bricks { namespace IO {
 		BRICKS_FEATURE_THROW(InvalidArgumentException()); \
 	} \
 	inline void EndianConvertBE##bits(void* dest, u##bits value) { \
-		*reinterpret_cast<u##bits*>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
+		*CastToRaw<u##bits>(dest) = IsBigEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
 	} \
 	inline void EndianConvertLE##bits(void* dest, u##bits value) { \
-		*reinterpret_cast<u##bits*>(dest) = IsLittleEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
+		*CastToRaw<u##bits>(dest) = IsLittleEndian() ? value : BRICKS_ENDIAN_SWAP##bits(value); \
 	} \
 	inline void EndianConvert##bits(Endian::Enum endianness, void* data, u##bits value) { \
 		if (endianness == Endian::BigEndian || (endianness == Endian::Native && IsBigEndian())) \

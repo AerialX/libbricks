@@ -1,12 +1,13 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/string.h"
 
 namespace Bricks { namespace IO {
 	class FilePath : public String
 	{
 	public:
-		static const String DirectorySeparators;
+		static const String& GetDirectorySeparators();
+
 #ifdef BRICKS_FEATURE_WINDOWS
 		static const char DirectorySeparator = '\\';
 #else
@@ -18,7 +19,7 @@ namespace Bricks { namespace IO {
 		void RemoveLeafSeparator()
 		{
 			size_t size = GetLength();
-			if (LastIndexOf(DirectorySeparators) == size - 1)
+			if (size && LastIndexOf(GetDirectorySeparators()) == size - 1)
 				(*this)[size - 1] = '\0';
 		}
 
@@ -29,8 +30,8 @@ namespace Bricks { namespace IO {
 		FilePath(const String& string) : String(string) { RemoveLeafSeparator(); }
 
 		const String& GetFullPath() const { return *this; }
-		String GetDirectory() const { return Substring(0, LastIndexOf(DirectorySeparators)); }
-		String GetFileName() const { return Substring(NposOrAdd(LastIndexOf(DirectorySeparators), 1)); }
+		String GetDirectory() const { return Substring(0, LastIndexOf(GetDirectorySeparators())); }
+		String GetFileName() const { return Substring(NposOrAdd(LastIndexOf(GetDirectorySeparators()), 1)); }
 		String RootPath(const String& root) const { if (IsPathRooted()) return *this; return FilePath(root).Combine(*this); }
 //		String GetRoot() const;
 
@@ -39,9 +40,9 @@ namespace Bricks { namespace IO {
 		String Combine(const String& leaf) const { return *this + DirectorySeparator + leaf; }
 
 #ifdef BRICKS_FEATURE_WINDOWS
-		bool IsPathRooted() const { return FirstIndexOf(DirectorySeparators) == 2; } // TODO: Fixit.
+		bool IsPathRooted() const { return FirstIndexOf(GetDirectorySeparators()) == 2; } // TODO: Fixit.
 #else
-		bool IsPathRooted() const { return FirstIndexOf(DirectorySeparators) == 0; }
+		bool IsPathRooted() const { return FirstIndexOf(GetDirectorySeparators()) == 0; }
 #endif
 		bool HasExtension() const { String name = GetFileName(); size_t index = FirstIndexOf(ExtensionSeparator); return index != npos && index < name.GetLength() - 1; }
 

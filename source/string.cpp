@@ -1,4 +1,5 @@
-#include "bricksall.hpp"
+#include "bricks/core/string.h"
+#include "bricks/core/exception.h"
 
 #include <stdarg.h>
 #include <stdio.h>

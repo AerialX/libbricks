@@ -1,4 +1,4 @@
-#include "bricksall.hpp"
+#include "bricks/core/exception.h"
 
 #include <errno.h>
 

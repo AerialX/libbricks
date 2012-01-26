@@ -1,8 +1,14 @@
 #include "brickstest.hpp"
 
+#include <bricks/io/filestream.h>
+#include <bricks/io/navigator.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+
 TEST(BricksIoNavigatorTest, EmptyFile) {
 	FileStream stream(TestPath.Combine("data/empty.bin"), FileOpenMode::Open, FileMode::ReadOnly);
-	StreamReader reader(stream);
+	StreamReader reader(&stream);
 	EXPECT_THROW(reader.ReadInt32(), EndOfStreamException) << "StreamReader did not throw on end of stream";
 }
 
@@ -12,7 +18,7 @@ TEST(BricksIoNavigatorTest, WriteReadTest) {
 	const u32 testValue1 = 0x1337BAAD;
 	const u16 testValue2 = 0xF33D;
 	{ FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
-	StreamWriter writer(stream, Endian::BigEndian);
+	StreamWriter writer(&stream, Endian::BigEndian);
 	writer.WriteInt32(testValue1);
 	writer.WriteString(testString);
 	writer.WriteByte('\0');
@@ -20,7 +26,7 @@ TEST(BricksIoNavigatorTest, WriteReadTest) {
 	EXPECT_EQ(sizeof(testValue1) + sizeof(testValue2) + testString.GetLength() + 1, stream.GetLength()) << "Written file size does not match"; }
 
 	{ FileStream rstream(path, FileOpenMode::Open, FileMode::ReadOnly);
-	StreamReader reader(rstream, Endian::LittleEndian);
+	StreamReader reader(&rstream, Endian::LittleEndian);
 	u32 num = reader.ReadInt32(Endian::BigEndian);
 	EXPECT_EQ(testValue1, num);
 	String str = reader.ReadString();

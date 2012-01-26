@@ -1,5 +1,8 @@
 #pragma once
 
+#include "bricks/core/object.h"
+#include "bricks/core/string.h"
+
 namespace Bricks {
 	void ThrowErrno();
 

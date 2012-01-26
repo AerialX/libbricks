@@ -1,8 +1,14 @@
-#include "bricksall.hpp"
+#include "bricks/audio/ffmpegcodec.h"
+#include "bricks/core/exception.h"
 
 #if LIBAVFORMAT_VERSION_MAJOR <= 53 && LIBAVFORMAT_VERSION_MINOR < 18
 #define BRICKS_FEATURE_FFMPEG_OLD
 #endif
+
+extern "C" {
+	#include <libavcodec/avcodec.h>
+	#include <libavformat/avformat.h>
+}
 
 using namespace Bricks;
 using namespace Bricks::IO;
@@ -16,19 +22,19 @@ static void FFmpegInit()
 
 static int FFmpegRead(void* userData, uint8_t* buffer, int bufferSize)
 {
-	Pointer<Stream> stream(reinterpret_cast<Stream*>(userData));
+	Stream* stream = CastToRaw<Stream>(userData);
 	return stream->Read(buffer, bufferSize);
 }
 
 static int FFmpegWrite(void* userData, uint8_t* buffer, int bufferSize)
 {
-	Pointer<Stream> stream(reinterpret_cast<Stream*>(userData));
+	Stream* stream = CastToRaw<Stream>(userData);
 	return stream->Write(buffer, bufferSize);
 }
 
 static int64_t FFmpegSeek(void* userData, int64_t offset, int whence)
 {
-	Pointer<Stream> stream(reinterpret_cast<Stream*>(userData));
+	Stream* stream = CastToRaw<Stream>(userData);
 	s64 position;
 	switch (whence) {
 		case SEEK_SET:
@@ -49,12 +55,12 @@ static int64_t FFmpegSeek(void* userData, int64_t offset, int whence)
 	return stream->GetPosition();
 }
 
-FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioStream(ioStream)
+FFmpegDecoder::FFmpegDecoder(Stream* ioStream) : codec(NULL), ioStream(ioStream)
 {
 	format = avformat_alloc_context();
 	format->flags |= AVFMT_FLAG_CUSTOM_IO;
 	ffmpegBuffer = av_malloc(ffmpegBufferSize);
-	ffmpegStream = avio_alloc_context((unsigned char*)ffmpegBuffer, ffmpegBufferSize, 0, reinterpret_cast<void*>(ioStream.GetValue()), &FFmpegRead, &FFmpegWrite, &FFmpegSeek);
+	AVIOContext* ffmpegStream = avio_alloc_context((unsigned char*)ffmpegBuffer, ffmpegBufferSize, 0, CastToRaw(ioStream), &FFmpegRead, &FFmpegWrite, &FFmpegSeek);
 	ffmpegStream->seekable = ioStream->CanSeek() ? AVIO_SEEKABLE_NORMAL : 0;
 	format->pb = ffmpegStream;
 	if (avformat_open_input(&format, "", NULL, NULL) < 0)
@@ -65,6 +71,7 @@ FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioS
 	if (avformat_find_stream_info(format, NULL) < 0)
 #endif
 		BRICKS_FEATURE_THROW(FormatException());
+
 	for (streamIndex = 0; streamIndex < format->nb_streams; streamIndex++) {
 		stream = format->streams[streamIndex];
 		if (!stream)
@@ -94,10 +101,13 @@ FFmpegDecoder::FFmpegDecoder(const Pointer<Stream>& ioStream) : codec(NULL), ioS
 
 	cache = av_malloc(bufferSize);
 	cacheLength = 0;
+	
+	packet = CastToRaw<AVPacket>(av_malloc(sizeof(AVPacket)));
 }
 
 FFmpegDecoder::~FFmpegDecoder()
 {
+	av_free(packet);
 	av_free(cache);
 	av_free(buffer);
 	avcodec_close(stream->codec);
@@ -125,18 +135,18 @@ u32 FFmpegDecoder::Read(AudioBuffer<s16>& buffer, u32 count, u32 boffset)
 	int offset = ReadCache(buffer, count, boffset);
 	count -= offset;
 	while (count > 0) {
-		if (av_read_frame(format, &packet) < 0)
+		if (av_read_frame(format, packet) < 0)
 			break;
 
 		cacheLength = 0;
 
-		while (packet.size > 0) {
+		while (packet->size > 0) {
 			int datasize = bufferSize;
-			int used = avcodec_decode_audio3(stream->codec, (s16*)this->buffer, &datasize, &packet);
+			int used = avcodec_decode_audio3(stream->codec, (s16*)this->buffer, &datasize, packet);
 			if (used < 0)
 				break;
-			packet.size -= used;
-			packet.data += used;
+			packet->size -= used;
+			packet->data += used;
 
 			if (datasize <= 0)
 				break;

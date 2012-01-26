@@ -1,14 +1,12 @@
-#include "bricksall.hpp"
-
-using namespace Bricks::IO;
+#include "bricks/imaging/image.h"
 
 namespace Bricks { namespace Imaging {
-	void Image::CopyTo(const Pointer<Image>& image, u32 x, u32 y) const
+	void Image::CopyTo(Image* image, u32 x, u32 y) const
 	{
 		CopyTo(image, x, y, GetWidth(), GetHeight());
 	}
 
-	void Image::CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const
+	void Image::CopyTo(Image* image, u32 x, u32 y, u32 width, u32 height) const
 	{
 		if (x > image->GetWidth() || y > image->GetHeight())
 			return;
@@ -23,7 +21,7 @@ namespace Bricks { namespace Imaging {
 		}
 	}
 
-	void Image::ColouriseTo(const Pointer<Image>& image, const Colour& colour) const
+	void Image::ColouriseTo(Image* image, const Colour& colour) const
 	{
 		if (image->GetWidth() != GetWidth() || image->GetHeight() != GetHeight())
 			BRICKS_FEATURE_THROW(InvalidArgumentException());

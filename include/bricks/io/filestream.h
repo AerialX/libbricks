@@ -17,9 +17,9 @@ namespace Bricks { namespace IO {
 			FileOpenMode::Enum createmode = FileOpenMode::Open,
 			FileMode::Enum mode = FileMode::ReadWrite,
 			FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite,
-			const Pointer<Filesystem>& filesystem = NULL
+			Filesystem* filesystem = NULL
 		) : system(filesystem ? filesystem : Filesystem::GetDefault()), handle(system->Open(path, createmode, mode)), path(path) { }
-		FileStream(FileHandle handle, const Pointer<Filesystem>& filesystem = NULL) : system(filesystem ? filesystem : Pointer<Filesystem>(Filesystem::GetDefault())), handle(system->Duplicate(handle)) { }
+		FileStream(FileHandle handle, Filesystem* filesystem = NULL) : system(filesystem ?: Filesystem::GetDefault()), handle(system->Duplicate(handle)) { }
 		~FileStream() { system->Close(handle); }
 		size_t Read(void* buffer, size_t size) { return system->Read(handle, buffer, size); }
 		size_t Write(const void* buffer, size_t size) { return system->Write(handle, buffer, size); }
@@ -30,7 +30,7 @@ namespace Bricks { namespace IO {
 		void Seek(s64 offset, SeekType::Enum whence) { system->Seek(handle, offset, whence); }
 		void Flush() { system->Flush(handle); }
 
-		ReturnPointer<Filesystem> GetFilesystem() const { return system; }
+		Filesystem* GetFilesystem() const { return system; }
 		FileHandle GetHandle() const { return handle; }
 
 		const String& GetPath() const { return path; }

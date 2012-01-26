@@ -1,13 +1,13 @@
-#include "bricksall.hpp"
+#include "bricks/io/substream.h"
 
 namespace Bricks { namespace IO {
-	Substream::Substream(const Pointer<Stream>& stream, u64 offset) :
+	Substream::Substream(Stream* stream, u64 offset) :
 		stream(stream), offset(offset), position(0)
 	{
 		length = stream->GetLength() - offset;
 	}
 
-	Substream::Substream(const Pointer<Stream>& stream, u64 offset, u64 length) :
+	Substream::Substream(Stream* stream, u64 offset, u64 length) :
 		stream(stream), offset(offset), position(0), length(length)
 	{
 
@@ -40,11 +40,13 @@ namespace Bricks { namespace IO {
 		return size;
 	}
 
-	u64 Substream::GetStreamOffset(const Pointer<Stream>& parent)
+	u64 Substream::GetStreamOffset(Stream* parent)
 	{
-		Pointer<Substream> substream = stream.AsType<Substream>();
+#ifdef BRICKS_CONFIG_RTTI
+		Substream* substream = CastToDynamic<Substream>(stream);
 		if (substream && stream != parent)
 			return substream->GetStreamOffset(parent) + offset;
+#endif
 		return offset;
 	}
 } }

@@ -1,12 +1,19 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
+#include "bricks/core/returnpointer.h"
+#include "bricks/core/exception.h"
+
+namespace Bricks {
+	template<typename T> class Delegate;
+}
 
 namespace Bricks { namespace Collections {
 	namespace Internal {
 		class IterableBase { };
 		class IterableFastBase { };
 	}
+
 	class InvalidIteratorException : public Exception
 	{
 	public:

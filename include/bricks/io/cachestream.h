@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bricks/core/copypointer.h"
 #include "bricks/io/stream.h"
 
 namespace Bricks { namespace IO {
@@ -21,7 +22,7 @@ namespace Bricks { namespace IO {
 		void FlushCache();
 
 	public:
-		CacheStream(const Pointer<Stream>& stream, u32 cacheSize = 0x10000);
+		CacheStream(Stream* stream, u32 cacheSize = 0x10000);
 		~CacheStream();
 
 		u32 GetCacheSize() { return cacheSize; }

@@ -4,14 +4,19 @@
 
 #ifdef BRICKS_CONFIG_IMAGING_LIBPNG
 
-#include "bricks/imaging/bitmap.h"
-#include "bricks/io/filesystem.h"
-#include "bricks/io/filestream.h"
+#include "bricks/core/returnpointer.h"
+
+namespace Bricks { namespace IO {
+	class Stream;
+	class Filesystem;
+} }
 
 namespace Bricks { namespace Imaging {
+	class Bitmap;
+
 	namespace PNG {
-		ReturnPointer<Bitmap> LoadImage(const Pointer<IO::Stream>& stream, bool transform = false);
-		static inline ReturnPointer<Image> LoadImage(const String& path, const Pointer<IO::Filesystem>& filesystem = NULL, bool transform = false) { return LoadImage(autonew IO::FileStream(path, IO::FileOpenMode::Open, IO::FileMode::ReadOnly, IO::FilePermissions::OwnerReadWrite, filesystem), transform); }
+		ReturnPointer<Bitmap> LoadImage(IO::Stream* stream, bool transform = false);
+		ReturnPointer<Bitmap> LoadImage(const String& path, bool transform = false, IO::Filesystem* filesystem = NULL);
 	}
 } }
 

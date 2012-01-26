@@ -1,4 +1,4 @@
-#include "bricksall.hpp"
+#include "bricks/imaging/colour.h"
 
 namespace Bricks { namespace Imaging {
 	const ColourTypeMask::Enum PixelDescription::bitDepthMap[] = {

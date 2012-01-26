@@ -1,6 +1,8 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
+#include "bricks/core/data.h"
+#include "bricks/core/pointer.h"
 
 namespace Bricks { namespace Cryptography {
 	class HashAlgorithm : public Object
@@ -21,14 +23,14 @@ namespace Bricks { namespace Cryptography {
 
 		Data Preprocess() {
 			M value = S;
-			return Data(reinterpret_cast<void*>(&value), GetHashSize());
+			return Data(CastToRaw(&value), GetHashSize());
 		}
 
 		Data Process(const Data& hash, const Data& data) {
-			M value = *reinterpret_cast<const M*>(hash.GetData());
+			M value = *CastToRaw<const M>(hash.GetData());
 			for (size_t i = 0; i < data.GetLength(); i++)
 				value = A * value + data[i];
-			return Data(reinterpret_cast<void*>(&value), GetHashSize());
+			return Data(CastToRaw(&value), GetHashSize());
 		}
 
 		Data Postprocess(const Data& hash) {

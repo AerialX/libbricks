@@ -124,6 +124,7 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
 #define BRICKS_FEATURE_CONSTRUCTOR(function) __attribute__((constructor))
 #define BRICKS_FEATURE_DESTRUCTOR(function) __attribute__((destructor))
+#define BRICKS_FEATURE_INLINE __attribute__((__always_inline__)) inline
 #else
 struct BRICKS_FEATURE_CONSTRUCTOR { BRICKS_FEATURE_CONSTRUCTOR(void (*function)()) { function(); } };
 struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR(void (*function)()) : function(function) { } ~BRICKS_FEATURE_DESTRUCTOR() { function(); } };

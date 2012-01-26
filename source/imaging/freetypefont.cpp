@@ -1,14 +1,15 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "bricksall.hpp"
+#include "bricks/imaging/freetypefont.h"
+#include "bricks/imaging/bitmap.h"
 
 using namespace Bricks::IO;
 
 namespace Bricks { namespace Imaging {
 	static unsigned long FreeTypeFontRead(FT_Stream data, unsigned long offset, unsigned char* buffer, unsigned long count)
 	{
-		Pointer<Stream> stream = static_cast<Stream*>(data->descriptor.pointer);
+		Stream* stream = CastToRaw<Stream>(data->descriptor.pointer);
 
 		if (stream->GetPosition() != offset)
 			stream->SetPosition(offset);
@@ -19,7 +20,7 @@ namespace Bricks { namespace Imaging {
 		return stream->Read(buffer, count);
 	}
 
-	FreeTypeFont::FreeTypeFont(const Pointer<Stream>& stream, int faceIndex) : stream(stream)
+	FreeTypeFont::FreeTypeFont(Stream* stream, int faceIndex) : stream(stream)
 	{
 		if (FT_Init_FreeType(&library))
 			BRICKS_FEATURE_THROW(Exception());
@@ -29,7 +30,7 @@ namespace Bricks { namespace Imaging {
 		memset(ftstream, 0, sizeof(FT_StreamRec));
 		args.flags = FT_OPEN_STREAM;
 		args.stream = ftstream;
-		ftstream->descriptor.pointer = static_cast<void*>(stream.GetValue());
+		ftstream->descriptor.pointer = CastToRaw(stream);
 		ftstream->read = &FreeTypeFontRead;
 		ftstream->size = stream->GetLength();
 		if (FT_Open_Face(library, &args, faceIndex, &face)) {
@@ -67,7 +68,7 @@ namespace Bricks { namespace Imaging {
 		return autonew FontGlyph(this, character, index, face->glyph->advance.x >> 6, face->glyph->metrics.width >> 6, face->glyph->metrics.height >> 6, face->glyph->metrics.horiBearingX >> 6, face->glyph->metrics.horiBearingY >> 6);
 	}
 
-	ReturnPointer<Image> FreeTypeFont::RenderGlyph(const Pointer<FontGlyph>& glyph)
+	ReturnPointer<Image> FreeTypeFont::RenderGlyph(FontGlyph* glyph)
 	{
 		if (FT_Load_Glyph(face, glyph->GetIndex(), FT_LOAD_DEFAULT))
 			BRICKS_FEATURE_THROW(Exception());
@@ -92,7 +93,7 @@ namespace Bricks { namespace Imaging {
 		return image;
 	}
 
-	s32 FreeTypeFont::GetKerning(const Pointer<FontGlyph>& glyph, const Pointer<FontGlyph>& previous)
+	s32 FreeTypeFont::GetKerning(FontGlyph* glyph, FontGlyph* previous)
 	{
 		if (!previous || !glyph)
 			return 0;

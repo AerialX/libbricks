@@ -1,4 +1,5 @@
-#include "bricksall.hpp"
+#include "bricks/cryptography/hash.h"
+#include "bricks/io/stream.h"
 
 using namespace Bricks::IO;
 
@@ -10,7 +11,7 @@ namespace Bricks { namespace Cryptography {
 		return algorithm->Postprocess(hash);
 	}
 
-	Data Hash::ComputeHash(const Pointer<Stream>& stream)
+	Data Hash::ComputeHash(Stream* stream)
 	{
 		Data hash = algorithm->Preprocess();
 		Data buffer(0x1000);

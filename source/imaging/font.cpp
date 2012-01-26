@@ -1,4 +1,6 @@
-#include "bricksall.hpp"
+#include "bricks/imaging/font.h"
+#include "bricks/imaging/bitmap.h"
+#include "bricks/collections/array.h"
 
 using namespace Bricks::Collections;
 
@@ -8,10 +10,10 @@ namespace Bricks { namespace Imaging {
 		s32 line;
 		s32 x;
 		s32 y;
-		RenderedGlyph(const Pointer<FontGlyph>& glyph = NULL, u32 line = 0, s32 x = 0, s32 y = 0) : glyph(glyph), line(line), x(x), y(y) { }
+		RenderedGlyph(FontGlyph* glyph = NULL, u32 line = 0, s32 x = 0, s32 y = 0) : glyph(glyph), line(line), x(x), y(y) { }
 	};
 
-	static AutoPointer<List<RenderedGlyph> > MeasureGlyphs(const Pointer<Font>& font, const String& value)
+	static AutoPointer<List<RenderedGlyph> > MeasureGlyphs(Font* font, const String& value)
 	{
 		s32 x = 0;
 		s32 y = font->GetBaseline();
@@ -44,7 +46,7 @@ namespace Bricks { namespace Imaging {
 		return glyphs;
 	}
 
-	static FontMeasureSize MeasureGlyphs(const Pointer<Font>& font, const Pointer<List<RenderedGlyph> >& glyphs)
+	static FontMeasureSize MeasureGlyphs(Font* font, List<RenderedGlyph>* glyphs)
 	{
 		s32 width = 0;
 		s32 height = 0;

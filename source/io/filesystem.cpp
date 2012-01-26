@@ -1,4 +1,5 @@
-#include "bricksall.hpp"
+#include "bricks/io/filesystem.h"
+#include "bricks/io/filestream.h"
 
 #include <stdio.h>
 #include <unistd.h>
@@ -17,16 +18,21 @@
 #endif
 
 namespace Bricks { namespace IO {
-	const String FilePath::DirectorySeparators = String("/\\");
+	static AutoPointer<String> directorySeparators;
+	const String& FilePath::GetDirectorySeparators()
+	{
+		if (!directorySeparators)
+			directorySeparators = autonew (Internal::Global)String("/\\");
+		return *directorySeparators;
+	}
 
 	static AutoPointer<Filesystem> defaultFilesystem = NULL;
-	void Filesystem::SetDefault(const Pointer<Filesystem>& filesystem) { defaultFilesystem = filesystem; }
-	const Pointer<Filesystem>& Filesystem::GetDefault()
+	void Filesystem::SetDefault(Filesystem* filesystem) { defaultFilesystem = filesystem; }
+	Filesystem* Filesystem::GetDefault()
 	{
 		if (!defaultFilesystem) {
-			//defaultFilesystem = new (Internal::Global)C89Filesystem();
-			defaultFilesystem = new (Internal::Global)PosixFilesystem();
-			defaultFilesystem.AsType<Object>()->Release();
+			//defaultFilesystem = autonew (Internal::Global)C89Filesystem();
+			defaultFilesystem = autonew (Internal::Global)PosixFilesystem();
 		}
 		return defaultFilesystem;
 	}

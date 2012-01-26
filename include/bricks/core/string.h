@@ -1,10 +1,9 @@
 #pragma once
 
-#include "bricks/config.h"
+#include "bricks/core/object.h"
 
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 #ifdef BRICKS_FEATURE_OBJC
 #include <Foundation/Foundation.h>
@@ -20,8 +19,6 @@ namespace Bricks {
 			typedef char Character;
 
 			static String Format(const String& format, ...);
-
-			BRICKS_COPY_CONSTRUCTOR(String);
 
 		protected:
 			char* buffer;
@@ -52,7 +49,7 @@ namespace Bricks {
 			String(const char* string, size_t len = npos) : buffer(NULL) { Construct(string, len); }
 			String(char character, size_t repeat = 1) : buffer(NULL) { Construct(NULL, repeat); for (size_t i = 0; i < repeat; i++) buffer[i] = character; }
 #ifdef BRICKS_FEATURE_OBJC
-			String(NSString* string, size_t len = npos) : buffer(NULL) { Construct(string.UTF8String, len); }
+			String(NSString* string, size_t len = npos) : buffer(NULL) { Construct([string UTF8String], len); }
 #endif
 
 			~String() { free(buffer); }

@@ -1,10 +1,12 @@
-#include "bricksall.hpp"
+#include "bricks/audio/midireader.h"
+#include "bricks/io/stream.h"
+#include "bricks/io/substream.h"
 
 using namespace Bricks;
 using namespace Bricks::IO;
 using namespace Bricks::Audio;
 
-static int ReadInteger(const Pointer<Stream>& stream)
+static int ReadInteger(Stream* stream)
 {
 	int ret = 0;
 	u8 num;
@@ -16,7 +18,7 @@ static int ReadInteger(const Pointer<Stream>& stream)
 	return ret;
 }
 
-static AutoPointer<MidiTimeDivision> ReadDivision(const Pointer<StreamReader>& reader)
+static AutoPointer<MidiTimeDivision> ReadDivision(StreamReader* reader)
 {
 	u16 division = reader->ReadInt16();
 	if (division & 0x8000)
@@ -24,7 +26,7 @@ static AutoPointer<MidiTimeDivision> ReadDivision(const Pointer<StreamReader>& r
 	return autonew MidiTicksPerBeatDivision(division & 0x7FFF);
 }
 
-MidiReader::MidiReader(const Pointer<Stream>& stream)
+MidiReader::MidiReader(Stream* stream)
 {
 	reader = autonew StreamReader(stream, Endian::BigEndian);
 

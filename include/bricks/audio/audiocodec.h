@@ -1,10 +1,11 @@
 #pragma once
 
+#include "bricks/core/autopointer.h"
 #include "bricks/audio/audiobuffer.h"
 
 namespace Bricks { namespace Audio {
 	template<typename T = s16>
-	class AudioCodec
+	class AudioCodec : public Object
 	{
 	protected:
 		u32 channels;
@@ -29,7 +30,7 @@ namespace Bricks { namespace Audio {
 	};
 
 	template<typename T = s16>
-	class NullCodec : public Object, public AudioCodec<T>
+	class NullCodec : public AudioCodec<T>
 	{
 	public:
 		NullCodec(u32 channels, u32 samplerate, s64 samples, u32 bitrate = 0, s64 position = 0) : AudioCodec<T>(channels, samplerate, samples, bitrate, position) { }
@@ -44,13 +45,13 @@ namespace Bricks { namespace Audio {
 	};
 
 	template<typename T = s16>
-	class Subcodec : public Object, public AudioCodec<T>
+	class Subcodec : public AudioCodec<T>
 	{
 	protected:
 		AutoPointer< AudioCodec<T> > codec;
 
 	public:
-		Subcodec(AudioCodec<T>& codec) : codec(codec) { }
+		Subcodec(AudioCodec<T>* codec) : codec(codec) { }
 
 		u32 GetChannels() const { return codec->GetChannels(); }
 		u32 GetSampleRate() const { return codec->GetSampleRate(); }
@@ -76,7 +77,7 @@ namespace Bricks { namespace Audio {
 		}
 
 	public:
-		AmplifyCodec(AudioCodec<T>& codec, float amplification) : Subcodec<T>(codec), amplification(amplification) { }
+		AmplifyCodec(AudioCodec<T>* codec, float amplification) : Subcodec<T>(codec), amplification(amplification) { }
 
 		float GetAmplification() const { return amplification; }
 		void SetAmplification(float value) { amplification = value; }
@@ -96,13 +97,13 @@ namespace Bricks { namespace Audio {
 	};
 
 	template<typename Tsrc, typename Tdest = s16>
-	class ConversionCodec : public Object, public AudioCodec<Tdest>
+	class ConversionCodec : public AudioCodec<Tdest>
 	{
 	protected:
 		AutoPointer< AudioCodec<Tsrc> > codec;
 
 	public:
-		ConversionCodec(AudioCodec<Tsrc>& codec) : codec(codec) { }
+		ConversionCodec(AudioCodec<Tsrc>* codec) : codec(codec) { }
 
 		u32 GetChannels() const { return codec->GetChannels(); }
 		u32 GetSampleRate() const { return codec->GetSampleRate(); }

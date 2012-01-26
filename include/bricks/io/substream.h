@@ -12,18 +12,18 @@ namespace Bricks { namespace IO {
 		u64 length;
 
 	public:
-		Substream(const Pointer<Stream>& stream, u64 offset);
-		Substream(const Pointer<Stream>& stream, u64 offset, u64 length);
+		Substream(Stream* stream, u64 offset);
+		Substream(Stream* stream, u64 offset, u64 length);
 
 		u64 GetOffset() { return offset; }
-		ReturnPointer<Stream> GetStream() { return stream; }
+		Stream* GetStream() { return stream; }
 
 		u64 GetLength() const { return length; }
 		void SetLength(u64 value) { length = value; }
 		u64 GetPosition() const { return position; }
 		void SetPosition(u64 value) { position = value; }
 
-		u64 GetStreamOffset(const Pointer<Stream>& parent = NULL);
+		u64 GetStreamOffset(Stream* parent = NULL);
 
 		size_t Read(void* buffer, size_t size);
 		size_t Write(const void* buffer, size_t size);

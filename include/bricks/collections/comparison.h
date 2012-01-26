@@ -1,6 +1,7 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/sfinae.h"
+#include "bricks/core/object.h"
 
 namespace Bricks { namespace Collections {
 	namespace ComparisonResult {

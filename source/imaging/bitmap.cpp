@@ -1,4 +1,5 @@
-#include "bricksall.hpp"
+#include "bricks/imaging/bitmap.h"
+#include "bricks/io/endian.h"
 
 using namespace Bricks::IO;
 
@@ -139,13 +140,13 @@ namespace Bricks { namespace Imaging {
 		}
 	}
 
-	void Bitmap::CopyTo(const Pointer<Image>& image, u32 x, u32 y, u32 width, u32 height) const
+	void Bitmap::CopyTo(Image* image, u32 x, u32 y, u32 width, u32 height) const
 	{
-		Pointer<Bitmap> bitmap;
-		bool compatible = image.AsType<Object>()->IsTypeOf<Bitmap>();
+		Bitmap* bitmap = CastToDynamic<Bitmap>(image);
+		bool compatible = bitmap;
 		const PixelDescription& description = GetPixelDescription();
 		if (compatible) {
-			bitmap = image;
+			bitmap = CastTo<Bitmap>(image);
 			compatible = bitmap->GetPixelDescription() == description;
 		}
 

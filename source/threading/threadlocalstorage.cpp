@@ -1,4 +1,5 @@
-#include "bricksall.hpp"
+#include "bricks/threading/thread.h"
+#include "bricks/threading/threadlocalstorage.h"
 
 using namespace Bricks::Collections;
 
@@ -12,6 +13,6 @@ namespace Bricks { namespace Threading { namespace Internal {
 
 	ThreadLocalStorageDictionary& GetStorageDictionary()
 	{
-		return localStorage.GetItem(GetCurrentThreadID(), autonew ThreadLocalStorageDictionary());
+		return *localStorage.GetItem(GetCurrentThreadID(), autonew ThreadLocalStorageDictionary());
 	}
 } } }

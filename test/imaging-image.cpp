@@ -1,5 +1,12 @@
 #include "brickstest.hpp"
 
+#include <bricks/imaging/bitmap.h>
+#include <bricks/io/endian.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+using namespace Bricks::Imaging;
+
 TEST(BricksImagingImageTest, ReadPixels32) {
 	AutoPointer<BitmapImage> image = autonew Bitmap(0x20, 0x20, PixelDescription::RGBA8);
 	u32* data = (u32*)image->GetImageData();

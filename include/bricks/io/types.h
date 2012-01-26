@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/exception.h"
 
 #include <fcntl.h>
 #include <unistd.h>

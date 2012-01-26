@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
 #include "bricks/io/endian.h"
 
 namespace Bricks { namespace Audio {

@@ -1,13 +1,12 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
+#include "bricks/core/returnpointer.h"
 #include "bricks/io/filepath.h"
 #include "bricks/io/filenode.h"
-#include "bricks/io/stream.h"
-
-#include <stdio.h>
 
 namespace Bricks { namespace IO {
+	class Stream;
 	struct FileInfo;
 
 	typedef size_t FileHandle;
@@ -15,8 +14,8 @@ namespace Bricks { namespace IO {
 	class Filesystem : public Object
 	{
 	public:
-		static const Pointer<Filesystem>& GetDefault();
-		static void SetDefault(const Pointer<Filesystem>& filesystem);
+		static Filesystem* GetDefault();
+		static void SetDefault(Filesystem* filesystem);
 
 		virtual FileHandle Open(
 			const String& path,
@@ -147,7 +146,7 @@ namespace Bricks { namespace IO {
 		AutoPointer<Filesystem> filesystem;
 
 	public:
-		FileInfo(const struct stat& st, const String& path, const Pointer<Filesystem>& filesystem) :
+		FileInfo(const struct stat& st, const String& path, Filesystem* filesystem) :
 			st(st), path(path), filesystem(filesystem)
 		{ }
 
@@ -193,7 +192,7 @@ namespace Bricks { namespace IO {
 			size = info.GetSize();
 		}
 
-		FilesystemNode(const struct dirent& dir, const Pointer<Filesystem>& filesystem = NULL) :
+		FilesystemNode(const struct dirent& dir, Filesystem* filesystem = NULL) :
 #ifdef BRICKS_FEATURE_LINUXBSD
 			FileNode(GetDirType(dir.d_type), dir.d_name),
 #else
@@ -204,7 +203,7 @@ namespace Bricks { namespace IO {
 			size = -1;
 		}
 
-		FilesystemNode(const String& path, const Pointer<Filesystem>& filesystem = NULL) :
+		FilesystemNode(const String& path, Filesystem* filesystem = NULL) :
 			FileNode(FileType::Unknown, path), filesystem(filesystem ?: Filesystem::GetDefault())
 		{
 			if (this->filesystem->Exists(path))
@@ -220,7 +219,7 @@ namespace Bricks { namespace IO {
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; BRICKS_FEATURE_THROW(NotSupportedException()); }
 		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode = FileOpenMode::Open, FileMode::Enum mode = FileMode::ReadWrite, FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite);
 
-		ReturnPointer< Bricks::Collections::Iterator<FileNode> > GetIterator() const;
+		ReturnPointer<Bricks::Collections::Iterator<FileNode> > GetIterator() const;
 		FilesystemNodeIterator GetIteratorFast() const;
 	};
 
@@ -234,7 +233,7 @@ namespace Bricks { namespace IO {
 		friend class FilesystemNode;
 
 	public:
-		FilesystemNodeIterator(const Pointer<const FilesystemNode>& node) :
+		FilesystemNodeIterator(const FilesystemNode* node) :
 			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetPath())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
@@ -242,6 +241,6 @@ namespace Bricks { namespace IO {
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	
-	inline ReturnPointer< Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
+	inline ReturnPointer<Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
 	inline FilesystemNodeIterator FilesystemNode::GetIteratorFast() const { return FilesystemNodeIterator(this); }
 } }

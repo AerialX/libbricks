@@ -1,4 +1,5 @@
-#include "bricksall.hpp"
+#include "bricks/compression/zipfilesystem.h"
+#include "bricks/io/filestream.h"
 
 #include <zip.h>
 #include <stdio.h>
@@ -24,24 +25,24 @@ namespace Bricks { namespace Compression {
 		zip_file_error_get(file, &error, &systemError);
 	}
 
-	ZipFilesystem::ZipFilesystem(const Pointer<Stream>& stream)
+	ZipFilesystem::ZipFilesystem(Stream* stream)
 	{
 		// XXX: Hack around our filesystem classes to get the FD libzip requires.
 		int fd;
 		FileHandle fsfd;
-		Pointer<FileStream> filestream = stream.AsType<FileStream>();
-		Pointer<Filesystem> filesystem;
+		Filesystem* filesystem;
+#ifdef BRICKS_CONFIG_RTTI
+		FileStream* filestream = CastToDynamic<FileStream>(stream);
 		if (filestream) {
 			filesystem = filestream->GetFilesystem();
-			Pointer<PosixFilesystem> posix = filesystem.AsType<PosixFilesystem>();
-			Pointer<C89Filesystem> c89 = filesystem.AsType<C89Filesystem>();
-			if (posix)
+			if (IsTypeOf<PosixFilesystem>(filesystem))
 				fsfd = (int)(fd = filesystem->Duplicate(filestream->GetHandle()));
-			else if (c89)
+			else if (IsTypeOf<C89Filesystem>(filesystem))
 				fd = fileno((FILE*)(fsfd = filesystem->Duplicate(filestream->GetHandle())));
 			else
 				BRICKS_FEATURE_THROW(NotSupportedException());
 		} else
+#endif
 			BRICKS_FEATURE_THROW(NotSupportedException());
 
 		int error;
@@ -242,7 +243,8 @@ namespace Bricks { namespace Compression {
 
 	bool ZipFilesystem::Exists(const String& path) const
 	{
-		BRICKS_FEATURE_THROW(NotImplementedException());
+		struct zip_stat zst;
+		return zip_stat(zipfile, TransformPath(path).CString(), 0, &zst) >= 0;
 	}
 
 	struct ZipFilesystemDir {

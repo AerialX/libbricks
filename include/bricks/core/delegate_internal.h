@@ -6,6 +6,11 @@
 #include <Block.h>
 #endif
 
+#include "bricks/core/sfinae.h"
+#include "bricks/core/object.h"
+#include "bricks/core/exception.h"
+#include "bricks/core/autopointer.h"
+
 namespace Bricks {
 	template<typename F> class Delegate;
 	template<typename F> class Event;
@@ -122,15 +127,14 @@ namespace Bricks {
 
 	public:
 		Delegate() { }
-		Delegate(Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>& function) : function(function) { }
+		Delegate(const Delegate<R(BRICKS_ARGLIST_TYPES)>& delegate) : function(delegate.function) { }
+		Delegate(Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>* function) : function(function) { }
 		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::Function<R(BRICKS_ARGLIST_TYPES)>(function)) { }
 		template<typename T> Delegate(const T& function) : function(autonew Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
 		template<typename T> Delegate(T* object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
 #ifdef BRICKS_FEATURE_OBJC_BLOCKS
 		Delegate(typename Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>(function)) { }
 #endif
-
-		BRICKS_COPY_CONSTRUCTOR(Delegate<R(BRICKS_ARGLIST_TYPES)>);
 
 		virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { if (function) return function->Call(BRICKS_ARGLIST_ARGS); BRICKS_FEATURE_RELEASE_THROW_FATAL(InvalidArgumentException()); }
 
@@ -144,7 +148,7 @@ namespace Bricks {
 	template<typename T, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
 	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(T& object, R (T::*function)(BRICKS_ARGLIST_TYPES)) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(&object, function); }
 	template<typename T, typename U, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
-	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(const Pointer<T>& object, R (U::*function)(BRICKS_ARGLIST_TYPES)) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object.GetValue(), function); }
+	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(T* object, R (U::*function)(BRICKS_ARGLIST_TYPES)) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object, function); }
 	template<typename T, typename U, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES >
-	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(const Pointer<T>& object, R (U::*function)(BRICKS_ARGLIST_TYPES) const) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object.GetValue(), (R(U::*)(BRICKS_ARGLIST_TYPES))function); }
+	static inline Delegate<R(BRICKS_ARGLIST_TYPES)> MethodDelegate(T* object, R (U::*function)(BRICKS_ARGLIST_TYPES) const) { return Delegate<R(BRICKS_ARGLIST_TYPES)>(object, (R(U::*)(BRICKS_ARGLIST_TYPES))function); }
 }

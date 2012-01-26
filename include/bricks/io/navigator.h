@@ -1,6 +1,7 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
+#include "bricks/core/exception.h"
 #include "bricks/io/stream.h"
 #include "bricks/io/endian.h"
 
@@ -24,7 +25,7 @@ namespace Bricks { namespace IO {
 		Endian::Enum endianness;
 
 	public:
-		StreamNavigator(const Pointer<Stream>& stream, Endian::Enum endianness) : stream(stream), endianness(endianness) { }
+		StreamNavigator(Stream* stream, Endian::Enum endianness) : stream(stream), endianness(endianness) { }
 
 		virtual void Pad(u64 size) = 0;
 		void PadTo(u64 position) { if (position < stream->GetPosition()) BRICKS_FEATURE_THROW(InvalidArgumentException("position")); Pad(position - stream->GetPosition()); }
@@ -34,13 +35,13 @@ namespace Bricks { namespace IO {
 		void SetPosition(u64 position) { stream->SetPosition(position); }
 		u64 GetLength() { return stream->GetLength(); }
 		bool IsEndOfFile() { return GetPosition() == GetLength(); }
-		ReturnPointer<Stream> GetStream() { return stream; }
+		Stream* GetStream() { return stream; }
 	};
 
 	class StreamReader : public StreamNavigator
 	{
 	public:
-		StreamReader(const Pointer<Stream>& stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
+		StreamReader(Stream* stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
 
 #define BRICKS_STREAM_READ(size) \
 		u##size ReadInt##size(Endian::Enum endian = Endian::Unknown) { \
@@ -91,7 +92,7 @@ namespace Bricks { namespace IO {
 	class StreamWriter : public StreamNavigator
 	{
 	public:
-		StreamWriter(const Pointer<Stream>& stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
+		StreamWriter(Stream* stream, Endian::Enum endianness = Endian::Native) : StreamNavigator(stream, endianness) { }
 
 #define BRICKS_STREAM_WRITE(size) \
 		void WriteInt##size(u##size value, Endian::Enum endian = Endian::Unknown) { \

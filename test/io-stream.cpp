@@ -1,5 +1,13 @@
 #include "brickstest.hpp"
 
+#include <bricks/io/filestream.h>
+#include <bricks/io/memorystream.h>
+#include <bricks/io/cachestream.h>
+#include <bricks/io/substream.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+
 TEST(BricksIoStreamTest, NonExistentFile) {
 	EXPECT_THROW(FileStream("lolnonexistent", FileOpenMode::Open, FileMode::ReadOnly), ErrnoException) << "FileStream did not throw on non-existent file";
 }
@@ -10,7 +18,7 @@ TEST(BricksIoStreamTest, EmptyFile) {
 	EXPECT_EQ(0, stream.Read(buffer, 1)) << "Stream read data from empty file";
 }
 
-static void WriteTest(const Pointer<Stream>& stream)
+static void WriteTest(Stream* stream)
 {
 	int value = 0xF88C;
 	EXPECT_EQ(sizeof(value), stream->Write(&value, sizeof(value))) << "Stream write failed";
@@ -18,7 +26,7 @@ static void WriteTest(const Pointer<Stream>& stream)
 	EXPECT_EQ(sizeof(value), stream->Write(&value, sizeof(value))) << "Stream write failed";
 }
 
-static void ReadTest(const Pointer<Stream>& stream)
+static void ReadTest(Stream* stream)
 {
 	int value = 0;
 	EXPECT_EQ(sizeof(value), stream->Read(&value, sizeof(value))) << "Stream read failed";
@@ -33,14 +41,14 @@ TEST(BricksIoStreamTest, WriteReadTest) {
 	String path = "/tmp/libbricks-test.bin";
 	{
 		FileStream stream(path, FileOpenMode::Create, FileMode::ReadWrite, FilePermissions::OwnerReadWrite);
-		WriteTest(stream);
+		WriteTest(&stream);
 		stream.SetPosition(0);
-		ReadTest(stream);
+		ReadTest(&stream);
 	}
 
 	{
 		FileStream stream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite);
-		ReadTest(stream);
+		ReadTest(&stream);
 	}
 
 	Filesystem::GetDefault()->DeleteFile(path);
@@ -50,14 +58,14 @@ TEST(BricksIoStreamTest, WriteReadSubstreamTest) {
 	String path = "/tmp/libbricks-test.bin";
 	{
 		FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
-		WriteTest(stream);
-		WriteTest(stream);
+		WriteTest(&stream);
+		WriteTest(&stream);
 	}
 
 	{
 		FileStream stream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite);
-		Substream substream(stream, 0, stream.GetLength() / 2);
-		ReadTest(substream);
+		Substream substream(&stream, 0, stream.GetLength() / 2);
+		ReadTest(&substream);
 	}
 
 	Filesystem::GetDefault()->DeleteFile(path);
@@ -67,13 +75,13 @@ TEST(BricksIoStreamTest, WriteReadCacheStreamTest) {
 	String path = "/tmp/libbricks-test.bin";
 	{
 		FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
-		WriteTest(stream);
+		WriteTest(&stream);
 	}
 
 	{
 		FileStream stream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite);
-		CacheStream cachestream(stream);
-		ReadTest(cachestream);
+		CacheStream cachestream(&stream);
+		ReadTest(&cachestream);
 	}
 
 	Filesystem::GetDefault()->DeleteFile(path);
@@ -82,9 +90,9 @@ TEST(BricksIoStreamTest, WriteReadCacheStreamTest) {
 TEST(BricksIoStreamTest, WriteReadMemoryStreamTest) {
 	{
 		MemoryStream stream;
-		WriteTest(stream);
+		WriteTest(&stream);
 		stream.SetPosition(0);
-		ReadTest(stream);
+		ReadTest(&stream);
 	}
 }
 

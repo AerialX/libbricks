@@ -21,10 +21,10 @@ namespace Bricks { namespace Imaging {
 		FT_StreamRec_* ftstream;
 
 		ReturnPointer<FontGlyph> LoadGlyph(String::Character character);
-		ReturnPointer<Image> RenderGlyph(const Pointer<FontGlyph>& glyph);
+		ReturnPointer<Image> RenderGlyph(FontGlyph* glyph);
 
 	public:
-		FreeTypeFont(const Pointer<IO::Stream>& stream, int faceIndex = 0);
+		FreeTypeFont(IO::Stream* stream, int faceIndex = 0);
 		~FreeTypeFont();
 
 		void SetPixelSize(int pixelWidth, int pixelHeight = 0);
@@ -34,7 +34,7 @@ namespace Bricks { namespace Imaging {
 		s32 GetBaseline() const;
 		s32 GetDescender() const;
 
-		s32 GetKerning(const Pointer<FontGlyph>& glyph, const Pointer<FontGlyph>& previous);
+		s32 GetKerning(FontGlyph* glyph, FontGlyph* previous);
 	};
 } }
 

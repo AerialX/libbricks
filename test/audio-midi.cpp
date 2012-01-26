@@ -1,5 +1,13 @@
 #include "brickstest.hpp"
 
+#include <bricks/core/autopointer.h>
+#include <bricks/audio/midireader.h>
+#include <bricks/io/filestream.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+using namespace Bricks::Audio;
+
 class BricksAudioMidiTest : public testing::Test
 {
 protected:
@@ -30,7 +38,7 @@ TEST_F(BricksAudioMidiTest, VerifyTrackNames) {
 		while (!reader.EndOfTrack()) {
 			AutoPointer<MidiEvent> event = reader.ReadEvent();
 			if (event->GetType() == MidiEventType::TrackName && track > 0) // Track 0's track name is the MIDI file name
-				EXPECT_EQ(String::Format("TRACK %d NAME", track), event.AsType<MidiTextEvent>()->GetString()) << "Track name did not match";
+				EXPECT_EQ(String::Format("TRACK %d NAME", track), CastTo<MidiTextEvent>(event)->GetString()) << "Track name did not match";
 		}
 	}
 }
@@ -42,7 +50,7 @@ TEST_F(BricksAudioMidiTest, VerifyTrackNotes) {
 		while (!reader.EndOfTrack()) {
 			AutoPointer<MidiEvent> event = reader.ReadEvent();
 			if (event->GetType() == MidiEventType::NoteOn) {
-				EXPECT_EQ(track, event.AsType<MidiNoteEvent>()->GetNote()) << "Track note value did not match";
+				EXPECT_EQ(track, CastTo<MidiNoteEvent>(event)->GetNote()) << "Track note value did not match";
 				noteCount++;
 			}
 		}

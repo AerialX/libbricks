@@ -1,5 +1,14 @@
 #include "brickstest.hpp"
 
+#include <bricks/core/autopointer.h>
+#include <bricks/core/exception.h>
+#include <bricks/audio/ffmpegcodec.h>
+#include <bricks/io/filestream.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+using namespace Bricks::Audio;
+
 class BricksAudioFFmpegTest : public testing::Test
 {
 protected:

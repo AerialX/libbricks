@@ -1,4 +1,6 @@
-#include "bricksall.hpp"
+#include "bricks/core/value.h"
+#include "bricks/core/exception.h"
+#include "bricks/core/sfinae.h"
 
 namespace Bricks {
 	int Value::SizeOfType(ValueType::Enum type)

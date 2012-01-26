@@ -1,6 +1,7 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
+#include "bricks/core/data.h"
 
 namespace Bricks { namespace IO {
 	class Stream : public Object

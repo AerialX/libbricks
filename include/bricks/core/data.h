@@ -1,6 +1,9 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/types.h"
+#include "bricks/core/object.h"
+#include "bricks/core/returnpointer.h"
+#include "bricks/core/string.h"
 
 namespace Bricks {
 	class Data : public Object

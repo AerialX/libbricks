@@ -1,9 +1,10 @@
 #pragma once
 
-#include "bricks/object.h"
-#include "bricks/io/stream.h"
+#include "bricks/core/object.h"
 #include "bricks/io/navigator.h"
 #include "bricks/audio/miditypes.h"
+
+namespace Bricks { namespace IO { class Stream; } }
 
 namespace Bricks { namespace Audio {
 	class MidiReader : public Object
@@ -25,7 +26,7 @@ namespace Bricks { namespace Audio {
 		void ReadTrack();
 
 	public:
-		MidiReader(const Pointer<IO::Stream>& stream);
+		MidiReader(IO::Stream* stream);
 		~MidiReader();
 
 		bool EndOfFile() const { return trackIndex >= trackCount; }

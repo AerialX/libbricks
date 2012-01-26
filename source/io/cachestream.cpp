@@ -1,7 +1,8 @@
-#include "bricksall.hpp"
+#include "bricks/io/cachestream.h"
+#include "bricks/core/exception.h"
 
 namespace Bricks { namespace IO {
-	CacheStream::CacheStream(const Pointer<Stream>& stream, u32 cacheSize) :
+	CacheStream::CacheStream(Stream* stream, u32 cacheSize) :
 		stream(stream), cacheSize(cacheSize),
 		cacheDirty(true), cacheOffset(0), cacheLength(0), cachePosition(0)
 	{

@@ -1,8 +1,11 @@
 #pragma once
 
-#include "bricks/object.h"
-#include "bricks/io/stream.h"
+#include "bricks/core/object.h"
+#include "bricks/core/data.h"
+#include "bricks/core/autopointer.h"
 #include "bricks/cryptography/hashalgorithm.h"
+
+namespace Bricks { namespace IO { class Stream; } }
 
 namespace Bricks { namespace Cryptography {
 	class Hash : public Object
@@ -11,10 +14,10 @@ namespace Bricks { namespace Cryptography {
 		AutoPointer<HashAlgorithm> algorithm;
 
 	public:
-		Hash(const Pointer<HashAlgorithm>& algorithm) : algorithm(algorithm) { }
+		Hash(HashAlgorithm* algorithm) : algorithm(algorithm) { }
 
 		Data ComputeHash(const Data& data);
-		Data ComputeHash(const Pointer<IO::Stream>& stream);
+		Data ComputeHash(IO::Stream* stream);
 
 		// TODO: Interface to allow user to hash in blocks/chunks
 	};

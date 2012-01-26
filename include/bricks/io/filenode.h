@@ -3,9 +3,10 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include "bricks/core/returnpointer.h"
+#include "bricks/collections/iterator.h"
 #include "bricks/io/types.h"
 #include "bricks/io/filepath.h"
-#include "bricks/collections/iterator.h"
 
 namespace Bricks { namespace IO {
 	class Stream;

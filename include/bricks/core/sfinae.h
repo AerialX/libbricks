@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/types.h"
+#include "bricks/core/types.h"
 
 #define BRICKS_SFINAE_TRUE(x) (sizeof(x) == sizeof(Bricks::SFINAE::True))
 #define BRICKS_SFINAE_FALSE(x) (sizeof(x) == sizeof(Bricks::SFINAE::False))

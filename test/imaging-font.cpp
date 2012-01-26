@@ -1,5 +1,12 @@
 #include "brickstest.hpp"
 
+#include <bricks/io/filestream.h>
+#include <bricks/imaging/freetypefont.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+using namespace Bricks::Imaging;
+
 class BricksImagingFreeTypeFontTest : public testing::Test
 {
 protected:

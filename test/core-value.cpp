@@ -1,5 +1,9 @@
 #include "brickstest.hpp"
 
+#include <bricks/core/value.h>
+
+using namespace Bricks;
+
 TEST(BricksCoreValueTest, Basic) {
 	Value value(0);
 	EXPECT_EQ(0, value.GetPointerValue());

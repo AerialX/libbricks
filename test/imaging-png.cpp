@@ -1,5 +1,13 @@
 #include "brickstest.hpp"
 
+#include <bricks/imaging/png.h>
+#include <bricks/imaging/bitmap.h>
+#include <bricks/io/filestream.h>
+
+using namespace Bricks;
+using namespace Bricks::IO;
+using namespace Bricks::Imaging;
+
 class BricksImagingPngTest : public testing::Test
 {
 protected:

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "bricks/object.h"
-#include "bricks/collections/iterator.h"
+#include "bricks/core/types.h"
+#include "bricks/collections/list.h"
 
 namespace Bricks { namespace Imaging {
 	class Colour

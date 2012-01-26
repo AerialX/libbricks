@@ -1,6 +1,6 @@
 #pragma once
 
-#include "bricks/object.h"
+#include "bricks/core/object.h"
 
 namespace Bricks {
 	namespace ValueType {
