@@ -6,7 +6,6 @@ IO
  - Text{Reader,Writer}
  - Network
  - Console, it was hacked together *really* badly.
- - Filesystem::ChangeDirectory()
 
 Threading
  - TLS doesn't destruct thread data, add a static Thread::ThreadDestroyed event and such.
@@ -14,15 +13,10 @@ Threading
 
 Audio
  - Needs a lot of work.
- - AudioCodec<T> can derive and implement Bricks::IO::Stream as well to expose a binary stream.
+ - AudioCodec<T> could expose a binary Bricks::IO::Stream.
 
 Misc
- - Decide on a keyword to #define as (*this), self is taken by ObjC. myself?
  - Add a SFINAE specialization of ReturnPointer<> for native types, where it just inherits from Pointer<> instead.
  - Crypto
  - Plugin architecture
- - Bricks::Pointer::AsTypeStatic for when you're certain
- - Bricks::Pointer::IsType<> SFINAE for simplification
- - Bricks::Pointer allows for too arbitrary implicit casting at times.
- - Bricks::Pointer/Object cooperation to detect zombies
  - An ImageResize class which runs scaling algorithms on GetPixel()
