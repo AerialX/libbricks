@@ -24,9 +24,9 @@ namespace Bricks { namespace Collections {
 
 	public:
 		Pair() { }
-		Pair(const TKey& key, const TValue& value) : key(key), value(value), pointer(&const_cast<TValue&>(value)) { }
-		Pair(typename std::map<TKey, TValue>::const_iterator iter) : key(iter->first), value(iter->second), pointer(NULL) { }
-		Pair(typename std::map<TKey, TValue>::iterator iter) : key(iter->first), value(iter->second), pointer(&iter->second) { }
+		Pair(const TKey& key, const TValue& value) : key(key), value(value), pointer(NULL) { }
+		Pair(typename std::map<TKey, TValue>::const_iterator iter) : key(iter->first), pointer(const_cast<TValue*>(iter->second)) { }
+		Pair(typename std::map<TKey, TValue>::iterator iter) : key(iter->first), pointer(&iter->second) { }
 
 		const TKey& GetKey() const { return key; }
 		const TValue& GetValue() const { if (pointer) return *pointer; return value; }
