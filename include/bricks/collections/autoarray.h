@@ -19,16 +19,17 @@ namespace Bricks { namespace Collections {
 
 		~AutoArray() { ReleaseAll(); }
 
-		AutoArray& operator =(const AutoArray<T>& array) { ReleaseAll(); Array<T*>::operator=(array); RetainAll(); return *this; }
+		AutoArray& operator =(const AutoArray<T>& array) { Array<T*> toRelease(*this); Array<T*>::operator=(array); RetainAll(); foreach (T*const& item, toRelease) Release(item); return *this; }
 
 		void AddItem(T*const& value) { Array<T*>::AddItem(value); Retain(value); }
 		bool RemoveItem(T*const& value) { long index = Array<T*>::IndexOfItem(value); if (index >= 0) { T* item = Array<T*>::GetItem(index); Array<T*>::RemoveItemAt(index); Release(item); return true; } return false; }
+		void RemoveItems(T*const& value) { Retain(value); while (RemoveItem(value)) ; Release(value); }
 
 		void Clear() { ReleaseAll(); Array<T*>::Clear(); }
 
-		void SetItem(long index, T*const& value) { Release(Array<T*>::GetItem(index)); Array<T*>::SetItem(index, value); Retain(value); }
+		void SetItem(long index, T*const& value) { T* item = Array<T*>::GetItem(index);Array<T*>::SetItem(index, value); Release(item); Retain(value); }
 
 		void InsertItem(long index, T*const& value) { Array<T*>::InsertItem(index, value); Retain(value); }
-		void RemoveItemAt(long index) { Release(Array<T*>::GetItem(index)); Array<T*>::RemoveItemAt(index); }
+		void RemoveItemAt(long index) { T* item = Array<T*>::GetItem(index); Array<T*>::RemoveItemAt(index); Release(item); }
 	};
 } }
