@@ -26,6 +26,8 @@ namespace Bricks {
 		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class BaseDelegate<R(BRICKS_ARGLIST_TYPES)> : public Object
 		{
 		public:
+			typedef R(Signature)(BRICKS_ARGLIST_TYPES);
+
 			virtual R operator ()(BRICKS_ARGLIST_TYPES) = 0;
 			R Call(BRICKS_ARGLIST_TYPES_NAMES) const { return const_cast<BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(*this)(BRICKS_ARGLIST_ARGS); }
 		};
@@ -45,7 +47,7 @@ namespace Bricks {
 
 			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return value(BRICKS_ARGLIST_ARGS); }
 
-			virtual bool operator==(const Object& rhs) const { const Functor<T, R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const Functor<T, R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return CompareValues(value, delegate->value); return Object::operator==(rhs); }
+			virtual bool operator==(const Object& rhs) const { const Functor<T, R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const Functor<T, R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return CompareValues(value, delegate->value); return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
@@ -63,7 +65,7 @@ namespace Bricks {
 
 			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return function(BRICKS_ARGLIST_ARGS); }
 
-			virtual bool operator==(const Object& rhs) const { const Function<R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const Function<R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return function == delegate->function; return Object::operator==(rhs); }
+			virtual bool operator==(const Object& rhs) const { const Function<R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const Function<R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return function == delegate->function; return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
@@ -93,7 +95,7 @@ namespace Bricks {
 
 			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return (static_cast<T*>(this->pointer)->*function)(BRICKS_ARGLIST_ARGS); }
 
-			virtual bool operator==(const Object& rhs) const { const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return this->pointer == delegate->pointer && function == delegate->function; return Object::operator==(rhs); }
+			virtual bool operator==(const Object& rhs) const { const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return this->pointer == delegate->pointer && function == delegate->function; return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
@@ -139,7 +141,7 @@ namespace Bricks {
 		virtual R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { if (function) return function->Call(BRICKS_ARGLIST_ARGS); BRICKS_FEATURE_RELEASE_THROW_FATAL(InvalidArgumentException()); }
 
 		operator bool() const { return function; }
-		bool operator==(const Object& rhs) const { const Delegate<R(BRICKS_ARGLIST_TYPES)>* delegate = dynamic_cast<const Delegate<R(BRICKS_ARGLIST_TYPES)>*>(&rhs); if (delegate) return (!function && !delegate->function) || (function && delegate->function && (*function == *delegate->function)); return Object::operator==(rhs); }
+		bool operator==(const Object& rhs) const { const Delegate<R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const Delegate<R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return (!function && !delegate->function) || (function && delegate->function && (*function == *delegate->function)); return Object::operator==(rhs); }
 		bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 	};
 

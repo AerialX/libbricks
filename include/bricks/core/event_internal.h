@@ -25,6 +25,7 @@ namespace Bricks {
 				return *v1 == *v2 ? Collections::ComparisonResult::Equal : Collections::ComparisonResult::Less;
 			}
 		};
+
 		Collections::AutoArray<EventItem> list;
 
 	public:
