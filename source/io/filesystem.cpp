@@ -26,7 +26,7 @@ namespace Bricks { namespace IO {
 		return *directorySeparators;
 	}
 
-	static AutoPointer<Filesystem> defaultFilesystem = NULL;
+	static AutoPointer<Filesystem> defaultFilesystem;
 	void Filesystem::SetDefault(Filesystem* filesystem) { defaultFilesystem = filesystem; }
 	Filesystem* Filesystem::GetDefault()
 	{
