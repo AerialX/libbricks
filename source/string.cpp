@@ -7,10 +7,8 @@
 namespace Bricks {
 	const String String::Empty;
 
-	String String::Format(const String& format, ...)
+	String String::Format(const String& format, va_list args)
 	{
-		va_list args;
-		va_start(args, format);
 #ifdef _GNU_SOURCE
 		char* temp = NULL;
 		if (vasprintf(&temp, format.CString(), args) < 0)
@@ -18,17 +16,26 @@ namespace Bricks {
 		String ret(temp);
 		free(temp);
 #else
-		char dummy[0];
-		int size = vsnprintf(dummy, 0, format.CString(), args);
-		va_end(args);
+		va_list argsCount;
+		va_copy(argsCount, args);
+		char dummy[1];
+		int size = vsnprintf(dummy, 0, format.CString(), argsCount);
+		va_end(argsCount);
 		if (size < 0)
 			BRICKS_FEATURE_THROW(NotSupportedException());
-		va_start(args, format);
 		char temp[size + 1];
 		vsnprintf(temp, size + 1, format.CString(), args);
 		temp[size] = '\0';
 		String ret(temp);
 #endif
+		return ret;
+	}
+
+	String String::Format(const String& format, ...)
+	{
+		va_list args;
+		va_start(args, format);
+		String ret = Format(format, args);
 		va_end(args);
 		return ret;
 	}

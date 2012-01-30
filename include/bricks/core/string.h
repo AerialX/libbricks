@@ -4,13 +4,13 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #ifdef BRICKS_FEATURE_OBJC
 #include <Foundation/Foundation.h>
 #endif
 
 namespace Bricks {
-	// TODO: Iterable<char>
 	class String : public Object
 	{
 		public:
@@ -18,6 +18,7 @@ namespace Bricks {
 			static const String Empty;
 			typedef char Character;
 
+			static String Format(const String& format, va_list args);
 			static String Format(const String& format, ...);
 
 		protected:
