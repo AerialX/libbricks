@@ -39,4 +39,18 @@ namespace Bricks {
 		va_end(args);
 		return ret;
 	}
+
+	int String::Scan(const String& format, va_list args)
+	{
+		return vsscanf(buffer, format.CString(), args);
+	}
+
+	int String::Scan(const String& format, ...)
+	{
+		va_list args;
+		va_start(args, format);
+		int ret = Scan(format, args);
+		va_end(args);
+		return ret;
+	}
 }
