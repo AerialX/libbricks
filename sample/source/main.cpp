@@ -138,13 +138,12 @@ static void testDelegates()
 	Event<void()>* event = new Event<void()>();
 	TestDelegateClass test;
 	*event += delegate;
-	*event += delegate;
 	*event += Delegate<void()>(testDelegate);
 	*event += testDelegate;
 	*event += Delegate<void()>(&test, &TestDelegateClass::testDelegateFunction);
 	*event += MethodDelegate(test, &TestDelegateClass::testDelegateFunction);
 
-	(*event)(); // Should print the first message thrice, and the second.
+	(*event)(); // Should print the first message thrice, and the second twice.
 
 	// Remove the delegate (as many times as it's been added), and make sure the event is empty.
 	*event -= delegate;
