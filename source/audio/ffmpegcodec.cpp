@@ -111,7 +111,11 @@ FFmpegDecoder::~FFmpegDecoder()
 	av_free(cache);
 	av_free(buffer);
 	avcodec_close(stream->codec);
+#ifdef BRICKS_FEATURE_FFMPEG_OLD
 	av_close_input_file(format);
+#else
+	avformat_close_input(&format);
+#endif
 }
 
 void FFmpegDecoder::Seek(s64 sample)
