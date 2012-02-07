@@ -10,6 +10,7 @@
 #include "bricks/collections/comparison.h"
 
 #include <vector>
+#include <algorithm>
 
 namespace Bricks { namespace Collections {
 	template<typename T> class Array;
@@ -40,6 +41,12 @@ namespace Bricks { namespace Collections {
 		typedef typename std::vector<T>::const_iterator const_iterator;
 
 		friend class ArrayIterator<T>;
+
+		struct StlCompare {
+			AutoPointer<ValueComparison<T> > comparison;
+			StlCompare(ValueComparison<T>* comparison) : comparison(comparison) { }
+			bool operator ()(T v1, T v2) const { return comparison->Compare(v1, v2) == ComparisonResult::Less; }
+		};
 
 		iterator IteratorOfItem(const T& value) {
 			for (iterator iter = vector.begin(); iter != vector.end(); iter++) {
@@ -97,5 +104,10 @@ namespace Bricks { namespace Collections {
 
 		virtual void InsertItem(long index, const T& value) { vector.insert(vector.begin() + index, value); }
 		virtual void RemoveItemAt(long index) { vector.erase(vector.begin() + index); }
+
+		virtual void Sort(ValueComparison<T>* sortComparison = NULL)
+		{
+			std::sort(vector.begin(), vector.end(), StlCompare(sortComparison ?: comparison.GetValue()));
+		}
 	};
 } }
