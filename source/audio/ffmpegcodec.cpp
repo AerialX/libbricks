@@ -1,14 +1,14 @@
 #include "bricks/audio/ffmpegcodec.h"
 #include "bricks/core/exception.h"
 
-#if LIBAVFORMAT_VERSION_MAJOR <= 53 && LIBAVFORMAT_VERSION_MINOR < 18
-#define BRICKS_FEATURE_FFMPEG_OLD
-#endif
-
 extern "C" {
 	#include <libavcodec/avcodec.h>
 	#include <libavformat/avformat.h>
 }
+
+#if LIBAVFORMAT_VERSION_MAJOR <= 53 && LIBAVFORMAT_VERSION_MINOR < 18
+#define BRICKS_FEATURE_FFMPEG_OLD
+#endif
 
 using namespace Bricks;
 using namespace Bricks::IO;
