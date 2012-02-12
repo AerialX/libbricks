@@ -10,6 +10,7 @@ namespace Bricks {
 
 namespace Bricks { namespace Collections {
 	namespace Internal {
+		class IteratorBase { };
 		class IterableBase { };
 		class IterableFastBase { };
 	}
@@ -23,7 +24,7 @@ namespace Bricks { namespace Collections {
 	template<typename T> class Collection;
 
 	template<typename T>
-	class Iterator : public Object
+	class Iterator : public Object, public Internal::IteratorBase
 	{
 	public:
 		typedef T IteratorType;
@@ -59,9 +60,14 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T>
 	struct IteratorType
 	{
-		template<typename U> IteratorType(const U& list, typename SFINAE::DisableIf<!SFINAE::IsCompatibleType<IterableBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list.GetIterator()) { }
-		template<typename U> IteratorType(const U* list) : state(true), iter(list->GetIterator()) { }
-		template<typename U> IteratorType(const Pointer<U>& list) : state(true), iter(list->GetIterator()) { }
+		template<typename U> IteratorType(const U& list, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list.GetIterator()) { }
+		template<typename U> IteratorType(const U* list, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list->GetIterator()) { }
+		template<typename U> IteratorType(const Pointer<U>& list, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list->GetIterator()) { }
+
+		template<typename U> IteratorType(const U& iter, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, U>::Value>::Type* dummy = NULL) : state(true), iter(&iter) { }
+		template<typename U> IteratorType(const U* iter, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, U>::Value>::Type* dummy = NULL) : state(true), iter(iter) { }
+		template<typename U> IteratorType(const Pointer<U>& iter, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, U>::Value>::Type* dummy = NULL) : state(true), iter(iter) { }
+
 		bool state;
 		AutoPointer<Iterator<T> > iter;
 		inline bool MoveNext() const { return iter->MoveNext(); }
@@ -70,9 +76,14 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T>
 	struct IteratorFastType
 	{
-		template<typename U> IteratorFastType(const U& list, typename SFINAE::DisableIf<!SFINAE::IsCompatibleType<IterableFastBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list.GetIteratorFast()) { }
-		template<typename U> IteratorFastType(const U* list) : state(true), iter(list->GetIteratorFast()) { }
-		template<typename U> IteratorFastType(const Pointer<U>& list) : state(true), iter(list->GetIteratorFast()) { }
+		template<typename U> IteratorFastType(const U& list, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list.GetIteratorFast()) { }
+		template<typename U> IteratorFastType(const U* list, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list->GetIteratorFast()) { }
+		template<typename U> IteratorFastType(const Pointer<U>& list, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, U>::Value>::Type* dummy = NULL) : state(true), iter(list->GetIteratorFast()) { }
+
+		template<typename U> IteratorFastType(const U& iter, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, U>::Value>::Type* dummy = NULL) : state(true), iter(iter) { }
+		template<typename U> IteratorFastType(const U* iter, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, U>::Value>::Type* dummy = NULL) : state(true), iter(*iter) { }
+		template<typename U> IteratorFastType(const Pointer<U>& iter, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, U>::Value>::Type* dummy = NULL) : state(true), iter(*iter) { }
+
 		bool state;
 		T iter;
 		inline bool MoveNext() const { return const_cast<T&>(iter).MoveNext(); }
@@ -82,6 +93,11 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, T>::Value && !SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const T& t);
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, T>::Value && !SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const T* t);
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableBase, T>::Value && !SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const Pointer<T>& t);
+
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, T>::Value && SFINAE::IsSameType<Iterator<typename T::IteratorType>, T>::Value, IteratorType<T> >::Type IteratorContainerType(const T& t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, T>::Value && !SFINAE::IsSameType<Iterator<typename T::IteratorType>, T>::Value, IteratorFastType<T> >::Type IteratorContainerType(const T& t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const T* t);
+	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IteratorBase, T>::Value, IteratorType<typename T::IteratorType> >::Type IteratorContainerType(const Pointer<T>& t);
 
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const T& t);
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const T* t);
