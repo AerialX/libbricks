@@ -172,7 +172,7 @@ if(BRICKS_CONFIG_COMPRESSION_LIBZIP)
 endif()
 
 if(BRICKS_CONFIG_AUDIO_FFMPEG)
-	set(BRICKS_AUDIO_SOURCE_FILES ${BRICKS_AUDIO_SOURCE_FILES} "source/audio/ffmpegcodec.cpp")
+	set(BRICKS_AUDIO_SOURCE_FILES ${BRICKS_AUDIO_SOURCE_FILES} "source/audio/ffmpegdecoder.cpp" "source/audio/ffmpegaudiodecoder.cpp")
 	add_any_library(BRICKS_AUDIO_LINK_LIBRARIES BRICKS_LINK_DIRECTORIES "${FFMPEG_LIBRARIES}")
 endif()
 

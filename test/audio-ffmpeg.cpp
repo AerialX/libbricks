@@ -2,7 +2,7 @@
 
 #include <bricks/core/autopointer.h>
 #include <bricks/core/exception.h>
-#include <bricks/audio/ffmpegcodec.h>
+#include <bricks/audio/ffmpegaudiodecoder.h>
 #include <bricks/io/filestream.h>
 
 using namespace Bricks;
@@ -25,14 +25,14 @@ protected:
 
 TEST_F(BricksAudioFFmpegTest, InitialParse) {
 	try {
-		autonew FFmpegDecoder(fileStream);
+		autonew FFmpegAudioDecoder(fileStream);
 	} catch (const Exception& ex) {
 		ADD_FAILURE();
 	}
 }
 
 TEST_F(BricksAudioFFmpegTest, ReadMetadata) {
-	AutoPointer<AudioCodec<s16> > decoder = autonew FFmpegDecoder(fileStream);
+	AutoPointer<AudioCodec<s16> > decoder = autonew FFmpegAudioDecoder(fileStream);
 
 	EXPECT_EQ(0x400, decoder->GetSamples());
 	EXPECT_EQ(1, decoder->GetChannels());
@@ -40,7 +40,7 @@ TEST_F(BricksAudioFFmpegTest, ReadMetadata) {
 }
 
 TEST_F(BricksAudioFFmpegTest, ReadSamples) {
-	AutoPointer<AudioCodec<s16> > decoder = autonew FFmpegDecoder(fileStream);
+	AutoPointer<AudioCodec<s16> > decoder = autonew FFmpegAudioDecoder(fileStream);
 
 	AudioBuffer<s16> buffer(decoder->GetChannels(), 0x100);
 	for (u32 channel = 0; channel < decoder->GetChannels(); channel++) {

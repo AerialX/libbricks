@@ -4,39 +4,29 @@
 
 #ifdef BRICKS_CONFIG_AUDIO_FFMPEG
 
-#include "bricks/core/copypointer.h"
+#include "bricks/audio/ffmpegdecoder.h"
 #include "bricks/audio/audiocodec.h"
-#include "bricks/io/stream.h"
-
-extern "C" {
-	struct AVFormatContext;
-	struct AVStream;
-	struct AVCodec;
-	struct AVPacket;
-}
 
 namespace Bricks { namespace Audio {
-	class FFmpegDecoder : public AudioCodec<s16>, NoCopy
+	class FFmpegAudioDecoder : public AudioCodec<s16>, NoCopy
 	{
 	protected:
+		AutoPointer<FFmpegDecoder> decoder;
 		size_t streamIndex;
-		AVFormatContext* format;
 		AVStream* stream;
 		AVCodec* codec;
-		AVPacket* packet;
 		void* buffer;
 		size_t bufferSize;
 		void* cache;
 		size_t cacheLength;
-		AutoPointer<IO::Stream> ioStream;
-		void* ffmpegBuffer;
-		static const int ffmpegBufferSize = 0x1000;
 
 		int ReadCache(AudioBuffer<s16>& buffer, int count, int offset);
+		void Initialize();
 
 	public:
-		FFmpegDecoder(IO::Stream* stream);
-		~FFmpegDecoder();
+		FFmpegAudioDecoder(FFmpegDecoder* decoder);
+		FFmpegAudioDecoder(IO::Stream* stream);
+		~FFmpegAudioDecoder();
 
 		void Seek(s64 sample);
 		u32 Read(AudioBuffer<s16>& buffer, u32 count, u32 offset = 0);
