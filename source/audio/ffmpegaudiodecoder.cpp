@@ -50,6 +50,8 @@ void FFmpegAudioDecoder::Initialize()
 
 	cache = av_malloc(bufferSize);
 	cacheLength = 0;
+
+	// TODO: Handle stream->codec->sample_fmt
 }
 
 FFmpegAudioDecoder::~FFmpegAudioDecoder()
@@ -79,9 +81,11 @@ u32 FFmpegAudioDecoder::Read(AudioBuffer<s16>& buffer, u32 count, u32 boffset)
 	int offset = ReadCache(buffer, count, boffset);
 	count -= offset;
 	while (count > 0) {
-		AVPacket packet;
-		if (!decoder->ReadPacket(&packet, streamIndex))
+		AVPacket originalPacket;
+		if (!decoder->ReadPacket(&originalPacket, streamIndex))
 			break;
+
+		AVPacket packet = originalPacket;
 
 		cacheLength = 0;
 
@@ -110,6 +114,8 @@ u32 FFmpegAudioDecoder::Read(AudioBuffer<s16>& buffer, u32 count, u32 boffset)
 				cacheLength += left;
 			}
 		}
+
+		decoder->FreePacket(&originalPacket);
 	}
 	AudioCodec<s16>::Read(buffer, offset);
 	return offset;

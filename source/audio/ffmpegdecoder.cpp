@@ -71,9 +71,9 @@ FFmpegDecoder::FFmpegDecoder(Stream* ioStream) : ioStream(ioStream)
 	if (avformat_open_input(&format, "", NULL, NULL))
 		BRICKS_FEATURE_THROW(Exception());
 #ifdef BRICKS_FEATURE_FFMPEG_OLD
-	if (av_find_stream_info(format))
+	if (av_find_stream_info(format) < 0)
 #else
-	if (avformat_find_stream_info(format, NULL))
+	if (avformat_find_stream_info(format, NULL) < 0)
 #endif
 		BRICKS_FEATURE_THROW(FormatException());
 
@@ -137,15 +137,13 @@ bool FFmpegDecoder::ReadPacket(AVPacket* packet, int streamIndex)
 	if (DequeuePacket(packet, streamIndex))
 		return true;
 
-	while (!av_read_frame(format, packet)) {
+	while (av_read_frame(format, packet) >= 0) {
 		currentTimeKnown = true;
 		currentTime = packet->dts;
 
 		if (streamIndex < 0 || packet->stream_index == streamIndex)
 			return true;
-		else if (!IsStreamOpen(packet->stream_index))
-			continue;
-		else
+		else if (IsStreamOpen(packet->stream_index))
 			QueuePacket(packet);
 	}
 
@@ -179,7 +177,7 @@ bool FFmpegDecoder::DequeuePacket(AVPacket* packet, int streamIndex)
 void FFmpegDecoder::FlushQueue()
 {
 	foreach (AVPacket& packet, packetQueue)
-		av_free_packet(&packet);
+		FreePacket(&packet);
 	packetQueue.Clear();
 }
 
