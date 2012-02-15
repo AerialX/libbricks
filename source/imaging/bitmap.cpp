@@ -4,6 +4,31 @@
 using namespace Bricks::IO;
 
 namespace Bricks { namespace Imaging {
+	Bitmap::Bitmap(u32 width, u32 height, const PixelDescription& description, InterlaceType::Enum interlacing) :
+		pixelDescription(description), interlacing(interlacing), width(width), height(height), pixelData(NULL)
+	{
+		AllocateMemory();
+	}
+
+	Bitmap::~Bitmap()
+	{
+		if (pixelData)
+			delete[] pixelData;
+	}
+
+	void Bitmap::AllocateMemory()
+	{
+		if (pixelData)
+			delete[] pixelData;
+
+		int size = GetImageDataSize();
+		if (size) {
+			pixelData = new u8[size];
+			memset(pixelData, 0, size);
+		} else
+			pixelData = NULL;
+	}
+
 	Colour Bitmap::GetPixel(u32 x, u32 y) const
 	{
 		if (x >= width || y >= height)

@@ -5,7 +5,7 @@
 #include "bricks/imaging/image.h"
 
 namespace Bricks { namespace Imaging {
-	class Bitmap : public Object, public NoCopy, public BitmapImage
+	class Bitmap : public Object, public BitmapImage, NoCopy
 	{
 	protected:
 		AutoPointer<Palette> palette;
@@ -15,25 +15,13 @@ namespace Bricks { namespace Imaging {
 		u32 height;
 		u8* pixelData;
 
-		void AllocateMemory()
-		{
-			if (pixelData)
-				delete[] pixelData;
-
-			int size = GetImageDataSize();
-			if (size) {
-				pixelData = new u8[size];
-				memset(pixelData, 0, size);
-			} else
-				pixelData = NULL;
-		}
+		void AllocateMemory();
 
 	public:
 		// TODO: Should probably obey some packing rules
-		Bitmap(u32 width = 0, u32 height = 0, const PixelDescription& description = PixelDescription::RGBA8, InterlaceType::Enum interlacing = InterlaceType::None) : pixelDescription(description), interlacing(interlacing), width(width), height(height), pixelData(NULL) {
-			AllocateMemory();
-		}
-		~Bitmap() { if (pixelData) delete[] pixelData; }
+		Bitmap(u32 width = 0, u32 height = 0, const PixelDescription& description = PixelDescription::RGBA8, InterlaceType::Enum interlacing = InterlaceType::None);
+		~Bitmap();
+
 		Palette* GetPalette() const { return palette; }
 		void* GetImageData() const { return pixelData; }
 		u32 GetImageDataSize() const { return CalculateImageDataSize(width, height, pixelDescription); }
