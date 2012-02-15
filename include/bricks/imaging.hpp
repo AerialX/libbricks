@@ -11,6 +11,7 @@
 #include "bricks/imaging/videocodec.h"
 
 #include "bricks/imaging/png.h"
+#include "bricks/imaging/ffmpegvideodecoder.h"
 
 #include "bricks/imaging/font.h"
 #include "bricks/imaging/freetypefont.h"
