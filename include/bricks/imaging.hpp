@@ -8,6 +8,8 @@
 #include "bricks/imaging/subimage.h"
 #include "bricks/imaging/bitmap.h"
 
+#include "bricks/imaging/videocodec.h"
+
 #include "bricks/imaging/png.h"
 
 #include "bricks/imaging/font.h"

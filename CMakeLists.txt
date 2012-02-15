@@ -125,6 +125,7 @@ set(BRICKS_IMAGING_LINK_LIBRARIES bricks-io)
 set(BRICKS_IMAGING_SOURCE_FILES
 	"source/imaging/colour.cpp" "source/imaging/image.cpp" "source/imaging/bitmap.cpp"
 	"source/imaging/font.cpp"
+	"source/imaging/videocodec.cpp"
 )
 
 set(BRICKS_CRYPTOGRAPHY_LINK_LIBRARIES bricks-io)
