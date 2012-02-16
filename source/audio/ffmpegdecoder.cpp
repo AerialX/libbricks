@@ -7,7 +7,7 @@ extern "C" {
 	#include <libavformat/avformat.h>
 }
 
-#if LIBAVFORMAT_VERSION_MAJOR <= 53 && LIBAVFORMAT_VERSION_MINOR < 18
+#if LIBAVFORMAT_VERSION_MAJOR <= 53 && LIBAVFORMAT_VERSION_MINOR <= 24
 #define BRICKS_FEATURE_FFMPEG_OLD
 #endif
 
