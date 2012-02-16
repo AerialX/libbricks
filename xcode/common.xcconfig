@@ -1,0 +1,53 @@
+// libbricks xcode configuration values
+
+// Architectures
+ARCHS[sdk=iphonesimulator*]=i386
+ARCHS[sdk=iphoneos*]=$(ARCHS_STANDARD_32_BIT) armv6
+ARCHS[sdk=macosx*]=$(ARCHS_STANDARD_32_64_BIT)
+
+BRICKS_ARCH[arch=armv6]=armv6
+BRICKS_ARCH[arch=armv7]=armv7
+BRICKS_ARCH[arch=i386]=i386
+BRICKS_ARCH[arch=x86_64]=x86_64
+
+// Platforms
+BRICKS_PLATFORM[sdk=iphone*]=ios
+BRICKS_PLATFORM[sdk=macosx*]=darwin
+
+// brickslib directories
+BRICKSLIB_PLATFORM_DIR=$(BRICKS_DIR)/lib/build/$(BRICKS_PLATFORM)-$(BRICKS_ARCH)
+BRICKSLIB_INCLUDE_DIR=$(BRICKSLIB_PLATFORM_DIR)/include
+BRICKSLIB_LIBRARY_DIR=$(BRICKSLIB_PLATFORM_DIR)/lib
+
+// Search Directories
+BRICKS_INCLUDE_DIRS=$(BRICKS_DIR)/include $(BRICKS_DIR)/xcode/include-$(BRICKS_PLATFORM) $(BRICKSLIB_INCLUDE_DIR)
+BRICKS_LIBRARY_DIRS=$(BRICKSLIB_LIBRARY_DIR)
+
+HEADER_SEARCH_PATHS=$(BRICKS_INCLUDE_DIRS)
+LIBRARY_SEARCH_PATHS=$(BRICKS_LIBRARY_DIRS)
+FRAMEWORK_SEARCH_PATHS=$(DEVELOPER_FRAMEWORKS_DIR)
+
+// Compiler Settings
+GCC_C_LANGUAGE_STANDARD=gnu99
+GCC_VERSION=com.apple.compilers.llvm.clang.1_0
+GCC_DYNAMIC_NO_PIC=NO
+GCC_INPUT_FILETYPE=automatic
+GCC_SYMBOLS_PRIVATE_EXTERN=YES
+
+BRICKS_LIBS=-lzip -lfreetype -lpng -lz
+BRICKS_LDFLAGS=-ObjC $(BRICKS_LIBS)
+BRICKS_LDFLAGS[sdk=macosx*]=-ObjC $(BRICKS_LIBS) -lavformat -lavcodec -lavutil -lswscale
+BRICKS_CFLAGS=-Wall
+BRICKS_CFLAGS[arch=armv6]=-Wall -mno-thumb // Get around a nasty Xcode 4.2 optimization bug
+BRICKS_CXXFLAGS=$(OTHER_CFLAGS)
+
+// Miscellaneous
+PRODUCT_NAME=$(TARGET_NAME)
+DSTROOT=/tmp/$(PRODUCT_NAME).dst
+COPY_PHASE_STRIP=NO
+SKIP_INSTALL=YES
+
+// iOS Settings
+CODE_SIGN_IDENTITY[sdk=iphoneos*]=iPhone Developer
+IPHONEOS_DEPLOYMENT_TARGET=3.0
+TARGETED_DEVICE_FAMILY=1,2

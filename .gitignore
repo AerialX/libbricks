@@ -3,3 +3,7 @@
 *.swp
 build-*/
 ._build-*
+
+.DS_Store
+xcuserdata/
+build/

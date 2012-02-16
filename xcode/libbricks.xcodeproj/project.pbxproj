@@ -1,0 +1,1674 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		939102CD14EB639E00A68CF9 /* bricks-ios */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 939102CE14EB639E00A68CF9 /* Build configuration list for PBXAggregateTarget "bricks-ios" */;
+			buildPhases = (
+			);
+			dependencies = (
+				939102D214EB63AA00A68CF9 /* PBXTargetDependency */,
+				939102D614EB63AA00A68CF9 /* PBXTargetDependency */,
+				939102D414EB63AA00A68CF9 /* PBXTargetDependency */,
+				939102D814EB63AA00A68CF9 /* PBXTargetDependency */,
+				939102DA14EB63AA00A68CF9 /* PBXTargetDependency */,
+				939102DC14EB63AA00A68CF9 /* PBXTargetDependency */,
+				939102DE14EB63AA00A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-ios";
+			productName = libbricks;
+		};
+		9391037C14EB7AA500A68CF9 /* bricks-osx */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9391037D14EB7AA500A68CF9 /* Build configuration list for PBXAggregateTarget "bricks-osx" */;
+			buildPhases = (
+			);
+			dependencies = (
+				9391038114EB7AAC00A68CF9 /* PBXTargetDependency */,
+				9391038314EB7AAC00A68CF9 /* PBXTargetDependency */,
+				9391038514EB7AAC00A68CF9 /* PBXTargetDependency */,
+				9391038714EB7AAC00A68CF9 /* PBXTargetDependency */,
+				9391038914EB7AAC00A68CF9 /* PBXTargetDependency */,
+				9391038B14EB7AAC00A68CF9 /* PBXTargetDependency */,
+				9391038D14EB7AAC00A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-osx";
+			productName = "libbricks-osx";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		939101AC14EB5C0A00A68CF9 /* exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018514EB5BE600A68CF9 /* exception.cpp */; };
+		939101AD14EB5C0A00A68CF9 /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019414EB5BE600A68CF9 /* object.cpp */; };
+		939101AE14EB5C0A00A68CF9 /* string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019514EB5BE600A68CF9 /* string.cpp */; };
+		939101AF14EB5C0A00A68CF9 /* value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019914EB5BE600A68CF9 /* value.cpp */; };
+		9391020C14EB5D0700A68CF9 /* midireader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018014EB5BE600A68CF9 /* midireader.cpp */; };
+		9391020E14EB5D1300A68CF9 /* hash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018414EB5BE600A68CF9 /* hash.cpp */; };
+		9391020F14EB5D1A00A68CF9 /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018714EB5BE600A68CF9 /* bitmap.cpp */; };
+		9391021014EB5D1A00A68CF9 /* colour.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018814EB5BE600A68CF9 /* colour.cpp */; };
+		9391021214EB5D1A00A68CF9 /* font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018A14EB5BE600A68CF9 /* font.cpp */; };
+		9391021414EB5D1A00A68CF9 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018C14EB5BE600A68CF9 /* image.cpp */; };
+		9391021614EB5D1A00A68CF9 /* videocodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018E14EB5BE600A68CF9 /* videocodec.cpp */; };
+		9391021714EB5D1F00A68CF9 /* cachestream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019014EB5BE600A68CF9 /* cachestream.cpp */; };
+		9391021814EB5D1F00A68CF9 /* console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019114EB5BE600A68CF9 /* console.cpp */; };
+		9391021914EB5D1F00A68CF9 /* filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019214EB5BE600A68CF9 /* filesystem.cpp */; };
+		9391021A14EB5D1F00A68CF9 /* substream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019314EB5BE600A68CF9 /* substream.cpp */; };
+		9391021B14EB5D2300A68CF9 /* thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019714EB5BE600A68CF9 /* thread.cpp */; };
+		9391021C14EB5D2300A68CF9 /* threadlocalstorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019814EB5BE600A68CF9 /* threadlocalstorage.cpp */; };
+		9391031514EB790A00A68CF9 /* exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018514EB5BE600A68CF9 /* exception.cpp */; };
+		9391031614EB790A00A68CF9 /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019414EB5BE600A68CF9 /* object.cpp */; };
+		9391031714EB790A00A68CF9 /* string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019514EB5BE600A68CF9 /* string.cpp */; };
+		9391031814EB790A00A68CF9 /* value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019914EB5BE600A68CF9 /* value.cpp */; };
+		9391032514EB794200A68CF9 /* cachestream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019014EB5BE600A68CF9 /* cachestream.cpp */; };
+		9391032614EB794200A68CF9 /* console.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019114EB5BE600A68CF9 /* console.cpp */; };
+		9391032714EB794200A68CF9 /* filesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019214EB5BE600A68CF9 /* filesystem.cpp */; };
+		9391032814EB794200A68CF9 /* substream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019314EB5BE600A68CF9 /* substream.cpp */; };
+		9391033414EB794500A68CF9 /* thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019714EB5BE600A68CF9 /* thread.cpp */; };
+		9391033514EB794500A68CF9 /* threadlocalstorage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019814EB5BE600A68CF9 /* threadlocalstorage.cpp */; };
+		9391034114EB794A00A68CF9 /* midireader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018014EB5BE600A68CF9 /* midireader.cpp */; };
+		9391034D14EB794D00A68CF9 /* bitmap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018714EB5BE600A68CF9 /* bitmap.cpp */; };
+		9391034E14EB794D00A68CF9 /* colour.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018814EB5BE600A68CF9 /* colour.cpp */; };
+		9391034F14EB794D00A68CF9 /* font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018A14EB5BE600A68CF9 /* font.cpp */; };
+		9391035014EB794D00A68CF9 /* image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018C14EB5BE600A68CF9 /* image.cpp */; };
+		9391035114EB794D00A68CF9 /* videocodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018E14EB5BE600A68CF9 /* videocodec.cpp */; };
+		9391035D14EB794E00A68CF9 /* hash.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018414EB5BE600A68CF9 /* hash.cpp */; };
+		939103B114EB8C2400A68CF9 /* zipfilesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018214EB5BE600A68CF9 /* zipfilesystem.cpp */; };
+		939103B314EB8C2700A68CF9 /* zipfilesystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018214EB5BE600A68CF9 /* zipfilesystem.cpp */; };
+		939103B414EB8C9000A68CF9 /* freetypefont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018B14EB5BE600A68CF9 /* freetypefont.cpp */; };
+		939103B514EB8C9000A68CF9 /* png.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018D14EB5BE600A68CF9 /* png.cpp */; };
+		939103B614EB8C9200A68CF9 /* freetypefont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018B14EB5BE600A68CF9 /* freetypefont.cpp */; };
+		939103B714EB8C9200A68CF9 /* png.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018D14EB5BE600A68CF9 /* png.cpp */; };
+		939103B814EB8DAF00A68CF9 /* ffmpegvideodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018914EB5BE600A68CF9 /* ffmpegvideodecoder.cpp */; };
+		939103B914EB8DBB00A68CF9 /* ffmpegaudiodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */; };
+		939103BA14EB8DBB00A68CF9 /* ffmpegdecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9391022914EB5DD500A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391019D14EB5BF600A68CF9;
+			remoteInfo = "libbricks-core";
+		};
+		9391022B14EB5DDD00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391019D14EB5BF600A68CF9;
+			remoteInfo = "libbricks-core";
+		};
+		9391022D14EB5DE700A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101B314EB5CD400A68CF9;
+			remoteInfo = "libbricks-io";
+		};
+		9391022F14EB5DF000A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101B314EB5CD400A68CF9;
+			remoteInfo = "libbricks-io";
+		};
+		9391023114EB5DF700A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101B314EB5CD400A68CF9;
+			remoteInfo = "libbricks-io";
+		};
+		9391023314EB5DFE00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101B314EB5CD400A68CF9;
+			remoteInfo = "libbricks-io";
+		};
+		939102D114EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391019D14EB5BF600A68CF9;
+			remoteInfo = "libbricks-core";
+		};
+		939102D314EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101B314EB5CD400A68CF9;
+			remoteInfo = "libbricks-io";
+		};
+		939102D514EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101C214EB5CDE00A68CF9;
+			remoteInfo = "libbricks-threading";
+		};
+		939102D714EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101D114EB5CE600A68CF9;
+			remoteInfo = "libbricks-audio";
+		};
+		939102D914EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101E014EB5CED00A68CF9;
+			remoteInfo = "libbricks-imaging";
+		};
+		939102DB14EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101EF14EB5CF500A68CF9;
+			remoteInfo = "libbricks-cryptography";
+		};
+		939102DD14EB63AA00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 939101FE14EB5CFD00A68CF9;
+			remoteInfo = "libbricks-compression";
+		};
+		9391037014EB798000A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391032114EB794200A68CF9;
+			remoteInfo = "libbricks-io-osx";
+		};
+		9391037214EB798800A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391032114EB794200A68CF9;
+			remoteInfo = "libbricks-io-osx";
+		};
+		9391037414EB798D00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391032114EB794200A68CF9;
+			remoteInfo = "libbricks-io-osx";
+		};
+		9391037614EB799400A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391032114EB794200A68CF9;
+			remoteInfo = "libbricks-io-osx";
+		};
+		9391037814EB799A00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391031314EB790A00A68CF9;
+			remoteInfo = "libbricks-core-osx";
+		};
+		9391037A14EB79A100A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391031314EB790A00A68CF9;
+			remoteInfo = "libbricks-core-osx";
+		};
+		9391038014EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391031314EB790A00A68CF9;
+			remoteInfo = "libbricks-core-osx";
+		};
+		9391038214EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391032114EB794200A68CF9;
+			remoteInfo = "libbricks-io-osx";
+		};
+		9391038414EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391033014EB794500A68CF9;
+			remoteInfo = "libbricks-threading-osx";
+		};
+		9391038614EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391033D14EB794A00A68CF9;
+			remoteInfo = "libbricks-audio-osx";
+		};
+		9391038814EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391034914EB794D00A68CF9;
+			remoteInfo = "libbricks-imaging-osx";
+		};
+		9391038A14EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391035914EB794E00A68CF9;
+			remoteInfo = "libbricks-cryptography-osx";
+		};
+		9391038C14EB7AAC00A68CF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391036514EB795000A68CF9;
+			remoteInfo = "libbricks-compression-osx";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpegaudiodecoder.cpp; sourceTree = "<group>"; };
+		9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpegdecoder.cpp; sourceTree = "<group>"; };
+		9391018014EB5BE600A68CF9 /* midireader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = midireader.cpp; sourceTree = "<group>"; };
+		9391018214EB5BE600A68CF9 /* zipfilesystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = zipfilesystem.cpp; sourceTree = "<group>"; };
+		9391018414EB5BE600A68CF9 /* hash.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = hash.cpp; sourceTree = "<group>"; };
+		9391018514EB5BE600A68CF9 /* exception.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = exception.cpp; sourceTree = "<group>"; };
+		9391018714EB5BE600A68CF9 /* bitmap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = bitmap.cpp; sourceTree = "<group>"; };
+		9391018814EB5BE600A68CF9 /* colour.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = colour.cpp; sourceTree = "<group>"; };
+		9391018914EB5BE600A68CF9 /* ffmpegvideodecoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpegvideodecoder.cpp; sourceTree = "<group>"; };
+		9391018A14EB5BE600A68CF9 /* font.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = font.cpp; sourceTree = "<group>"; };
+		9391018B14EB5BE600A68CF9 /* freetypefont.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = freetypefont.cpp; sourceTree = "<group>"; };
+		9391018C14EB5BE600A68CF9 /* image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = image.cpp; sourceTree = "<group>"; };
+		9391018D14EB5BE600A68CF9 /* png.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = png.cpp; sourceTree = "<group>"; };
+		9391018E14EB5BE600A68CF9 /* videocodec.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = videocodec.cpp; sourceTree = "<group>"; };
+		9391019014EB5BE600A68CF9 /* cachestream.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = cachestream.cpp; sourceTree = "<group>"; };
+		9391019114EB5BE600A68CF9 /* console.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = console.cpp; sourceTree = "<group>"; };
+		9391019214EB5BE600A68CF9 /* filesystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = filesystem.cpp; sourceTree = "<group>"; };
+		9391019314EB5BE600A68CF9 /* substream.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = substream.cpp; sourceTree = "<group>"; };
+		9391019414EB5BE600A68CF9 /* object.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = object.cpp; sourceTree = "<group>"; };
+		9391019514EB5BE600A68CF9 /* string.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = string.cpp; sourceTree = "<group>"; };
+		9391019714EB5BE600A68CF9 /* thread.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = thread.cpp; sourceTree = "<group>"; };
+		9391019814EB5BE600A68CF9 /* threadlocalstorage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = threadlocalstorage.cpp; sourceTree = "<group>"; };
+		9391019914EB5BE600A68CF9 /* value.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = value.cpp; sourceTree = "<group>"; };
+		9391019E14EB5BF600A68CF9 /* libbricks-core.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-core.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939101B414EB5CD400A68CF9 /* libbricks-io.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-io.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939101C314EB5CDE00A68CF9 /* libbricks-threading.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-threading.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939101D214EB5CE600A68CF9 /* libbricks-audio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-audio.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939101E114EB5CED00A68CF9 /* libbricks-imaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-imaging.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939101F014EB5CF500A68CF9 /* libbricks-cryptography.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-cryptography.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939101FF14EB5CFD00A68CF9 /* libbricks-compression.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-compression.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391031F14EB790A00A68CF9 /* libbricks-core.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-core.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391032F14EB794200A68CF9 /* libbricks-io.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-io.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391033C14EB794500A68CF9 /* libbricks-threading.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-threading.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391034814EB794A00A68CF9 /* libbricks-audio.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-audio.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391035814EB794D00A68CF9 /* libbricks-imaging.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-imaging.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391036414EB794E00A68CF9 /* libbricks-cryptography.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-cryptography.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9391036F14EB795000A68CF9 /* libbricks-compression.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libbricks-compression.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		939105F314EB991600A68CF9 /* common.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = common.xcconfig; sourceTree = "<group>"; };
+		9391063F14EBA25100A68CF9 /* config-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "config-debug.xcconfig"; sourceTree = "<group>"; };
+		9391064014EBA25100A68CF9 /* config-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "config-release.xcconfig"; sourceTree = "<group>"; };
+		9391065C14EBA6F900A68CF9 /* common-debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "common-debug.xcconfig"; sourceTree = "<group>"; };
+		9391065D14EBA6F900A68CF9 /* common-release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "common-release.xcconfig"; sourceTree = "<group>"; };
+		939DE7B114EBACC200452718 /* config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = config.xcconfig; sourceTree = "<group>"; };
+		939DE8F814EBB14200452718 /* include */ = {isa = PBXFileReference; lastKnownFileType = folder; name = include; path = ../include; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		9391019B14EB5BF600A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101B114EB5CD400A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101C014EB5CDE00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101CF14EB5CE600A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101DE14EB5CED00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101ED14EB5CF500A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101FC14EB5CFD00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391031914EB790A00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391032914EB794200A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391033614EB794500A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391034214EB794A00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391035214EB794D00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391035E14EB794E00A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391036914EB795000A68CF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9391017314EB5BB400A68CF9 = {
+			isa = PBXGroup;
+			children = (
+				939DE7AF14EBAC7D00452718 /* config */,
+				9391017C14EB5BE600A68CF9 /* source */,
+				939DE8F814EBB14200452718 /* include */,
+				9391019F14EB5BF600A68CF9 /* products */,
+			);
+			sourceTree = "<group>";
+		};
+		9391017C14EB5BE600A68CF9 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				9391017D14EB5BE600A68CF9 /* audio */,
+				9391018114EB5BE600A68CF9 /* compression */,
+				9391018314EB5BE600A68CF9 /* cryptography */,
+				9391018614EB5BE600A68CF9 /* imaging */,
+				9391018F14EB5BE600A68CF9 /* io */,
+				9391019614EB5BE600A68CF9 /* threading */,
+				9391018514EB5BE600A68CF9 /* exception.cpp */,
+				9391019414EB5BE600A68CF9 /* object.cpp */,
+				9391019514EB5BE600A68CF9 /* string.cpp */,
+				9391019914EB5BE600A68CF9 /* value.cpp */,
+			);
+			name = source;
+			path = ../source;
+			sourceTree = "<group>";
+		};
+		9391017D14EB5BE600A68CF9 /* audio */ = {
+			isa = PBXGroup;
+			children = (
+				9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */,
+				9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */,
+				9391018014EB5BE600A68CF9 /* midireader.cpp */,
+			);
+			path = audio;
+			sourceTree = "<group>";
+		};
+		9391018114EB5BE600A68CF9 /* compression */ = {
+			isa = PBXGroup;
+			children = (
+				9391018214EB5BE600A68CF9 /* zipfilesystem.cpp */,
+			);
+			path = compression;
+			sourceTree = "<group>";
+		};
+		9391018314EB5BE600A68CF9 /* cryptography */ = {
+			isa = PBXGroup;
+			children = (
+				9391018414EB5BE600A68CF9 /* hash.cpp */,
+			);
+			path = cryptography;
+			sourceTree = "<group>";
+		};
+		9391018614EB5BE600A68CF9 /* imaging */ = {
+			isa = PBXGroup;
+			children = (
+				9391018714EB5BE600A68CF9 /* bitmap.cpp */,
+				9391018814EB5BE600A68CF9 /* colour.cpp */,
+				9391018914EB5BE600A68CF9 /* ffmpegvideodecoder.cpp */,
+				9391018A14EB5BE600A68CF9 /* font.cpp */,
+				9391018B14EB5BE600A68CF9 /* freetypefont.cpp */,
+				9391018C14EB5BE600A68CF9 /* image.cpp */,
+				9391018D14EB5BE600A68CF9 /* png.cpp */,
+				9391018E14EB5BE600A68CF9 /* videocodec.cpp */,
+			);
+			path = imaging;
+			sourceTree = "<group>";
+		};
+		9391018F14EB5BE600A68CF9 /* io */ = {
+			isa = PBXGroup;
+			children = (
+				9391019014EB5BE600A68CF9 /* cachestream.cpp */,
+				9391019114EB5BE600A68CF9 /* console.cpp */,
+				9391019214EB5BE600A68CF9 /* filesystem.cpp */,
+				9391019314EB5BE600A68CF9 /* substream.cpp */,
+			);
+			path = io;
+			sourceTree = "<group>";
+		};
+		9391019614EB5BE600A68CF9 /* threading */ = {
+			isa = PBXGroup;
+			children = (
+				9391019714EB5BE600A68CF9 /* thread.cpp */,
+				9391019814EB5BE600A68CF9 /* threadlocalstorage.cpp */,
+			);
+			path = threading;
+			sourceTree = "<group>";
+		};
+		9391019F14EB5BF600A68CF9 /* products */ = {
+			isa = PBXGroup;
+			children = (
+				9391019E14EB5BF600A68CF9 /* libbricks-core.a */,
+				939101B414EB5CD400A68CF9 /* libbricks-io.a */,
+				939101C314EB5CDE00A68CF9 /* libbricks-threading.a */,
+				939101D214EB5CE600A68CF9 /* libbricks-audio.a */,
+				939101E114EB5CED00A68CF9 /* libbricks-imaging.a */,
+				939101F014EB5CF500A68CF9 /* libbricks-cryptography.a */,
+				939101FF14EB5CFD00A68CF9 /* libbricks-compression.a */,
+				9391031F14EB790A00A68CF9 /* libbricks-core.a */,
+				9391032F14EB794200A68CF9 /* libbricks-io.a */,
+				9391033C14EB794500A68CF9 /* libbricks-threading.a */,
+				9391034814EB794A00A68CF9 /* libbricks-audio.a */,
+				9391035814EB794D00A68CF9 /* libbricks-imaging.a */,
+				9391036414EB794E00A68CF9 /* libbricks-cryptography.a */,
+				9391036F14EB795000A68CF9 /* libbricks-compression.a */,
+			);
+			name = products;
+			sourceTree = "<group>";
+		};
+		939DE7AF14EBAC7D00452718 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				939105F314EB991600A68CF9 /* common.xcconfig */,
+				9391065C14EBA6F900A68CF9 /* common-debug.xcconfig */,
+				9391065D14EBA6F900A68CF9 /* common-release.xcconfig */,
+				9391063F14EBA25100A68CF9 /* config-debug.xcconfig */,
+				9391064014EBA25100A68CF9 /* config-release.xcconfig */,
+				939DE7B114EBACC200452718 /* config.xcconfig */,
+			);
+			name = config;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		9391019C14EB5BF600A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101B214EB5CD400A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101C114EB5CDE00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101D014EB5CE600A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101DF14EB5CED00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101EE14EB5CF500A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101FD14EB5CFD00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391031B14EB790A00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391032B14EB794200A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391033814EB794500A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391034414EB794A00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391035414EB794D00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391036014EB794E00A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391036B14EB795000A68CF9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		9391019D14EB5BF600A68CF9 /* bricks-core-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 939101A914EB5BF600A68CF9 /* Build configuration list for PBXNativeTarget "bricks-core-ios" */;
+			buildPhases = (
+				9391019A14EB5BF600A68CF9 /* Sources */,
+				9391019B14EB5BF600A68CF9 /* Frameworks */,
+				9391019C14EB5BF600A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "bricks-core-ios";
+			productName = "libbricks-core";
+			productReference = 9391019E14EB5BF600A68CF9 /* libbricks-core.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		939101B314EB5CD400A68CF9 /* bricks-io-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 939101BC14EB5CD400A68CF9 /* Build configuration list for PBXNativeTarget "bricks-io-ios" */;
+			buildPhases = (
+				939101B014EB5CD400A68CF9 /* Sources */,
+				939101B114EB5CD400A68CF9 /* Frameworks */,
+				939101B214EB5CD400A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391022A14EB5DD500A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-io-ios";
+			productName = "libbricks-io";
+			productReference = 939101B414EB5CD400A68CF9 /* libbricks-io.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		939101C214EB5CDE00A68CF9 /* bricks-threading-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 939101CB14EB5CDE00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-threading-ios" */;
+			buildPhases = (
+				939101BF14EB5CDE00A68CF9 /* Sources */,
+				939101C014EB5CDE00A68CF9 /* Frameworks */,
+				939101C114EB5CDE00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391022C14EB5DDD00A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-threading-ios";
+			productName = "libbricks-threading";
+			productReference = 939101C314EB5CDE00A68CF9 /* libbricks-threading.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		939101D114EB5CE600A68CF9 /* bricks-audio-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 939101DA14EB5CE600A68CF9 /* Build configuration list for PBXNativeTarget "bricks-audio-ios" */;
+			buildPhases = (
+				939101CE14EB5CE600A68CF9 /* Sources */,
+				939101CF14EB5CE600A68CF9 /* Frameworks */,
+				939101D014EB5CE600A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391022E14EB5DE700A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-audio-ios";
+			productName = "libbricks-audio";
+			productReference = 939101D214EB5CE600A68CF9 /* libbricks-audio.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		939101E014EB5CED00A68CF9 /* bricks-imaging-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 939101E914EB5CED00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-imaging-ios" */;
+			buildPhases = (
+				939101DD14EB5CED00A68CF9 /* Sources */,
+				939101DE14EB5CED00A68CF9 /* Frameworks */,
+				939101DF14EB5CED00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391023014EB5DF000A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-imaging-ios";
+			productName = "libbricks-imaging";
+			productReference = 939101E114EB5CED00A68CF9 /* libbricks-imaging.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		939101EF14EB5CF500A68CF9 /* bricks-cryptography-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 939101F814EB5CF500A68CF9 /* Build configuration list for PBXNativeTarget "bricks-cryptography-ios" */;
+			buildPhases = (
+				939101EC14EB5CF500A68CF9 /* Sources */,
+				939101ED14EB5CF500A68CF9 /* Frameworks */,
+				939101EE14EB5CF500A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391023214EB5DF700A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-cryptography-ios";
+			productName = "libbricks-cryptography";
+			productReference = 939101F014EB5CF500A68CF9 /* libbricks-cryptography.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		939101FE14EB5CFD00A68CF9 /* bricks-compression-ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391020714EB5CFD00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-compression-ios" */;
+			buildPhases = (
+				939101FB14EB5CFD00A68CF9 /* Sources */,
+				939101FC14EB5CFD00A68CF9 /* Frameworks */,
+				939101FD14EB5CFD00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391023414EB5DFE00A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-compression-ios";
+			productName = "libbricks-compression";
+			productReference = 939101FF14EB5CFD00A68CF9 /* libbricks-compression.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391031314EB790A00A68CF9 /* bricks-core-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391031C14EB790A00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-core-osx" */;
+			buildPhases = (
+				9391031414EB790A00A68CF9 /* Sources */,
+				9391031914EB790A00A68CF9 /* Frameworks */,
+				9391031B14EB790A00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "bricks-core-osx";
+			productName = "libbricks-core";
+			productReference = 9391031F14EB790A00A68CF9 /* libbricks-core.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391032114EB794200A68CF9 /* bricks-io-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391032C14EB794200A68CF9 /* Build configuration list for PBXNativeTarget "bricks-io-osx" */;
+			buildPhases = (
+				9391032414EB794200A68CF9 /* Sources */,
+				9391032914EB794200A68CF9 /* Frameworks */,
+				9391032B14EB794200A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391037B14EB79A100A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-io-osx";
+			productName = "libbricks-io";
+			productReference = 9391032F14EB794200A68CF9 /* libbricks-io.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391033014EB794500A68CF9 /* bricks-threading-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391033914EB794500A68CF9 /* Build configuration list for PBXNativeTarget "bricks-threading-osx" */;
+			buildPhases = (
+				9391033314EB794500A68CF9 /* Sources */,
+				9391033614EB794500A68CF9 /* Frameworks */,
+				9391033814EB794500A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391037914EB799A00A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-threading-osx";
+			productName = "libbricks-threading";
+			productReference = 9391033C14EB794500A68CF9 /* libbricks-threading.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391033D14EB794A00A68CF9 /* bricks-audio-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391034514EB794A00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-audio-osx" */;
+			buildPhases = (
+				9391034014EB794A00A68CF9 /* Sources */,
+				9391034214EB794A00A68CF9 /* Frameworks */,
+				9391034414EB794A00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391037714EB799400A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-audio-osx";
+			productName = "libbricks-audio";
+			productReference = 9391034814EB794A00A68CF9 /* libbricks-audio.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391034914EB794D00A68CF9 /* bricks-imaging-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391035514EB794D00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-imaging-osx" */;
+			buildPhases = (
+				9391034C14EB794D00A68CF9 /* Sources */,
+				9391035214EB794D00A68CF9 /* Frameworks */,
+				9391035414EB794D00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391037514EB798D00A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-imaging-osx";
+			productName = "libbricks-imaging";
+			productReference = 9391035814EB794D00A68CF9 /* libbricks-imaging.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391035914EB794E00A68CF9 /* bricks-cryptography-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391036114EB794E00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-cryptography-osx" */;
+			buildPhases = (
+				9391035C14EB794E00A68CF9 /* Sources */,
+				9391035E14EB794E00A68CF9 /* Frameworks */,
+				9391036014EB794E00A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391037314EB798800A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-cryptography-osx";
+			productName = "libbricks-cryptography";
+			productReference = 9391036414EB794E00A68CF9 /* libbricks-cryptography.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+		9391036514EB795000A68CF9 /* bricks-compression-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9391036C14EB795000A68CF9 /* Build configuration list for PBXNativeTarget "bricks-compression-osx" */;
+			buildPhases = (
+				9391036814EB795000A68CF9 /* Sources */,
+				9391036914EB795000A68CF9 /* Frameworks */,
+				9391036B14EB795000A68CF9 /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9391037114EB798000A68CF9 /* PBXTargetDependency */,
+			);
+			name = "bricks-compression-osx";
+			productName = "libbricks-compression";
+			productReference = 9391036F14EB795000A68CF9 /* libbricks-compression.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9391017514EB5BB400A68CF9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 9391017814EB5BB400A68CF9 /* Build configuration list for PBXProject "libbricks" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9391017314EB5BB400A68CF9;
+			productRefGroup = 9391019F14EB5BF600A68CF9 /* products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9391019D14EB5BF600A68CF9 /* bricks-core-ios */,
+				939101B314EB5CD400A68CF9 /* bricks-io-ios */,
+				939101C214EB5CDE00A68CF9 /* bricks-threading-ios */,
+				939101D114EB5CE600A68CF9 /* bricks-audio-ios */,
+				939101E014EB5CED00A68CF9 /* bricks-imaging-ios */,
+				939101EF14EB5CF500A68CF9 /* bricks-cryptography-ios */,
+				939101FE14EB5CFD00A68CF9 /* bricks-compression-ios */,
+				939102CD14EB639E00A68CF9 /* bricks-ios */,
+				9391031314EB790A00A68CF9 /* bricks-core-osx */,
+				9391032114EB794200A68CF9 /* bricks-io-osx */,
+				9391033014EB794500A68CF9 /* bricks-threading-osx */,
+				9391033D14EB794A00A68CF9 /* bricks-audio-osx */,
+				9391034914EB794D00A68CF9 /* bricks-imaging-osx */,
+				9391035914EB794E00A68CF9 /* bricks-cryptography-osx */,
+				9391036514EB795000A68CF9 /* bricks-compression-osx */,
+				9391037C14EB7AA500A68CF9 /* bricks-osx */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9391019A14EB5BF600A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				939101AC14EB5C0A00A68CF9 /* exception.cpp in Sources */,
+				939101AD14EB5C0A00A68CF9 /* object.cpp in Sources */,
+				939101AE14EB5C0A00A68CF9 /* string.cpp in Sources */,
+				939101AF14EB5C0A00A68CF9 /* value.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101B014EB5CD400A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391021714EB5D1F00A68CF9 /* cachestream.cpp in Sources */,
+				9391021814EB5D1F00A68CF9 /* console.cpp in Sources */,
+				9391021914EB5D1F00A68CF9 /* filesystem.cpp in Sources */,
+				9391021A14EB5D1F00A68CF9 /* substream.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101BF14EB5CDE00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391021B14EB5D2300A68CF9 /* thread.cpp in Sources */,
+				9391021C14EB5D2300A68CF9 /* threadlocalstorage.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101CE14EB5CE600A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391020C14EB5D0700A68CF9 /* midireader.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101DD14EB5CED00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391020F14EB5D1A00A68CF9 /* bitmap.cpp in Sources */,
+				9391021014EB5D1A00A68CF9 /* colour.cpp in Sources */,
+				9391021214EB5D1A00A68CF9 /* font.cpp in Sources */,
+				9391021414EB5D1A00A68CF9 /* image.cpp in Sources */,
+				9391021614EB5D1A00A68CF9 /* videocodec.cpp in Sources */,
+				939103B414EB8C9000A68CF9 /* freetypefont.cpp in Sources */,
+				939103B514EB8C9000A68CF9 /* png.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101EC14EB5CF500A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391020E14EB5D1300A68CF9 /* hash.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		939101FB14EB5CFD00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				939103B114EB8C2400A68CF9 /* zipfilesystem.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391031414EB790A00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391031514EB790A00A68CF9 /* exception.cpp in Sources */,
+				9391031614EB790A00A68CF9 /* object.cpp in Sources */,
+				9391031714EB790A00A68CF9 /* string.cpp in Sources */,
+				9391031814EB790A00A68CF9 /* value.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391032414EB794200A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391032514EB794200A68CF9 /* cachestream.cpp in Sources */,
+				9391032614EB794200A68CF9 /* console.cpp in Sources */,
+				9391032714EB794200A68CF9 /* filesystem.cpp in Sources */,
+				9391032814EB794200A68CF9 /* substream.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391033314EB794500A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391033414EB794500A68CF9 /* thread.cpp in Sources */,
+				9391033514EB794500A68CF9 /* threadlocalstorage.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391034014EB794A00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391034114EB794A00A68CF9 /* midireader.cpp in Sources */,
+				939103B914EB8DBB00A68CF9 /* ffmpegaudiodecoder.cpp in Sources */,
+				939103BA14EB8DBB00A68CF9 /* ffmpegdecoder.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391034C14EB794D00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391034D14EB794D00A68CF9 /* bitmap.cpp in Sources */,
+				9391034E14EB794D00A68CF9 /* colour.cpp in Sources */,
+				9391034F14EB794D00A68CF9 /* font.cpp in Sources */,
+				9391035014EB794D00A68CF9 /* image.cpp in Sources */,
+				9391035114EB794D00A68CF9 /* videocodec.cpp in Sources */,
+				939103B614EB8C9200A68CF9 /* freetypefont.cpp in Sources */,
+				939103B714EB8C9200A68CF9 /* png.cpp in Sources */,
+				939103B814EB8DAF00A68CF9 /* ffmpegvideodecoder.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391035C14EB794E00A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9391035D14EB794E00A68CF9 /* hash.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9391036814EB795000A68CF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				939103B314EB8C2700A68CF9 /* zipfilesystem.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9391022A14EB5DD500A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391019D14EB5BF600A68CF9 /* bricks-core-ios */;
+			targetProxy = 9391022914EB5DD500A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391022C14EB5DDD00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391019D14EB5BF600A68CF9 /* bricks-core-ios */;
+			targetProxy = 9391022B14EB5DDD00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391022E14EB5DE700A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101B314EB5CD400A68CF9 /* bricks-io-ios */;
+			targetProxy = 9391022D14EB5DE700A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391023014EB5DF000A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101B314EB5CD400A68CF9 /* bricks-io-ios */;
+			targetProxy = 9391022F14EB5DF000A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391023214EB5DF700A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101B314EB5CD400A68CF9 /* bricks-io-ios */;
+			targetProxy = 9391023114EB5DF700A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391023414EB5DFE00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101B314EB5CD400A68CF9 /* bricks-io-ios */;
+			targetProxy = 9391023314EB5DFE00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102D214EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391019D14EB5BF600A68CF9 /* bricks-core-ios */;
+			targetProxy = 939102D114EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102D414EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101B314EB5CD400A68CF9 /* bricks-io-ios */;
+			targetProxy = 939102D314EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102D614EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101C214EB5CDE00A68CF9 /* bricks-threading-ios */;
+			targetProxy = 939102D514EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102D814EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101D114EB5CE600A68CF9 /* bricks-audio-ios */;
+			targetProxy = 939102D714EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102DA14EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101E014EB5CED00A68CF9 /* bricks-imaging-ios */;
+			targetProxy = 939102D914EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102DC14EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101EF14EB5CF500A68CF9 /* bricks-cryptography-ios */;
+			targetProxy = 939102DB14EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		939102DE14EB63AA00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 939101FE14EB5CFD00A68CF9 /* bricks-compression-ios */;
+			targetProxy = 939102DD14EB63AA00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391037114EB798000A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391032114EB794200A68CF9 /* bricks-io-osx */;
+			targetProxy = 9391037014EB798000A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391037314EB798800A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391032114EB794200A68CF9 /* bricks-io-osx */;
+			targetProxy = 9391037214EB798800A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391037514EB798D00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391032114EB794200A68CF9 /* bricks-io-osx */;
+			targetProxy = 9391037414EB798D00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391037714EB799400A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391032114EB794200A68CF9 /* bricks-io-osx */;
+			targetProxy = 9391037614EB799400A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391037914EB799A00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391031314EB790A00A68CF9 /* bricks-core-osx */;
+			targetProxy = 9391037814EB799A00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391037B14EB79A100A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391031314EB790A00A68CF9 /* bricks-core-osx */;
+			targetProxy = 9391037A14EB79A100A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038114EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391031314EB790A00A68CF9 /* bricks-core-osx */;
+			targetProxy = 9391038014EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038314EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391032114EB794200A68CF9 /* bricks-io-osx */;
+			targetProxy = 9391038214EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038514EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391033014EB794500A68CF9 /* bricks-threading-osx */;
+			targetProxy = 9391038414EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038714EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391033D14EB794A00A68CF9 /* bricks-audio-osx */;
+			targetProxy = 9391038614EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038914EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391034914EB794D00A68CF9 /* bricks-imaging-osx */;
+			targetProxy = 9391038814EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038B14EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391035914EB794E00A68CF9 /* bricks-cryptography-osx */;
+			targetProxy = 9391038A14EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+		9391038D14EB7AAC00A68CF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391036514EB795000A68CF9 /* bricks-compression-osx */;
+			targetProxy = 9391038C14EB7AAC00A68CF9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		9391017A14EB5BB400A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9391063F14EBA25100A68CF9 /* config-debug.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		9391017B14EB5BB400A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9391064014EBA25100A68CF9 /* config-release.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		939101AA14EB5BF600A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-core";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		939101AB14EB5BF600A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-core";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		939101BD14EB5CD400A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-io";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		939101BE14EB5CD400A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-io";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		939101CC14EB5CDE00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-threading";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		939101CD14EB5CDE00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-threading";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		939101DB14EB5CE600A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-audio";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		939101DC14EB5CE600A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-audio";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		939101EA14EB5CED00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_INCLUDE_DIR)/freetype2",
+				);
+				PRODUCT_NAME = "bricks-imaging";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		939101EB14EB5CED00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_INCLUDE_DIR)/freetype2",
+				);
+				PRODUCT_NAME = "bricks-imaging";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		939101F914EB5CF500A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-cryptography";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		939101FA14EB5CF500A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-cryptography";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		9391020814EB5CFD00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_LIBRARY_DIR)/libzip/include",
+				);
+				PRODUCT_NAME = "bricks-compression";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		9391020914EB5CFD00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_LIBRARY_DIR)/libzip/include",
+				);
+				PRODUCT_NAME = "bricks-compression";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		939102CF14EB639E00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		939102D014EB639E00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		9391031D14EB790A00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-core";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391031E14EB790A00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-core";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391032D14EB794200A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-io";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391032E14EB794200A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-io";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391033A14EB794500A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-threading";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391033B14EB794500A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-threading";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391034614EB794A00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-audio";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391034714EB794A00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-audio";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391035614EB794D00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_INCLUDE_DIR)/freetype2",
+				);
+				PRODUCT_NAME = "bricks-imaging";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391035714EB794D00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_INCLUDE_DIR)/freetype2",
+				);
+				PRODUCT_NAME = "bricks-imaging";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391036214EB794E00A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-cryptography";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391036314EB794E00A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "bricks-cryptography";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391036D14EB795000A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_LIBRARY_DIR)/libzip/include",
+				);
+				PRODUCT_NAME = "bricks-compression";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9391036E14EB795000A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BRICKSLIB_LIBRARY_DIR)/libzip/include",
+				);
+				PRODUCT_NAME = "bricks-compression";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9391037E14EB7AA500A68CF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		9391037F14EB7AA500A68CF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9391017814EB5BB400A68CF9 /* Build configuration list for PBXProject "libbricks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391017A14EB5BB400A68CF9 /* Debug */,
+				9391017B14EB5BB400A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939101A914EB5BF600A68CF9 /* Build configuration list for PBXNativeTarget "bricks-core-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939101AA14EB5BF600A68CF9 /* Debug */,
+				939101AB14EB5BF600A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939101BC14EB5CD400A68CF9 /* Build configuration list for PBXNativeTarget "bricks-io-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939101BD14EB5CD400A68CF9 /* Debug */,
+				939101BE14EB5CD400A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939101CB14EB5CDE00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-threading-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939101CC14EB5CDE00A68CF9 /* Debug */,
+				939101CD14EB5CDE00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939101DA14EB5CE600A68CF9 /* Build configuration list for PBXNativeTarget "bricks-audio-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939101DB14EB5CE600A68CF9 /* Debug */,
+				939101DC14EB5CE600A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939101E914EB5CED00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-imaging-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939101EA14EB5CED00A68CF9 /* Debug */,
+				939101EB14EB5CED00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939101F814EB5CF500A68CF9 /* Build configuration list for PBXNativeTarget "bricks-cryptography-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939101F914EB5CF500A68CF9 /* Debug */,
+				939101FA14EB5CF500A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391020714EB5CFD00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-compression-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391020814EB5CFD00A68CF9 /* Debug */,
+				9391020914EB5CFD00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		939102CE14EB639E00A68CF9 /* Build configuration list for PBXAggregateTarget "bricks-ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				939102CF14EB639E00A68CF9 /* Debug */,
+				939102D014EB639E00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391031C14EB790A00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-core-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391031D14EB790A00A68CF9 /* Debug */,
+				9391031E14EB790A00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391032C14EB794200A68CF9 /* Build configuration list for PBXNativeTarget "bricks-io-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391032D14EB794200A68CF9 /* Debug */,
+				9391032E14EB794200A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391033914EB794500A68CF9 /* Build configuration list for PBXNativeTarget "bricks-threading-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391033A14EB794500A68CF9 /* Debug */,
+				9391033B14EB794500A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391034514EB794A00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-audio-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391034614EB794A00A68CF9 /* Debug */,
+				9391034714EB794A00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391035514EB794D00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-imaging-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391035614EB794D00A68CF9 /* Debug */,
+				9391035714EB794D00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391036114EB794E00A68CF9 /* Build configuration list for PBXNativeTarget "bricks-cryptography-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391036214EB794E00A68CF9 /* Debug */,
+				9391036314EB794E00A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391036C14EB795000A68CF9 /* Build configuration list for PBXNativeTarget "bricks-compression-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391036D14EB795000A68CF9 /* Debug */,
+				9391036E14EB795000A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9391037D14EB7AA500A68CF9 /* Build configuration list for PBXAggregateTarget "bricks-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9391037E14EB7AA500A68CF9 /* Debug */,
+				9391037F14EB7AA500A68CF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9391017514EB5BB400A68CF9 /* Project object */;
+}
