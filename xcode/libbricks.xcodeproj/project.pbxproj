@@ -44,6 +44,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		938EE13414ECD4900027A13E /* libbricks-core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9391031F14EB790A00A68CF9 /* libbricks-core.a */; };
+		938EE13514ECD4900027A13E /* libbricks-io.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9391032F14EB794200A68CF9 /* libbricks-io.a */; };
+		938EE13614ECD4950027A13E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EE12014ECD4490027A13E /* main.cpp */; };
 		939101AC14EB5C0A00A68CF9 /* exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018514EB5BE600A68CF9 /* exception.cpp */; };
 		939101AD14EB5C0A00A68CF9 /* object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019414EB5BE600A68CF9 /* object.cpp */; };
 		939101AE14EB5C0A00A68CF9 /* string.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391019514EB5BE600A68CF9 /* string.cpp */; };
@@ -90,6 +93,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		938EE13014ECD4830027A13E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391031314EB790A00A68CF9;
+			remoteInfo = "bricks-core-osx";
+		};
+		938EE13214ECD4830027A13E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9391032114EB794200A68CF9;
+			remoteInfo = "bricks-io-osx";
+		};
 		9391022914EB5DD500A68CF9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9391017514EB5BB400A68CF9 /* Project object */;
@@ -275,6 +292,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		938EE12014ECD4490027A13E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = source/main.cpp; sourceTree = "<group>"; };
+		938EE12614ECD46C0027A13E /* sample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sample; sourceTree = BUILT_PRODUCTS_DIR; };
 		9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpegaudiodecoder.cpp; sourceTree = "<group>"; };
 		9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpegdecoder.cpp; sourceTree = "<group>"; };
 		9391018014EB5BE600A68CF9 /* midireader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = midireader.cpp; sourceTree = "<group>"; };
@@ -322,6 +341,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		938EE12314ECD46C0027A13E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				938EE13414ECD4900027A13E /* libbricks-core.a in Frameworks */,
+				938EE13514ECD4900027A13E /* libbricks-io.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9391019B14EB5BF600A68CF9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -423,12 +451,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		938EE11E14ECD4490027A13E /* sample */ = {
+			isa = PBXGroup;
+			children = (
+				938EE12014ECD4490027A13E /* main.cpp */,
+			);
+			name = sample;
+			path = ../sample;
+			sourceTree = "<group>";
+		};
 		9391017314EB5BB400A68CF9 = {
 			isa = PBXGroup;
 			children = (
 				939DE7AF14EBAC7D00452718 /* config */,
-				9391017C14EB5BE600A68CF9 /* source */,
 				939DE8F814EBB14200452718 /* include */,
+				9391017C14EB5BE600A68CF9 /* source */,
+				938EE11E14ECD4490027A13E /* sample */,
 				9391019F14EB5BF600A68CF9 /* products */,
 			);
 			sourceTree = "<group>";
@@ -529,6 +567,7 @@
 				9391035814EB794D00A68CF9 /* libbricks-imaging.a */,
 				9391036414EB794E00A68CF9 /* libbricks-cryptography.a */,
 				9391036F14EB795000A68CF9 /* libbricks-compression.a */,
+				938EE12614ECD46C0027A13E /* sample */,
 			);
 			name = products;
 			sourceTree = "<group>";
@@ -650,6 +689,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		938EE12514ECD46C0027A13E /* sample-osx */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 938EE12D14ECD46C0027A13E /* Build configuration list for PBXNativeTarget "sample-osx" */;
+			buildPhases = (
+				938EE12214ECD46C0027A13E /* Sources */,
+				938EE12314ECD46C0027A13E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				938EE13114ECD4830027A13E /* PBXTargetDependency */,
+				938EE13314ECD4830027A13E /* PBXTargetDependency */,
+			);
+			name = "sample-osx";
+			productName = sample;
+			productReference = 938EE12614ECD46C0027A13E /* sample */;
+			productType = "com.apple.product-type.tool";
+		};
 		9391019D14EB5BF600A68CF9 /* bricks-core-ios */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 939101A914EB5BF600A68CF9 /* Build configuration list for PBXNativeTarget "bricks-core-ios" */;
@@ -936,11 +993,20 @@
 				9391035914EB794E00A68CF9 /* bricks-cryptography-osx */,
 				9391036514EB795000A68CF9 /* bricks-compression-osx */,
 				9391037C14EB7AA500A68CF9 /* bricks-osx */,
+				938EE12514ECD46C0027A13E /* sample-osx */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXSourcesBuildPhase section */
+		938EE12214ECD46C0027A13E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				938EE13614ECD4950027A13E /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9391019A14EB5BF600A68CF9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1085,6 +1151,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		938EE13114ECD4830027A13E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391031314EB790A00A68CF9 /* bricks-core-osx */;
+			targetProxy = 938EE13014ECD4830027A13E /* PBXContainerItemProxy */;
+		};
+		938EE13314ECD4830027A13E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9391032114EB794200A68CF9 /* bricks-io-osx */;
+			targetProxy = 938EE13214ECD4830027A13E /* PBXContainerItemProxy */;
+		};
 		9391022A14EB5DD500A68CF9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9391019D14EB5BF600A68CF9 /* bricks-core-ios */;
@@ -1218,6 +1294,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		938EE12E14ECD46C0027A13E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = sample;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		938EE12F14ECD46C0027A13E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = sample;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
 		9391017A14EB5BB400A68CF9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9391063F14EBA25100A68CF9 /* config-debug.xcconfig */;
@@ -1515,6 +1607,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		938EE12D14ECD46C0027A13E /* Build configuration list for PBXNativeTarget "sample-osx" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				938EE12E14ECD46C0027A13E /* Debug */,
+				938EE12F14ECD46C0027A13E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		9391017814EB5BB400A68CF9 /* Build configuration list for PBXProject "libbricks" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
