@@ -108,7 +108,11 @@ namespace Bricks {
 #endif
 }
 
+#ifndef BRICKS_FEATURE_APPLE
+#ifndef BRICKS_FEATURE_RELEASE
 extern "C" __attribute__((weak)) const char* _NSPrintForDebugger(Bricks::Object* object)
 {
 	return object->GetDebugString().CString();
 }
+#endif
+#endif
