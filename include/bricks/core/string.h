@@ -18,10 +18,10 @@ namespace Bricks {
 			static const String Empty;
 			typedef char Character;
 
-			static String Format(const String& format, va_list args);
+			static String FormatVariadic(const String& format, va_list args);
 			static String Format(const String& format, ...);
 
-			int Scan(const String& format, va_list args);
+			int ScanVariadic(const String& format, va_list args);
 			int Scan(const String& format, ...);
 
 		protected:

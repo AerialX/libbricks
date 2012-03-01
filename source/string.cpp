@@ -7,7 +7,7 @@
 namespace Bricks {
 	const String String::Empty;
 
-	String String::Format(const String& format, va_list args)
+	String String::FormatVariadic(const String& format, va_list args)
 	{
 #ifdef _GNU_SOURCE
 		char* temp = NULL;
@@ -35,12 +35,12 @@ namespace Bricks {
 	{
 		va_list args;
 		va_start(args, format);
-		String ret = Format(format, args);
+		String ret = FormatVariadic(format, args);
 		va_end(args);
 		return ret;
 	}
 
-	int String::Scan(const String& format, va_list args)
+	int String::ScanVariadic(const String& format, va_list args)
 	{
 		return vsscanf(buffer, format.CString(), args);
 	}
@@ -49,7 +49,7 @@ namespace Bricks {
 	{
 		va_list args;
 		va_start(args, format);
-		int ret = Scan(format, args);
+		int ret = ScanVariadic(format, args);
 		va_end(args);
 		return ret;
 	}
