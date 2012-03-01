@@ -103,7 +103,7 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const T* t);
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const Pointer<T>& t);
 } } }
-#define foreach(val, list) for (typeof(Bricks::Collections::Internal::IteratorContainerType(list)) iter(list); iter.MoveNext() && iter.state;) if (!(iter.state = false)) for (val = iter.GetCurrent(); !iter.state; iter.state = true)
+#define foreach(val, list) for (typeof(Bricks::Collections::Internal::IteratorContainerType(list)) __bricks_iter(list); __bricks_iter.MoveNext() && __bricks_iter.state;) if (!(__bricks_iter.state = false)) for (val = __bricks_iter.GetCurrent(); !__bricks_iter.state; __bricks_iter.state = true)
 
 namespace Bricks { namespace Collections {
 	template<typename T> inline void Iterable<T>::Iterate(const Delegate<bool(Iterable<T>::IteratorType&)>& delegate) const {
