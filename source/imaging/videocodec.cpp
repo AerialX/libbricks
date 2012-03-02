@@ -13,10 +13,10 @@ namespace Bricks { namespace Imaging {
 		position = frame;
 	}
 
-	ReturnPointer<BitmapImage> VideoCodec::Read()
+	ReturnPointer<BitmapImage> VideoCodec::Read(s64 frame)
 	{
 		AutoPointer<Bitmap> bitmap = autonew Bitmap(frameWidth, frameHeight, pixelDescription);
-		if (!Read(bitmap))
+		if (!Read(bitmap, frame))
 			return NULL;
 		return bitmap;
 	}

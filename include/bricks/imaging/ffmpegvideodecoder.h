@@ -7,6 +7,10 @@
 #include "bricks/audio/ffmpegdecoder.h"
 #include "bricks/imaging/videocodec.h"
 
+extern "C" {
+	struct SwsContext;
+}
+
 namespace Bricks { namespace Imaging {
 	class FFmpegVideoDecoder : public VideoCodec, NoCopy
 	{
@@ -18,6 +22,8 @@ namespace Bricks { namespace Imaging {
 		AVFrame* frame;
 		AVPacket* packet;
 		AVPacket* originalPacket;
+		SwsContext* swsContext;
+		AVFrame* swsFrame;
 
 		void Initialize();
 
@@ -27,7 +33,7 @@ namespace Bricks { namespace Imaging {
 		~FFmpegVideoDecoder();
 
 		void Seek(s64 frame);
-		bool Read(BitmapImage* image);
+		bool Read(BitmapImage* image, s64 frame);
 	};
 } }
 

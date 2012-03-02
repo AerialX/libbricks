@@ -90,6 +90,9 @@
 		939103B814EB8DAF00A68CF9 /* ffmpegvideodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018914EB5BE600A68CF9 /* ffmpegvideodecoder.cpp */; };
 		939103B914EB8DBB00A68CF9 /* ffmpegaudiodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */; };
 		939103BA14EB8DBB00A68CF9 /* ffmpegdecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */; };
+		93B75C6414EDE57A00E50CCB /* ffmpegaudiodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */; };
+		93B75C6514EDE57A00E50CCB /* ffmpegdecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */; };
+		93B75C7114EDE5DB00E50CCB /* ffmpegvideodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018914EB5BE600A68CF9 /* ffmpegvideodecoder.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1043,6 +1046,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9391020C14EB5D0700A68CF9 /* midireader.cpp in Sources */,
+				93B75C6414EDE57A00E50CCB /* ffmpegaudiodecoder.cpp in Sources */,
+				93B75C6514EDE57A00E50CCB /* ffmpegdecoder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1057,6 +1062,7 @@
 				9391021614EB5D1A00A68CF9 /* videocodec.cpp in Sources */,
 				939103B414EB8C9000A68CF9 /* freetypefont.cpp in Sources */,
 				939103B514EB8C9000A68CF9 /* png.cpp in Sources */,
+				93B75C7114EDE5DB00E50CCB /* ffmpegvideodecoder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

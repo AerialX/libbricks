@@ -1,4 +1,5 @@
 #include "bricks/imaging/ffmpegvideodecoder.h"
+#include "bricks/imaging/image.h"
 #include "bricks/core/exception.h"
 
 extern "C" {
@@ -65,8 +66,6 @@ void FFmpegVideoDecoder::Initialize()
 	if (streamIndex >= format->nb_streams)
 		BRICKS_FEATURE_THROW(FormatException());
 
-	stream->codec->lowres = 0; // 1 -> 1/2, 2 -> 1/4, etc.
-
 	frame = avcodec_alloc_frame();
 	packet = (AVPacket*)av_malloc(sizeof(AVPacket));
 	originalPacket = (AVPacket*)av_malloc(sizeof(AVPacket));
@@ -74,6 +73,7 @@ void FFmpegVideoDecoder::Initialize()
 	av_init_packet(originalPacket);
 	packet->data = originalPacket->data = NULL;
 	packet->size = originalPacket->size = 0;
+	packet->dts = originalPacket->dts = -1;
 
 	codec = decoder->OpenStream(streamIndex);
 
@@ -85,9 +85,12 @@ void FFmpegVideoDecoder::Initialize()
 	frameWidth = stream->codec->coded_width;
 	frameHeight = stream->codec->coded_height;
 
-//	frameCount = stream->duration;
+	frameCount = stream->duration;
 
 	pixelDescription = FFmpegPixelFormat(stream->codec->pix_fmt);
+	
+	swsContext = sws_getContext(frameWidth, frameHeight, stream->codec->pix_fmt, frameWidth, frameHeight, PIX_FMT_RGB24, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+	swsFrame = avcodec_alloc_frame();
 }
 
 FFmpegVideoDecoder::~FFmpegVideoDecoder()
@@ -104,7 +107,7 @@ void FFmpegVideoDecoder::Seek(s64 frame)
 	VideoCodec::Seek(frame);
 }
 
-bool FFmpegVideoDecoder::Read(BitmapImage* image)
+bool FFmpegVideoDecoder::Read(BitmapImage* image, s64 targetFrame)
 {
 	while (true) {
 		while (packet->size <= 0) {
@@ -122,16 +125,22 @@ bool FFmpegVideoDecoder::Read(BitmapImage* image)
 		packet->size -= used;
 		packet->data += used;
 
-		if (success) {
+		if (success && packet->dts >= targetFrame) {
 			if (frame->repeat_pict)
-				BRICKS_FEATURE_THROW(NotSupportedException()); // delay between frame, repeat_pict / (2*fps)
+				BRICKS_FEATURE_THROW(NotSupportedException());
+			bool customContext = false;
+			SwsContext* convertContext = swsContext;
 			PixelFormat pixelFormat = FFmpegPixelFormat(image->GetPixelDescription());
-			SwsContext* convertContext = sws_getContext(frameWidth, frameHeight, stream->codec->pix_fmt, image->GetWidth(), image->GetHeight(), pixelFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-			AVFrame* destinationFrame = avcodec_alloc_frame();
-			avpicture_fill((AVPicture*)destinationFrame, (u8*)image->GetImageData(), pixelFormat, image->GetWidth(), image->GetHeight());
-			sws_scale(convertContext, frame->data, frame->linesize, 0, frameHeight, destinationFrame->data, destinationFrame->linesize);
-			av_free(destinationFrame);
-			av_free(convertContext);
+			if (image->GetWidth() != frameWidth || image->GetHeight() != frameHeight || pixelFormat != PIX_FMT_RGB24) {
+				convertContext = sws_getContext(frameWidth, frameHeight, stream->codec->pix_fmt, image->GetWidth(), image->GetHeight(), pixelFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+				customContext = true;
+			}
+			
+			avpicture_fill((AVPicture*)swsFrame, (u8*)image->GetImageData(), pixelFormat, image->GetWidth(), image->GetHeight());
+			sws_scale(convertContext, frame->data, frame->linesize, 0, frameHeight, swsFrame->data, swsFrame->linesize);
+			if (customContext)
+				av_free(convertContext);
+			
 			position = packet->dts;
 			return true;
 		}

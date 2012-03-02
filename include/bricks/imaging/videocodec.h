@@ -1,8 +1,10 @@
 #pragma once
 
-#include "bricks/imaging/image.h"
+#include "bricks/imaging/colour.h"
 
 namespace Bricks { namespace Imaging {
+	class BitmapImage;
+	
 	class VideoCodec : public Object
 	{
 	protected:
@@ -27,8 +29,11 @@ namespace Bricks { namespace Imaging {
 		s64 GetPosition() { return position; }
 
 		void Seek(s64 frame);
-		ReturnPointer<BitmapImage> Read();
+		
+		ReturnPointer<BitmapImage> Read(s64 frame);
+		ReturnPointer<BitmapImage> Read() { return Read(position + 1); }
 
-		virtual bool Read(BitmapImage* image) = 0;
+		virtual bool Read(BitmapImage* image, s64 frame) = 0;
+		bool Read(BitmapImage* image) { return Read(image, position + 1); }
 	};
 } }
