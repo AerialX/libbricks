@@ -109,5 +109,10 @@ namespace Bricks { namespace Collections {
 		{
 			std::sort(vector.begin(), vector.end(), StlCompare(sortComparison ?: comparison.GetValue()));
 		}
+
+		virtual void StableSort(ValueComparison<T>* sortComparison = NULL)
+		{
+			std::stable_sort(vector.begin(), vector.end(), StlCompare(sortComparison ?: comparison.GetValue()));
+		}
 	};
 } }

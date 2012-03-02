@@ -55,18 +55,17 @@ namespace Bricks {
 	};
 	template<typename T> Pointer<T> Pointer<T>::Null = Pointer<T>(NULL);
 
-	template<typename T, typename T2> static bool operator==(const Pointer<T>& t1, const Pointer<T2>& t2) { return t1.GetValue() == t2.GetValue(); }
-	template<typename T, typename T2> static bool operator==(T* t1, const Pointer<T2>& t2) { return t1 == t2.GetValue(); }
-	template<typename T, typename T2> static bool operator==(const Pointer<T>& t1, T2* t2) { return t1.GetValue() == t2; }
-	template<typename T, typename T2> static bool operator!=(const Pointer<T>& t1, const Pointer<T2>& t2) { return t1.GetValue() != t2.GetValue(); }
-	template<typename T, typename T2> static bool operator!=(T* t1, const Pointer<T2>& t2) { return t1 != t2.GetValue(); }
-	template<typename T, typename T2> static bool operator!=(const Pointer<T>& t1, T2* t2) { return t1.GetValue() != t2; }
-	template<typename T, typename T2> static bool operator>(const Pointer<T>& t1, const Pointer<T2>& t2) { return t1.GetValue() > t2.GetValue(); }
-	template<typename T, typename T2> static bool operator>(T* t1, const Pointer<T2>& t2) { return t1 > t2.GetValue(); }
-	template<typename T, typename T2> static bool operator>(const Pointer<T>& t1, T2* t2) { return t1.GetValue() > t2; }
-	template<typename T, typename T2> static bool operator<(const Pointer<T>& t1, const Pointer<T2>& t2) { return t1.GetValue() < t2.GetValue(); }
-	template<typename T, typename T2> static bool operator<(T* t1, const Pointer<T2>& t2) { return t1 < t2.GetValue(); }
-	template<typename T, typename T2> static bool operator<(const Pointer<T>& t1, T2* t2) { return t1.GetValue() < t2; }
+#define BRICKS_INTERNAL_POINTER_COMPARISON(oper) \
+	template<typename T, typename T2> static bool operator oper(const Pointer<T>& t1, const Pointer<T2>& t2) { return t1.GetValue() oper t2.GetValue(); } \
+	template<typename T, typename T2> static bool operator oper(T* t1, const Pointer<T2>& t2) { return t1 oper t2.GetValue(); } \
+	template<typename T, typename T2> static bool operator oper(const Pointer<T>& t1, T2* t2) { return t1.GetValue() oper t2; }
+	BRICKS_INTERNAL_POINTER_COMPARISON(==);
+	BRICKS_INTERNAL_POINTER_COMPARISON(!=);
+	BRICKS_INTERNAL_POINTER_COMPARISON(>);
+	BRICKS_INTERNAL_POINTER_COMPARISON(<);
+	BRICKS_INTERNAL_POINTER_COMPARISON(>=);
+	BRICKS_INTERNAL_POINTER_COMPARISON(<=);
+#undef BRICKS_INTERNAL_POINTER_COMPARISON
 
 	template<typename T, typename U> static inline T* CastTo(const Pointer<U>& u) { return CastTo<T, U>(u.GetValue()); }
 	template<typename T, typename U> static inline T* CastToDynamic(const Pointer<U>& u) { return CastToDynamic<T, U>(u.GetValue()); }
