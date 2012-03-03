@@ -26,10 +26,15 @@ namespace Bricks {
 			}
 		};
 
-		Collections::AutoArray<EventItem> list;
+		typedef Collections::AutoArray<EventItem> EventItemList;
+		EventItemComparison comparison;
+		EventItemList list;
 
 	public:
-		Event() : list(autonew EventItemComparison()) { }
+		Event() : list(tempnew comparison) { }
+		Event(const Event& event) : list(event.list, tempnew comparison) { }
+
+		Event& operator =(const Event& event) { list = EventItemList(event.list, tempnew comparison); return *this; }
 
 		Event& operator +=(EventItem* delegate) { list.AddItem(delegate); return *this; }
 		Event& operator +=(const EventItem& delegate) { list.AddItem(autonew EventItem(delegate)); return *this; }
