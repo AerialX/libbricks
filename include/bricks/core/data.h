@@ -17,9 +17,9 @@ namespace Bricks {
 
 	public:
 		Data(size_t length) : data(NULL), length(length), owned(true) { Construct(); }
-		Data(const void* data, size_t length, bool copy = true) : data(copy ? NULL : (u8*)data), length(length), owned(!copy) { if (copy) { Construct(); CopyFrom(data, length); } }
-		Data(const String& string, bool copy = true) : data(copy ? NULL : (u8*)string.GetBuffer()), length(string.GetLength()), owned(!copy) { if (copy) { Construct(); CopyFrom(string.GetBuffer(), string.GetLength()); } }
-		Data(const Data& data, bool copy = true) : data(copy ? NULL : (u8*)data.GetData()), length(data.GetLength()), owned(!copy) { if (copy) { Construct(); CopyFrom(data); } }
+		Data(const void* data, size_t length, bool copy = true) : data(copy ? NULL : (u8*)data), length(length), owned(copy) { if (copy) { Construct(); CopyFrom(data, length); } }
+		Data(const String& string, bool copy = true) : data(copy ? NULL : (u8*)string.GetBuffer()), length(string.GetSize()), owned(copy) { if (copy) { Construct(); CopyFrom(string.GetBuffer(), string.GetSize()); } }
+		Data(const Data& data, bool copy = true) : data(copy ? NULL : (u8*)data.GetData()), length(data.GetLength()), owned(copy) { if (copy) { Construct(); CopyFrom(data); } }
 
 		~Data() { if (data && owned) delete[] data; }
 
