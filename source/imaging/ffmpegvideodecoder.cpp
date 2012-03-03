@@ -131,7 +131,7 @@ bool FFmpegVideoDecoder::Read(BitmapImage* image, s64 targetFrame)
 			bool customContext = false;
 			SwsContext* convertContext = swsContext;
 			PixelFormat pixelFormat = FFmpegPixelFormat(image->GetPixelDescription());
-			if (image->GetWidth() != frameWidth || image->GetHeight() != frameHeight || pixelFormat != PIX_FMT_RGB24) {
+			if ((int)image->GetWidth() != frameWidth || (int)image->GetHeight() != frameHeight || pixelFormat != PIX_FMT_RGB24) {
 				convertContext = sws_getContext(frameWidth, frameHeight, stream->codec->pix_fmt, image->GetWidth(), image->GetHeight(), pixelFormat, SWS_FAST_BILINEAR, NULL, NULL, NULL);
 				customContext = true;
 			}
