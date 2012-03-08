@@ -18,6 +18,7 @@ namespace Bricks {
 	namespace Internal {
 		template<typename F> class BaseDelegate;
 		template<typename T, typename F> class Functor;
+		template<typename T, typename F> class FunctorPointer;
 		template<typename F> class Function;
 		template<typename F> class MethodFunctionBase;
 		template<typename T, typename F> class MethodFunction;
@@ -48,6 +49,20 @@ namespace Bricks {
 			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return value(BRICKS_ARGLIST_ARGS); }
 
 			virtual bool operator==(const Object& rhs) const { const Functor<T, R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const Functor<T, R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return CompareValues(value, delegate->value); return Object::operator==(rhs); }
+			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
+		};
+
+		template<typename T, typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)> : public BaseDelegate<R(BRICKS_ARGLIST_TYPES)>
+		{
+		protected:
+			T* value;
+
+		public:
+			FunctorPointer(T* value) : value(value) { }
+
+			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return (*value)(BRICKS_ARGLIST_ARGS); }
+
+			virtual bool operator==(const Object& rhs) const { const FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return value == delegate->value; return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
@@ -133,6 +148,7 @@ namespace Bricks {
 		Delegate(Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>* function) : function(function) { }
 		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::Function<R(BRICKS_ARGLIST_TYPES)>(function)) { }
 		template<typename T> Delegate(const T& function) : function(autonew Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
+		template<typename T> Delegate(T* function) : function(autonew Internal::FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
 		template<typename T> Delegate(T* object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
 #ifdef BRICKS_FEATURE_OBJC_BLOCKS
 		Delegate(typename Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>(function)) { }
