@@ -3,6 +3,7 @@
 #include <bricks/core/autopointer.h>
 #include <bricks/core/exception.h>
 #include <bricks/imaging/ffmpegvideodecoder.h>
+#include <bricks/imaging/bitmap.h>
 #include <bricks/io/filestream.h>
 
 using namespace Bricks;
