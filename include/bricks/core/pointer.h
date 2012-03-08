@@ -24,7 +24,8 @@ namespace Bricks {
 	template<typename T, typename U> static inline T* CastToDynamic(U* u) { return NULL; }
 	template<typename T, typename U> static inline bool IsTypeOf(U* u) { return false; }
 #endif
-	template<typename T, typename U> static inline T* CastToRaw(U* u) { return reinterpret_cast<T*>(u); }
+	template<typename T> static inline const T* CastToRaw(const void* u) { return reinterpret_cast<const T*>(u); }
+	template<typename T> static inline T* CastToRaw(void* u) { return reinterpret_cast<T*>(u); }
 	template<typename U> static inline void* CastToRaw(U* u) { return reinterpret_cast<void*>(u); }
 
 	template<typename T> class Pointer
@@ -67,10 +68,10 @@ namespace Bricks {
 	BRICKS_INTERNAL_POINTER_COMPARISON(<=);
 #undef BRICKS_INTERNAL_POINTER_COMPARISON
 
-	template<typename T, typename U> static inline T* CastTo(const Pointer<U>& u) { return CastTo<T, U>(u.GetValue()); }
-	template<typename T, typename U> static inline T* CastToDynamic(const Pointer<U>& u) { return CastToDynamic<T, U>(u.GetValue()); }
-	template<typename T, typename U> static inline bool IsTypeOf(const Pointer<U>& u) { return IsTypeOf<T, U>(u.GetValue()); }
-	template<typename T, typename U> static inline T* CastToRaw(const Pointer<U>& u) { return CastToRaw<T, U>(u.GetValue()); }
+	template<typename T, typename U> static inline T* CastTo(const Pointer<U>& u) { return CastTo<T, U>(u.GetValue()); } \
+	template<typename T, typename U> static inline T* CastToDynamic(const Pointer<U>& u) { return CastToDynamic<T, U>(u.GetValue()); } \
+	template<typename T, typename U> static inline bool IsTypeOf(const Pointer<U>& u) { return IsTypeOf<T, U>(u.GetValue()); } \
+	template<typename T, typename U> static inline T* CastToRaw(const Pointer<U>& u) { return CastToRaw<T>(u.GetValue()); } \
 	template<typename U> static inline void* CastToRaw(const Pointer<U>& u) { return CastToRaw<U>(u.GetValue()); }
 
 	namespace Internal {
