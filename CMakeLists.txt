@@ -102,7 +102,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall")
 
 set(BRICKS_CORE_SOURCE_FILES
-	"source/exception.cpp" "source/object.cpp" "source/string.cpp" "source/value.cpp"
+	"source/exception.cpp" "source/object.cpp" "source/string.cpp" "source/value.cpp" "source/time.cpp" "source/timespan.cpp"
 )
 
 set(BRICKS_IO_LINK_LIBRARIES bricks-core)
