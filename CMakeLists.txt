@@ -114,9 +114,11 @@ set(BRICKS_IO_SOURCE_FILES
 	"source/io/substream.cpp" "source/io/cachestream.cpp"
 )
 
-set(BRICKS_THREADING_LINK_LIBRARIES bricks-core)
+set(BRICKS_THREADING_LINK_LIBRARIES bricks-core pthread rt)
 set(BRICKS_THREADING_SOURCE_FILES
 	"source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp"
+	"source/threading/mutex.cpp" "source/threading/condition.cpp" "source/threading/conditionlock.cpp" "source/threading/semaphore.cpp"
+	"source/threading/mutexlock.cpp"
 )
 
 set(BRICKS_AUDIO_LINK_LIBRARIES bricks-io)
