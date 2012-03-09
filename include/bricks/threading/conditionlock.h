@@ -15,8 +15,8 @@ namespace Bricks { namespace Threading {
 		void SetCondition(int value) { condition = value; }
 		int GetCondition() const { return condition; }
 
-		using Condition::Lock;
-		using Condition::TryLock;
+		using Mutex::Lock;
+		using Mutex::TryLock;
 		using Condition::Unlock;
 		using Condition::Signal;
 		using Condition::Broadcast;
