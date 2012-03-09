@@ -36,5 +36,15 @@ namespace Bricks {
 		Time& operator -=(const Timespan& span);
 
 		Timespan operator -(const Time& time) const;
+
+#define BRICKS_TIME_COMPARISON(op) \
+		bool operator op(const Time& rhs) const { return seconds == rhs.seconds ? (nanoseconds op rhs.nanoseconds) : (seconds op rhs.seconds); }
+		BRICKS_TIME_COMPARISON(==);
+		BRICKS_TIME_COMPARISON(!=);
+		BRICKS_TIME_COMPARISON(>=);
+		BRICKS_TIME_COMPARISON(<=);
+		BRICKS_TIME_COMPARISON(>);
+		BRICKS_TIME_COMPARISON(<);
+#undef BRICKS_TIME_COMPARISON
 	};
 }
