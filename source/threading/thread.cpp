@@ -192,8 +192,15 @@ namespace Bricks { namespace Threading {
 	void Thread::SetPriority(int value)
 	{
 		priority = value;
-		if (GetStatus() == ThreadStatus::Started)
-			pthread_setschedprio(BRICKS_PTHREAD_THREAD, value);
+		if (GetStatus() == ThreadStatus::Started) {
+			int policy;
+			struct sched_param params;
+			pthread_getschedparam(BRICKS_PTHREAD_THREAD, &policy, &params);
+
+			params.sched_priority = value;
+
+			pthread_setschedparam(BRICKS_PTHREAD_THREAD, policy, &params);
+		}
 	}
 
 	ThreadStatus::Enum Thread::GetStatus() const

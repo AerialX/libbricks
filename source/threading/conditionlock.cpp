@@ -31,17 +31,17 @@ namespace Bricks { namespace Threading {
 
 	void ConditionLock::Lock(int targetCondition)
 	{
-		Lock(Internal::ConditionLockCondition(this, targetCondition));
+		Condition::Lock(Internal::ConditionLockCondition(this, targetCondition));
 	}
 
 	bool ConditionLock::Lock(int targetCondition, const Time& timeout)
 	{
-		return Lock(Internal::ConditionLockCondition(this, targetCondition), timeout.GetTimespec());
+		return Condition::Lock(Internal::ConditionLockCondition(this, targetCondition), timeout.GetTimespec());
 	}
 
 	bool ConditionLock::TryLock(int targetCondition)
 	{
-		return TryLock(Internal::ConditionLockCondition(this, targetCondition));
+		return Condition::TryLock(Internal::ConditionLockCondition(this, targetCondition));
 	}
 
 	void ConditionLock::Unlock(int targetCondition)
