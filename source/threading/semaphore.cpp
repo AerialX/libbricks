@@ -1,5 +1,6 @@
 #include "bricks/threading/semaphore.h"
 #include "bricks/threading/mutex.h"
+#include "bricks/threading/timedtry_internal.h"
 
 #include <semaphore.h>
 
@@ -35,9 +36,23 @@ namespace Bricks { namespace Threading {
 		sem_wait(BRICKS_SEMAPHORE);
 	}
 
+	namespace Internal {
+		struct SemaphoreTimedTry {
+			sem_t* semaphore;
+
+			SemaphoreTimedTry(sem_t* semaphore) : semaphore(semaphore) { }
+
+			int operator()() const { return sem_trywait(semaphore); }
+		};
+	}
+
 	bool Semaphore::Wait(const Time& timeout)
 	{
+#ifdef BRICKS_FEATURE_THREADING_INTERNAL_TIMEDTRY
+		return !Internal::ThreadingTimedTryAgain(Internal::SemaphoreTimedTry(BRICKS_SEMAPHORE), timeout);
+#else
 		return !sem_timedwait(BRICKS_SEMAPHORE, tempnew timeout.GetTimespec());
+#endif
 	}
 
 	bool Semaphore::TryWait()
