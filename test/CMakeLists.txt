@@ -47,3 +47,7 @@ add_test(bricks-test-imaging-image bricks-test-imaging-image)
 add_executable(bricks-test-imaging-font imaging-font.cpp)
 target_link_libraries(bricks-test-imaging-font bricks-imaging ${GTEST_BOTH_LIBRARIES} pthread)
 add_test(bricks-test-imaging-font bricks-test-imaging-font)
+
+add_executable(bricks-test-threading-thread threading-thread.cpp)
+target_link_libraries(bricks-test-threading-thread bricks-threading bricks-io ${GTEST_BOTH_LIBRARIES} pthread)
+add_test(bricks-test-threading-thread bricks-test-threading-thread)

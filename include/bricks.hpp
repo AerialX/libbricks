@@ -10,6 +10,9 @@
 #include "bricks/core/value.h"
 #include "bricks/core/data.h"
 
+#include "bricks/core/timespan.h"
+#include "bricks/core/time.h"
+
 #include "bricks/core/pointer.h"
 #include "bricks/core/autopointer.h"
 #include "bricks/core/copypointer.h"

@@ -102,7 +102,10 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall")
 
 set(BRICKS_CORE_SOURCE_FILES
-	"source/exception.cpp" "source/object.cpp" "source/string.cpp" "source/value.cpp"
+	"source/core/object.cpp"
+	"source/core/exception.cpp"
+	"source/core/string.cpp" "source/core/value.cpp"
+	"source/core/time.cpp" "source/core/timespan.cpp"
 )
 
 set(BRICKS_IO_LINK_LIBRARIES bricks-core)
@@ -111,9 +114,11 @@ set(BRICKS_IO_SOURCE_FILES
 	"source/io/substream.cpp" "source/io/cachestream.cpp"
 )
 
-set(BRICKS_THREADING_LINK_LIBRARIES bricks-core)
+set(BRICKS_THREADING_LINK_LIBRARIES bricks-core pthread rt)
 set(BRICKS_THREADING_SOURCE_FILES
 	"source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp"
+	"source/threading/mutex.cpp" "source/threading/condition.cpp" "source/threading/conditionlock.cpp" "source/threading/semaphore.cpp"
+	"source/threading/mutexlock.cpp"
 )
 
 set(BRICKS_AUDIO_LINK_LIBRARIES bricks-io)
