@@ -1,4 +1,5 @@
 #include "bricks/threading/mutex.h"
+#include "bricks/threading/timedtry_internal.h"
 
 #include <pthread.h>
 
@@ -42,9 +43,23 @@ namespace Bricks { namespace Threading {
 		pthread_mutex_lock(BRICKS_PTHREAD_MUTEX);
 	}
 
+	namespace Internal {
+		struct MutexTimedTry {
+			pthread_mutex_t* mutex;
+
+			MutexTimedTry(pthread_mutex_t* mutex) : mutex(mutex) { }
+
+			int operator()() const { return pthread_mutex_trylock(mutex); }
+		};
+	}
+
 	bool Mutex::Lock(const Time& timeout)
 	{
+#ifdef BRICKS_FEATURE_THREADING_INTERNAL_TIMEDTRY
+		return !Internal::ThreadingTimedTryBusy(Internal::MutexTimedTry(BRICKS_PTHREAD_MUTEX), timeout);
+#else
 		return !pthread_mutex_timedlock(BRICKS_PTHREAD_MUTEX, tempnew timeout.GetTimespec());
+#endif
 	}
 
 	bool Mutex::TryLock()
