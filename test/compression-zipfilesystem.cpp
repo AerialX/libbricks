@@ -49,7 +49,7 @@ TEST_F(BricksCompressionZipFilesystemTest, InitialParse) {
 
 TEST_F(BricksCompressionZipFilesystemTest, Iteration) {
 	ZipFilesystem zip(fileStream);
-	FilesystemNode root("adir/", &zip);
+	FilesystemNode root("adir/", tempnew zip);
 	int subnodecount = 0;
 	foreach (FileNode& node, root) {
 		subnodecount++;
@@ -59,15 +59,15 @@ TEST_F(BricksCompressionZipFilesystemTest, Iteration) {
 
 TEST_F(BricksCompressionZipFilesystemTest, Stat) {
 	ZipFilesystem zip(fileStream);
-	EXPECT_EQ(0, FilesystemNode("adir/file", &zip).GetSize());
-	EXPECT_EQ(sizeof("adir/file2"), FilesystemNode("adir/file2", &zip).GetSize());
-	EXPECT_EQ(sizeof("bdir/file1"), FilesystemNode("adir/file2", &zip).GetSize());
-	EXPECT_EQ(sizeof("bdir/file2"), FilesystemNode("adir/file2", &zip).GetSize());
+	EXPECT_EQ(0, FilesystemNode("adir/file", tempnew zip).GetSize());
+	EXPECT_EQ(sizeof("adir/file2"), FilesystemNode("adir/file2", tempnew zip).GetSize());
+	EXPECT_EQ(sizeof("bdir/file1"), FilesystemNode("adir/file2", tempnew zip).GetSize());
+	EXPECT_EQ(sizeof("bdir/file2"), FilesystemNode("adir/file2", tempnew zip).GetSize());
 }
 
 TEST_F(BricksCompressionZipFilesystemTest, Read) {
 	ZipFilesystem zip(fileStream);
-	FilesystemNode node("adir/file2", &zip);
+	FilesystemNode node("adir/file2", tempnew zip);
 	AutoPointer<Stream> stream = node.OpenStream();
 	String str = StreamReader(stream).ReadString();
 	EXPECT_EQ(String("adir/file2\n"), str);
@@ -76,7 +76,7 @@ TEST_F(BricksCompressionZipFilesystemTest, Read) {
 TEST_F(BricksCompressionZipFilesystemTest, ReadChdir) {
 	ZipFilesystem zip(fileStream);
 	zip.ChangeCurrentDirectory("adir");
-	FilesystemNode node("file2", &zip);
+	FilesystemNode node("file2", tempnew zip);
 	AutoPointer<Stream> stream = node.OpenStream();
 	String str = StreamReader(stream).ReadString();
 	EXPECT_EQ(String("adir/file2\n"), str);

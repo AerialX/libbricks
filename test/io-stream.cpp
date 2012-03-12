@@ -41,14 +41,14 @@ TEST(BricksIoStreamTest, WriteReadTest) {
 	String path = "/tmp/libbricks-test.bin";
 	{
 		FileStream stream(path, FileOpenMode::Create, FileMode::ReadWrite, FilePermissions::OwnerReadWrite);
-		WriteTest(&stream);
+		WriteTest(tempnew stream);
 		stream.SetPosition(0);
-		ReadTest(&stream);
+		ReadTest(tempnew stream);
 	}
 
 	{
 		FileStream stream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite);
-		ReadTest(&stream);
+		ReadTest(tempnew stream);
 	}
 
 	Filesystem::GetDefault()->DeleteFile(path);
@@ -58,14 +58,14 @@ TEST(BricksIoStreamTest, WriteReadSubstreamTest) {
 	String path = "/tmp/libbricks-test.bin";
 	{
 		FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
-		WriteTest(&stream);
-		WriteTest(&stream);
+		WriteTest(tempnew stream);
+		WriteTest(tempnew stream);
 	}
 
 	{
 		FileStream stream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite);
-		Substream substream(&stream, 0, stream.GetLength() / 2);
-		ReadTest(&substream);
+		Substream substream(tempnew stream, 0, stream.GetLength() / 2);
+		ReadTest(tempnew substream);
 	}
 
 	Filesystem::GetDefault()->DeleteFile(path);
@@ -75,13 +75,13 @@ TEST(BricksIoStreamTest, WriteReadCacheStreamTest) {
 	String path = "/tmp/libbricks-test.bin";
 	{
 		FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
-		WriteTest(&stream);
+		WriteTest(tempnew stream);
 	}
 
 	{
 		FileStream stream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite);
-		CacheStream cachestream(&stream);
-		ReadTest(&cachestream);
+		CacheStream cachestream(tempnew stream);
+		ReadTest(tempnew cachestream);
 	}
 
 	Filesystem::GetDefault()->DeleteFile(path);
@@ -90,9 +90,9 @@ TEST(BricksIoStreamTest, WriteReadCacheStreamTest) {
 TEST(BricksIoStreamTest, WriteReadMemoryStreamTest) {
 	{
 		MemoryStream stream;
-		WriteTest(&stream);
+		WriteTest(tempnew stream);
 		stream.SetPosition(0);
-		ReadTest(&stream);
+		ReadTest(tempnew stream);
 	}
 }
 
