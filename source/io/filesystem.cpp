@@ -319,9 +319,9 @@ namespace Bricks { namespace IO {
 	{
 		if (recursive) {
 			FilesystemNode node(path);
-			foreach (FileNode& subnode, node) {
-				if (subnode.GetType() == FileType::Directory)
-					DeleteDirectory(subnode.GetFullPath(), true);
+			foreach (FileNode* subnode, node) {
+				if (subnode->GetType() == FileType::Directory)
+					DeleteDirectory(subnode->GetFullPath(), true);
 				else
 					DeleteFile(path);
 			}

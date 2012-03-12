@@ -51,7 +51,7 @@ TEST_F(BricksCompressionZipFilesystemTest, Iteration) {
 	ZipFilesystem zip(fileStream);
 	FilesystemNode root("adir/", tempnew zip);
 	int subnodecount = 0;
-	foreach (FileNode& node, root) {
+	foreach (FileNode* node, root) {
 		subnodecount++;
 	}
 	EXPECT_EQ(3, subnodecount);

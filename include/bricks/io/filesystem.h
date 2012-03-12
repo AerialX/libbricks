@@ -219,16 +219,17 @@ namespace Bricks { namespace IO {
 		u64 GetSize() const { if (GetType() == FileType::File && size != (u64)-1) return size; BRICKS_FEATURE_THROW(NotSupportedException()); }
 		ReturnPointer<Stream> OpenStream(FileOpenMode::Enum createmode = FileOpenMode::Open, FileMode::Enum mode = FileMode::ReadWrite, FilePermissions::Enum permissions = FilePermissions::OwnerReadWrite);
 
-		ReturnPointer<Bricks::Collections::Iterator<FileNode> > GetIterator() const;
+		ReturnPointer<Bricks::Collections::Iterator<FileNode*> > GetIterator() const;
 		FilesystemNodeIterator GetIteratorFast() const;
 	};
 
-	class FilesystemNodeIterator : public Bricks::Collections::Iterator<FileNode>
+	class FilesystemNodeIterator : public Bricks::Collections::Iterator<FileNode*>
 	{
 	private:
 		AutoPointer<Filesystem> filesystem;
 		FileHandle dir;
 		AutoPointer<FileNode> current;
+		mutable FileNode* currentRef;
 
 		friend class FilesystemNode;
 
@@ -237,10 +238,10 @@ namespace Bricks { namespace IO {
 			filesystem(node->filesystem), dir(filesystem->OpenDirectory(node->GetPath())) { }
 		~FilesystemNodeIterator() { filesystem->CloseDirectory(dir); }
 
-		FileNode& GetCurrent() const { if (!current) BRICKS_FEATURE_THROW(Bricks::Collections::InvalidIteratorException()); return *current; }
+		FileNode*& GetCurrent() const { if (!current) BRICKS_FEATURE_THROW(Bricks::Collections::InvalidIteratorException()); return (currentRef = current); }
 		bool MoveNext() { return (current = filesystem->ReadDirectory(dir)); }
 	};
 	
-	inline ReturnPointer<Bricks::Collections::Iterator<FileNode> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
+	inline ReturnPointer<Bricks::Collections::Iterator<FileNode*> > FilesystemNode::GetIterator() const { return autonew FilesystemNodeIterator(this); }
 	inline FilesystemNodeIterator FilesystemNode::GetIteratorFast() const { return FilesystemNodeIterator(this); }
 } }

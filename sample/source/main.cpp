@@ -63,13 +63,13 @@ static void testFilesystem()
 	Console::GetDefault()->Out->WriteLine("Listing contents of current directory...");
 	AutoPointer<FileNode> node = autonew FilesystemNode("."); // current dir
 #ifdef BRICKS_CONFIG_CPP0X
-	node->Iterate([](FileNode& subnode) -> bool {
-		Console::GetDefault()->Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
+	node->Iterate([](FileNode* subnode) -> bool {
+		Console::GetDefault()->Out->WriteLine(String::Format("Subfile: %s", subnode->GetName().CString()));
 		return true; // returning false is like break;ing out of the loop.
 	});
 #else
-	foreach (FileNode& subnode, node) {
-		Console::GetDefault()->Out->WriteLine(String::Format("Subfile: %s", subnode.GetName().CString()));
+	foreach (FileNode* subnode, node) {
+		Console::GetDefault()->Out->WriteLine(String::Format("Subfile: %s", subnode->GetName().CString()));
 	}
 #endif
 }

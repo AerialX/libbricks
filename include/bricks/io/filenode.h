@@ -40,7 +40,7 @@ namespace Bricks { namespace IO {
 		return FileType::Unknown;
 	}
 
-	class FileNode : public Object, public Collections::Iterable<FileNode>
+	class FileNode : public Object, public Collections::Iterable<FileNode*>
 	{
 	protected:
 		FileType::Enum type;
