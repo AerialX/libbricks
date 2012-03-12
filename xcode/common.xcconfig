@@ -35,8 +35,8 @@ GCC_INPUT_FILETYPE=automatic
 GCC_SYMBOLS_PRIVATE_EXTERN=YES
 
 BRICKS_LIBS=-lzip -lfreetype -lpng -lz
-BRICKS_LDFLAGS=-ObjC $(BRICKS_LIBS)
-BRICKS_LDFLAGS=-ObjC $(BRICKS_LIBS) -lavformat -lavcodec -lavutil -lswscale
+BRICKS_LDFLAGS[sdk=iphone*]=-ObjC $(BRICKS_LIBS)
+BRICKS_LDFLAGS[sdk=macosx*]=-ObjC $(BRICKS_LIBS) -lavformat -lavcodec -lavutil -lswscale
 BRICKS_CFLAGS=-Wall
 BRICKS_CFLAGS[arch=armv6]=-Wall -mno-thumb // Get around a nasty Xcode 4.2 optimization bug
 BRICKS_CXXFLAGS=$(OTHER_CFLAGS)
@@ -49,6 +49,6 @@ SKIP_INSTALL=YES
 
 // iOS Settings
 CODE_SIGN_IDENTITY[sdk=iphoneos*]=iPhone Developer
-IPHONEOS_DEPLOYMENT_TARGET=3.0
+IPHONEOS_DEPLOYMENT_TARGET=3.1
 MACOSX_DEPLOYMENT_TARGET=10.6
 TARGETED_DEVICE_FAMILY=1,2
