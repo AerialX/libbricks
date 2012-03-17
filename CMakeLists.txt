@@ -99,7 +99,15 @@ endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
-set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall")
+set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall -Wno-empty-body")
+
+if (BRICKS_CONFIG_RTTI)
+	set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-frtti")
+endif()
+
+if (ANDROID)
+	set(BRICKS_CORE_LINK_LIBRARIES gnustl_static)
+endif()
 
 set(BRICKS_CORE_SOURCE_FILES
 	"source/core/object.cpp"
