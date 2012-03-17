@@ -5,15 +5,18 @@
 
 #ifdef __GLIBC__
 #include <endian.h>
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-#define BRICKS_FEATURE_ENDIAN_LITTLE
-#elif __BYTE_ORDER == __BIG_ENDIAN
-#define BRICKS_FEATURE_ENDIAN_BIG
 #endif
-#elif defined(_BIG_ENDIAN)
-#define BRICKS_FEATURE_ENDIAN_BIG
-#elif defined(_LITTLE_ENDIAN)
+
+#if defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN
 #define BRICKS_FEATURE_ENDIAN_LITTLE
+#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN
+#define BRICKS_FEATURE_ENDIAN_BIG
+#elif defined(_BYTE_ORDER) && _BYTE_ORDER == _LITTLE_ENDIAN
+#define BRICKS_FEATURE_ENDIAN_LITTLE
+#elif defined(_BYTE_ORDER) && _BYTE_ORDER == _BIG_ENDIAN
+#define BRICKS_FEATURE_ENDIAN_BIG
+#else
+#warn "Cannot autodetect endianness"
 #endif
 
 namespace Bricks { namespace IO {
