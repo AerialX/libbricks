@@ -4,10 +4,15 @@ CTEST				:=	$(SHELL) $(BRICKSDIR)/cmake/ctest.sh
 MAKEIT				:=	$(MAKE) --no-print-directory
 TOOLCHAIN_ANDROID	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.android.cmake
 TOOLCHAIN_IOS		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.ios.cmake
+TOOLCHAIN_CLANG		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.clang.cmake
 
 all:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)
 	@+$(MAKEIT) -C $(CURDIR)/build-$(OSTYPE)
+
+clang:
+	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)-clang $(TOOLCHAIN_CLANG)
+	@+$(MAKEIT) -C $(CURDIR)/build-$(OSTYPE)-clang
 
 android: android-armv5 android-armv7 android-x86
 
@@ -53,8 +58,14 @@ ifdef EXECUTABLE_NAME
 run: all
 	@$(CURDIR)/build-$(OSTYPE)/$(EXECUTABLE_NAME)
 
+clang-run: clang
+	@$(CURDIR)/build-$(OSTYPE)-clang/$(EXECUTABLE_NAME)
+
 debug: all
 	@gdb $(CURDIR)/build-$(OSTYPE)/$(EXECUTABLE_NAME) -ex run
+
+clang-debug: all
+	@gdb $(CURDIR)/build-$(OSTYPE)-clang/$(EXECUTABLE_NAME) -ex run
 endif
 
-.PHONY: all xcode clean test run debug android android-armv5 android-armv7 android-x86 ios ios-xcode
+.PHONY: all xcode clean test run debug clang clang-run clang-debug android android-armv5 android-armv7 android-x86 ios ios-xcode
