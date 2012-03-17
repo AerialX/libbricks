@@ -57,7 +57,7 @@ namespace Bricks { namespace IO {
 #elif defined(BRICKS_FEATURE_ENDIAN_BIG)
 		return false;
 #else
-		union { u16 num; char buf[sizeof(u16)]; } endianness;
+		union { u16 num; u8 buf[sizeof(u16)]; } endianness;
 		endianness.num = 1;
 		return endianness.buf[0];
 #endif
