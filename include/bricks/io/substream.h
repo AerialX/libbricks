@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bricks/core/autopointer.h"
 #include "bricks/io/stream.h"
 
 namespace Bricks { namespace IO {

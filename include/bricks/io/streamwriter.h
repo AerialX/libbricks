@@ -12,6 +12,9 @@ namespace Bricks { namespace IO {
 		void WriteInt(u16 value, Endian::Enum endian = Endian::Unknown);
 		void WriteInt(u32 value, Endian::Enum endian = Endian::Unknown);
 		void WriteInt(u64 value, Endian::Enum endian = Endian::Unknown);
+		void WriteInt16(u16 value, Endian::Enum endian = Endian::Unknown) { WriteInt(value, endian); }
+		void WriteInt32(u32 value, Endian::Enum endian = Endian::Unknown) { WriteInt(value, endian); }
+		void WriteInt64(u64 value, Endian::Enum endian = Endian::Unknown) { WriteInt(value, endian); }
 
 		void WriteByte(u8 data);
 		void WriteBytes(const void* data, size_t size);
