@@ -103,7 +103,7 @@ namespace Bricks { namespace Audio {
 				if (datasize <= 0)
 					break;
 
-				int read = Math::Min(datasize, count * 2 * channels);
+				int read = Math::Min((u32)datasize, count * 2 * channels);
 				int left = datasize - read;
 				if (read > 0) {
 					int samples = read / sizeof(AudioBuffer<s16>::AudioSample) / channels;
