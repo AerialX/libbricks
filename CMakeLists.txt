@@ -113,6 +113,7 @@ set(BRICKS_CORE_SOURCE_FILES
 	"source/core/exception.cpp"
 	"source/core/string.cpp" "source/core/value.cpp"
 	"source/core/time.cpp" "source/core/timespan.cpp"
+	"source/core/data.cpp"
 )
 
 set(BRICKS_IO_LINK_LIBRARIES bricks-core)
