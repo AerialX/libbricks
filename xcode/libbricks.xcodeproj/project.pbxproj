@@ -69,6 +69,16 @@
 		938A4CB61502051D00384572 /* ffmpegaudiodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */; };
 		938A4CB71502053300384572 /* ffmpegdecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391017F14EB5BE600A68CF9 /* ffmpegdecoder.cpp */; };
 		938A4CB81502053900384572 /* ffmpegvideodecoder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9391018914EB5BE600A68CF9 /* ffmpegvideodecoder.cpp */; };
+		938CAD1715163EA900E01063 /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1615163EA900E01063 /* data.cpp */; };
+		938CAD1C15163EC200E01063 /* memorystream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1815163EC200E01063 /* memorystream.cpp */; };
+		938CAD1D15163EC200E01063 /* memorystream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1815163EC200E01063 /* memorystream.cpp */; };
+		938CAD1E15163EC200E01063 /* streamnavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1915163EC200E01063 /* streamnavigator.cpp */; };
+		938CAD1F15163EC200E01063 /* streamnavigator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1915163EC200E01063 /* streamnavigator.cpp */; };
+		938CAD2015163EC200E01063 /* streamreader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1A15163EC200E01063 /* streamreader.cpp */; };
+		938CAD2115163EC200E01063 /* streamreader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1A15163EC200E01063 /* streamreader.cpp */; };
+		938CAD2215163EC200E01063 /* streamwriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1B15163EC200E01063 /* streamwriter.cpp */; };
+		938CAD2315163EC200E01063 /* streamwriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1B15163EC200E01063 /* streamwriter.cpp */; };
+		938CAD2415163ED200E01063 /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938CAD1615163EA900E01063 /* data.cpp */; };
 		938EE13414ECD4900027A13E /* libbricks-core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9391031F14EB790A00A68CF9 /* libbricks-core.a */; };
 		938EE13514ECD4900027A13E /* libbricks-io.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9391032F14EB794200A68CF9 /* libbricks-io.a */; };
 		938EE13614ECD4950027A13E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 938EE12014ECD4490027A13E /* main.cpp */; };
@@ -320,6 +330,11 @@
 		93362D0E15099DB700D6AE95 /* mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mutex.cpp; sourceTree = "<group>"; };
 		93362D0F15099DB700D6AE95 /* mutexlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mutexlock.cpp; sourceTree = "<group>"; };
 		93362D1015099DB700D6AE95 /* semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = semaphore.cpp; sourceTree = "<group>"; };
+		938CAD1615163EA900E01063 /* data.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = data.cpp; sourceTree = "<group>"; };
+		938CAD1815163EC200E01063 /* memorystream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memorystream.cpp; sourceTree = "<group>"; };
+		938CAD1915163EC200E01063 /* streamnavigator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamnavigator.cpp; sourceTree = "<group>"; };
+		938CAD1A15163EC200E01063 /* streamreader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamreader.cpp; sourceTree = "<group>"; };
+		938CAD1B15163EC200E01063 /* streamwriter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = streamwriter.cpp; sourceTree = "<group>"; };
 		938EE12014ECD4490027A13E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = source/main.cpp; sourceTree = "<group>"; };
 		938EE12614ECD46C0027A13E /* sample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sample; sourceTree = BUILT_PRODUCTS_DIR; };
 		9391017E14EB5BE600A68CF9 /* ffmpegaudiodecoder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ffmpegaudiodecoder.cpp; sourceTree = "<group>"; };
@@ -478,6 +493,7 @@
 		93362CF915099D9400D6AE95 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				938CAD1615163EA900E01063 /* data.cpp */,
 				93362CFA15099D9400D6AE95 /* exception.cpp */,
 				93362CFB15099D9400D6AE95 /* object.cpp */,
 				93362CFC15099D9400D6AE95 /* string.cpp */,
@@ -570,6 +586,10 @@
 				9391019014EB5BE600A68CF9 /* cachestream.cpp */,
 				9391019114EB5BE600A68CF9 /* console.cpp */,
 				9391019214EB5BE600A68CF9 /* filesystem.cpp */,
+				938CAD1815163EC200E01063 /* memorystream.cpp */,
+				938CAD1915163EC200E01063 /* streamnavigator.cpp */,
+				938CAD1A15163EC200E01063 /* streamreader.cpp */,
+				938CAD1B15163EC200E01063 /* streamwriter.cpp */,
 				9391019314EB5BE600A68CF9 /* substream.cpp */,
 			);
 			path = io;
@@ -1056,6 +1076,7 @@
 				93362D0615099D9400D6AE95 /* time.cpp in Sources */,
 				93362D0815099D9400D6AE95 /* timespan.cpp in Sources */,
 				93362D0A15099D9400D6AE95 /* value.cpp in Sources */,
+				938CAD1715163EA900E01063 /* data.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1067,6 +1088,10 @@
 				9391021814EB5D1F00A68CF9 /* console.cpp in Sources */,
 				9391021914EB5D1F00A68CF9 /* filesystem.cpp in Sources */,
 				9391021A14EB5D1F00A68CF9 /* substream.cpp in Sources */,
+				938CAD1C15163EC200E01063 /* memorystream.cpp in Sources */,
+				938CAD1E15163EC200E01063 /* streamnavigator.cpp in Sources */,
+				938CAD2015163EC200E01063 /* streamreader.cpp in Sources */,
+				938CAD2215163EC200E01063 /* streamwriter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1135,6 +1160,7 @@
 				93362D0715099D9400D6AE95 /* time.cpp in Sources */,
 				93362D0915099D9400D6AE95 /* timespan.cpp in Sources */,
 				93362D0B15099D9400D6AE95 /* value.cpp in Sources */,
+				938CAD2415163ED200E01063 /* data.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1146,6 +1172,10 @@
 				9391032614EB794200A68CF9 /* console.cpp in Sources */,
 				9391032714EB794200A68CF9 /* filesystem.cpp in Sources */,
 				9391032814EB794200A68CF9 /* substream.cpp in Sources */,
+				938CAD1D15163EC200E01063 /* memorystream.cpp in Sources */,
+				938CAD1F15163EC200E01063 /* streamnavigator.cpp in Sources */,
+				938CAD2115163EC200E01063 /* streamreader.cpp in Sources */,
+				938CAD2315163EC200E01063 /* streamwriter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
