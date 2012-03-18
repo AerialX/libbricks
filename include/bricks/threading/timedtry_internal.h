@@ -6,7 +6,7 @@
 #include <unistd.h>
 
 #if (defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L) || BRICKS_ENV_ANDROID
-#define BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY
+#define BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY 1
 #endif
 
 namespace Bricks { namespace Threading { namespace Internal {
