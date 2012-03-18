@@ -9,5 +9,6 @@ namespace Bricks { namespace Math {
 	template<typename T, typename U> static inline T RoundDown(T num, U round) { return num / round * round; }
 	template<typename T, typename U> static inline T RoundUp(T num, U round) { return RoundDown(num + round - 1, round); }
 
+	template<typename T, typename U, typename V> static inline T Clamp(T num, U min, V max) { return Max(Min(num, max), min); }
 	template<typename T> static inline T Clamp(T num, T min = 0, T max = 1) { return Max(Min(num, max), min); }
 } }
