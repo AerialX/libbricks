@@ -2,6 +2,7 @@
 
 #include "bricks/core/types.h"
 #include "bricks/core/pointer.h"
+#include "bricks/core/exception.h"
 
 #ifdef __GLIBC__
 #include <endian.h>

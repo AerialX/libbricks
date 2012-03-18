@@ -3,7 +3,7 @@
 #include <bricks/core/autopointer.h>
 #include <bricks/compression/zipfilesystem.h>
 #include <bricks/io/filestream.h>
-#include <bricks/io/navigator.h>
+#include <bricks/io/streamreader.h>
 
 using namespace Bricks;
 using namespace Bricks::IO;

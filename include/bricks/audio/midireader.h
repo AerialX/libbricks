@@ -1,10 +1,10 @@
 #pragma once
 
-#include "bricks/core/object.h"
-#include "bricks/io/navigator.h"
+#include "bricks/core/autopointer.h"
 #include "bricks/audio/miditypes.h"
 
-namespace Bricks { namespace IO { class Stream; } }
+namespace Bricks { namespace IO { class Stream; class StreamReader; } }
+namespace Bricks { template<typename T> class ReturnPointer; }
 
 namespace Bricks { namespace Audio {
 	class MidiReader : public Object
@@ -29,8 +29,8 @@ namespace Bricks { namespace Audio {
 		MidiReader(IO::Stream* stream);
 		~MidiReader();
 
-		bool EndOfFile() const { return trackIndex >= trackCount; }
-		bool EndOfTrack() const { return reader->GetPosition() >= trackPosition + trackSize; }
+		bool EndOfFile() const;
+		bool EndOfTrack() const;
 
 		void NextTrack();
 		void SeekTrack(u32 index);
@@ -38,7 +38,7 @@ namespace Bricks { namespace Audio {
 
 		ReturnPointer<MidiEvent> ReadEvent();
 
-		ReturnPointer<MidiTimeDivision> GetDivision() const { return division; }
+		MidiTimeDivision* GetDivision() const { return division; }
 		MidiType::Enum GetMidiType() const { return midiType; }
 		u16 GetTrackCount() const { return trackCount; }
 		u16 GetCurrentTrack() const { return trackIndex; }

@@ -17,7 +17,9 @@
 #include "bricks/io/filestream.h"
 
 #include "bricks/io/endian.h"
-#include "bricks/io/navigator.h"
+#include "bricks/io/streamnavigator.h"
+#include "bricks/io/streamreader.h"
+#include "bricks/io/streamwriter.h"
 
 #include "bricks/io/console.h"
 

@@ -24,10 +24,10 @@ static void testFilesystem()
 	FileStream* stream = new FileStream("/tmp/libbricks-test.bin", FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
 
 	StreamWriter* writer = new StreamWriter(stream, Endian::BigEndian);
-	writer->WriteInt32(0x1337BAAD);
+	writer->WriteInt((u32)0x1337BAAD);
 	writer->WriteString("ohai");
 	writer->WriteByte('\0');
-	writer->WriteInt16(0xF33D, Endian::LittleEndian);
+	writer->WriteInt((u16)0xF33D, Endian::LittleEndian);
 
 	// Manually delete these objects from memory.
 	writer->Release();
