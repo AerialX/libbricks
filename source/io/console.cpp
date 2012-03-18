@@ -10,7 +10,7 @@ namespace Bricks { namespace IO {
 	Console* Console::GetDefault()
 	{
 		if (!defaultConsole)
-			defaultConsole = autonew (Internal::Global)StandardConsole();
+			defaultConsole = autonew StandardConsole();
 		return defaultConsole;
 	}
 

@@ -10,10 +10,8 @@ namespace Bricks { namespace Imaging {
 	{
 		if (x > image->GetWidth() || y > image->GetHeight())
 			return;
-		width = BRICKS_FEATURE_MIN(width, image->GetWidth() - x);
-		height = BRICKS_FEATURE_MIN(height, image->GetHeight() - y);
-		width = BRICKS_FEATURE_MIN(width, GetWidth());
-		height = BRICKS_FEATURE_MIN(height, GetHeight());
+		width = Math::Min(Math::Min(width, image->GetWidth() - x), GetWidth());
+		height = Math::Min(Math::Min(height, image->GetHeight() - y), GetHeight());
 
 		for (u32 i = x; i < x + width; i++) {
 			for (u32 j = y; j < y + height; j++)

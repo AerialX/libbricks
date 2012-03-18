@@ -8,7 +8,7 @@ namespace Bricks { namespace IO {
 	public:
 		static const String& GetDirectorySeparators();
 
-#ifdef BRICKS_FEATURE_WINDOWS
+#if BRICKS_ENV_WINDOWS
 		static const char DirectorySeparator = '\\';
 #else
 		static const char DirectorySeparator = '/';
@@ -39,7 +39,7 @@ namespace Bricks { namespace IO {
 		String GetFileNameWithoutExtension() const { String name = GetFileName(); return name.Substring(0, name.FirstIndexOf(ExtensionSeparator)); }
 		String Combine(const String& leaf) const { return *this + DirectorySeparator + leaf; }
 
-#ifdef BRICKS_FEATURE_WINDOWS
+#if BRICKS_ENV_WINDOWS
 		bool IsPathRooted() const { return FirstIndexOf(GetDirectorySeparators()) == 2; } // TODO: Fixit.
 #else
 		bool IsPathRooted() const { return FirstIndexOf(GetDirectorySeparators()) == 0; }

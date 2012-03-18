@@ -1,5 +1,8 @@
 #include "bricks/compression/zipfilesystem.h"
+
+#if BRICKS_CONFIG_COMPRESSION_LIBZIP
 #include "bricks/io/filestream.h"
+#include "bricks/core/math.h"
 
 #include <zip.h>
 #include <stdio.h>
@@ -31,7 +34,7 @@ namespace Bricks { namespace Compression {
 		int fd;
 		FileHandle fsfd;
 		Filesystem* filesystem;
-#ifdef BRICKS_CONFIG_RTTI
+#if BRICKS_CONFIG_RTTI
 		FileStream* filestream = CastToDynamic<FileStream>(stream);
 		if (filestream) {
 			filesystem = filestream->GetFilesystem();
@@ -158,7 +161,7 @@ namespace Bricks { namespace Compression {
 
 		while (offset > 0) {
 			char buffer[0x100];
-			int toread = BRICKS_FEATURE_MIN(sizeof(buffer), (u64)offset);
+			int toread = Math::Min(sizeof(buffer), (u64)offset);
 			s64 ret = zip_fread(file->file, buffer, toread);
 			if (ret < 0)
 				BRICKS_FEATURE_THROW(LibZipException(file->file));
@@ -202,7 +205,7 @@ namespace Bricks { namespace Compression {
 			st.st_ino = zst.index;
 		if (zst.valid & ZIP_STAT_SIZE)
 			st.st_size = zst.size;
-#ifdef BRICKS_FEATURE_LINUXBSD
+#if BRICKS_ENV_LINUXBSD
 		if (zst.valid & ZIP_STAT_COMP_SIZE) {
 			st.st_blocks = 1;
 			st.st_blksize = zst.comp_size;
@@ -343,3 +346,4 @@ namespace Bricks { namespace Compression {
 		BRICKS_FEATURE_THROW(NotImplementedException());
 	}
 } }
+#endif

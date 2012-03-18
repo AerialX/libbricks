@@ -110,7 +110,7 @@ namespace Bricks { namespace Threading {
 
 	void Thread::Stop()
 	{
-#ifdef BRICKS_FEATURE_ANDROID
+#if BRICKS_ENV_ANDROID
 		BRICKS_FEATURE_THROW(NotSupportedException());
 #else
 		if (GetStatus() == ThreadStatus::Started)
@@ -206,7 +206,7 @@ namespace Bricks { namespace Threading {
 
 	void Thread::YieldStop()
 	{
-#ifndef BRICKS_FEATURE_ANDROID
+#if !BRICKS_ENV_ANDROID
 		pthread_testcancel();
 #endif
 	}

@@ -4,6 +4,7 @@
 #include "bricks/core/object.h"
 #include "bricks/core/returnpointer.h"
 #include "bricks/core/string.h"
+#include "bricks/core/math.h"
 
 namespace Bricks {
 	class Data : public Object
@@ -23,8 +24,8 @@ namespace Bricks {
 
 		~Data() { if (data && owned) delete[] data; }
 
-		void CopyFrom(const void* value, size_t len, size_t offset = 0) { memcpy(data + offset, value, BRICKS_FEATURE_MIN(len, length - offset)); }
-		void CopyFrom(const Data& value, size_t offset = 0) { memcpy(data + offset, value.GetData(), BRICKS_FEATURE_MIN(value.GetLength(), length - offset)); }
+		void CopyFrom(const void* value, size_t len, size_t offset = 0) { memcpy(data + offset, value, Math::Min(len, length - offset)); }
+		void CopyFrom(const Data& value, size_t offset = 0) { memcpy(data + offset, value.GetData(), Math::Min(value.GetLength(), length - offset)); }
 
 		Data& operator=(const Data& rhs) { length = rhs.GetLength(); Construct(); CopyFrom(rhs); return *this; }
 

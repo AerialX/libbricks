@@ -2,6 +2,7 @@
 
 #include "bricks/core/object.h"
 #include "bricks/core/exception.h"
+#include "bricks/core/math.h"
 #include "bricks/io/stream.h"
 #include "bricks/io/endian.h"
 
@@ -29,7 +30,7 @@ namespace Bricks { namespace IO {
 
 		virtual void Pad(u64 size) = 0;
 		void PadTo(u64 position) { if (position < stream->GetPosition()) BRICKS_FEATURE_THROW(InvalidArgumentException("position")); Pad(position - stream->GetPosition()); }
-		void PadToMultiple(int round) { PadTo(BRICKS_FEATURE_ROUND_UP(stream->GetPosition(), round)); }
+		void PadToMultiple(int round) { PadTo(Math::RoundUp(stream->GetPosition(), round)); }
 
 		u64 GetPosition() { return stream->GetPosition(); }
 		void SetPosition(u64 position) { stream->SetPosition(position); }
@@ -81,7 +82,7 @@ namespace Bricks { namespace IO {
 		void Pad(u64 size) {
 			u8 padding[0x100];
 			while (size > 0) {
-				size_t sz = BRICKS_FEATURE_MIN(sizeof(padding), size);
+				size_t sz = Math::Min(sizeof(padding), size);
 				if (stream->Read(padding, sz) != sz)
 					BRICKS_FEATURE_THROW(EndOfStreamException());
 				size -= sz;
@@ -110,7 +111,7 @@ namespace Bricks { namespace IO {
 		void WriteString(const String& str, size_t size = String::npos) {
 			if (size == String::npos)
 				size = str.GetSize();
-			WriteBytes(str.CString(), BRICKS_FEATURE_MIN(str.GetSize(), size));
+			WriteBytes(str.CString(), Math::Min(str.GetSize(), size));
 			if (size > str.GetSize())
 				Pad(size - str.GetSize());
 		}
@@ -118,7 +119,7 @@ namespace Bricks { namespace IO {
 		void Pad(u64 size) {
 			u8 padding[0x100];
 			while (size > 0) {
-				size_t sz = BRICKS_FEATURE_MIN(sizeof(padding), size);
+				size_t sz = Math::Min(sizeof(padding), size);
 				if (stream->Write(padding, sz) != sz)
 					BRICKS_FEATURE_THROW(StreamException());
 				size -= sz;

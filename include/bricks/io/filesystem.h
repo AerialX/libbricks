@@ -160,7 +160,7 @@ namespace Bricks { namespace IO {
 		time_t GetAccessTime() const { return st.st_atime; }
 		time_t GetModifiedTime() const { return st.st_mtime; }
 		time_t GetChangeTime() const { return st.st_ctime; }
-#ifdef BRICKS_FEATURE_LINUXBSD
+#if BRICKS_ENV_LINUXBSD
 		blksize_t GetBlockSize() const { return st.st_blksize; }
 		blkcnt_t GetBlockCount() const { return st.st_blocks; }
 #else
@@ -193,7 +193,7 @@ namespace Bricks { namespace IO {
 		}
 
 		FilesystemNode(const struct dirent& dir, Filesystem* filesystem = NULL) :
-#ifdef BRICKS_FEATURE_LINUXBSD
+#if BRICKS_ENV_LINUXBSD
 			FileNode(GetDirType(dir.d_type), dir.d_name),
 #else
 			FileNode(GetDirType(DT_UNKNOWN), dir.d_name),

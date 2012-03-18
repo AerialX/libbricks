@@ -23,7 +23,6 @@ set(BRICKS_VERSION "0.1")
 
 option(BRICKS_CONFIG_LOGGING "Logs various information about libbricks to stderr" OFF)
 option(BRICKS_CONFIG_LOGGING_HEAVY "A lot more logging. Requires BRICKS_CONFIG_LOGGING" OFF)
-option(BRICKS_CONFIG_LOGGING_MEMLEAK "Report any unreleased objects at program termination. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_LOGGING_ZOMBIES "Released objects become zombies and will terminate gracefully if used" OFF)
 
 option(BRICKS_CONFIG_RTTI "Enabled RTTI typeinfo for object.GetClass() and a more helpful GetDebugString()" ON)

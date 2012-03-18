@@ -4,7 +4,7 @@
 #include "bricks/core/pointer.h"
 #include "bricks/core/string.h"
 
-#ifdef BRICKS_CONFIG_RTTI
+#if BRICKS_CONFIG_RTTI
 #include <typeinfo>
 
 namespace Bricks {

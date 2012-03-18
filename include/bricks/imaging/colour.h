@@ -1,6 +1,7 @@
 #pragma once
 
 #include "bricks/core/types.h"
+#include "bricks/core/math.h"
 #include "bricks/collections/list.h"
 
 namespace Bricks { namespace Imaging {
@@ -72,7 +73,7 @@ namespace Bricks { namespace Imaging {
 		u8 GetBitDepth(ColourType::Enum type) const { return bitDepth[(int)type]; }
 		u8 GetColourCount() const { u8 ret = 0; for (int i = 0; i < ColourType::Count; i++) { if (bitDepth[i]) ret++; } return ret; }
 		u8 GetPixelDepth() const { u8 ret = 0; for (int i = 0; i < ColourType::Count; i++) ret += bitDepth[i]; return ret; }
-		u8 GetPixelSize() const { return BRICKS_FEATURE_ROUND_UP(GetPixelDepth(), 8) / 8; }
+		u8 GetPixelSize() const { return Math::RoundUp(GetPixelDepth(), 8) / 8; }
 
 		bool operator==(const PixelDescription& description) const { return GetBitMask() == description.GetBitMask(); }
 		bool operator!=(const PixelDescription& description) const { return !operator==(description); }

@@ -42,7 +42,7 @@ namespace Bricks { namespace IO {
 
 	u64 Substream::GetStreamOffset(Stream* parent)
 	{
-#ifdef BRICKS_CONFIG_RTTI
+#if BRICKS_CONFIG_RTTI
 		Substream* substream = CastToDynamic<Substream>(stream);
 		if (substream && stream != parent)
 			return substream->GetStreamOffset(parent) + offset;

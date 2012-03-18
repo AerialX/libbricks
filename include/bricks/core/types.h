@@ -3,10 +3,10 @@
 #include "bricks/config.h"
 
 #ifndef __STDC_LIMIT_MACROS
-	#define __STDC_LIMIT_MACROS
+	#define __STDC_LIMIT_MACROS 1
 #endif
 #ifndef __STDC_CONSTANT_MACROS
-	#define __STDC_CONSTANT_MACROS
+	#define __STDC_CONSTANT_MACROS 1
 #endif
 #include <stdint.h>
 
@@ -35,69 +35,63 @@ typedef volatile double		vf64;
 
 #include "bricks/config.h"
 
-/* Features */
-#define BRICKS_FEATURE_MIN(a, b) ((a) < (b) ? (a) : (b))
-#define BRICKS_FEATURE_MAX(a, b) ((a) > (b) ? (a) : (b))
-#define BRICKS_FEATURE_ABS(a) ((a) < 0 ? -(a) : (a))
-#define BRICKS_FEATURE_ROUND_DOWN(num, round) ((num) / (round) * (round))
-#define BRICKS_FEATURE_ROUND_UP(num, round) (BRICKS_FEATURE_ROUND_DOWN((num) + (round) - 1, round))
-
 #ifdef _MSC_VER
-#define BRICKS_FEATURE_VCPP
+#define BRICKS_ENV_VCPP 1
 #endif
 #ifdef __GNUC__
-#define BRICKS_FEATURE_GCC
-#if __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
-#define BRICKS_FEATURE_GCC_4_3
-#endif
+#define BRICKS_ENV_GCC 1
 #endif
 #ifdef __clang__
-#define BRICKS_FEATURE_CLANG
+#define BRICKS_ENV_CLANG 1
 #endif
 #ifdef __APPLE__
-#define BRICKS_FEATURE_APPLE
+#define BRICKS_ENV_APPLE 1
 #endif
 #ifdef __MINGW32__
-#define BRICKS_FEATURE_MINGW
+#define BRICKS_ENV_MINGW 1
 #endif
 #ifdef __linux__
-#define BRICKS_FEATURE_LINUX
+#define BRICKS_ENV_LINUX 1
 #endif
 #ifdef __BSD__
-#define BRICKS_FEATURE_BSD
+#define BRICKS_ENV_BSD 1
 #endif
 #ifdef __OBJC__
-#define BRICKS_FEATURE_OBJC
-#if defined(BRICKS_FEATURE_APPLE) || defined(BRICKS_FEATURE_CLANG)
-#define BRICKS_FEATURE_OBJC_BLOCKS
+#define BRICKS_ENV_OBJC 1
+#if BRICKS_ENV_APPLE || BRICKS_ENV_CLANG
+#define BRICKS_ENV_OBJC_BLOCKS 1
 #endif
 #endif
 
 #ifdef ANDROID
-#define BRICKS_FEATURE_ANDROID
+#define BRICKS_ENV_ANDROID 1
 #endif
 
-#if defined(BRICKS_FEATURE_LINUX) || defined(BRICKS_FEATURE_BSD)
-#define BRICKS_FEATURE_LINUXBSD
+#if BRICKS_ENV_LINUX || BRICKS_ENV_BSD
+#define BRICKS_ENV_LINUXBSD 1
 #endif
 
-#if defined(BRICKS_FEATURE_GCC) && !defined(BRICKS_FEATURE_MINGW)
-#define BRICKS_FEATURE_UNIX
+#if BRICKS_ENV_GCC && !BRICKS_ENV_MINGW
+#define BRICKS_ENV_UNIX 1
 #endif
 
-#if defined(BRICKS_FEATURE_MINGW) || defined(BRICKS_FEATURE_VCPP)
-#define BRICKS_FEATURE_WINDOWS
+#if BRICKS_ENV_MINGW || BRICKS_ENV_VCPP
+#define BRICKS_ENV_WINDOWS 1
 #endif
 
 #ifdef __EXCEPTIONS
-#define BRICKS_FEATURE_EXCEPTIONS
+#define BRICKS_ENV_EXCEPTIONS 1
 #endif
 
 #ifdef NDEBUG
-#define BRICKS_FEATURE_RELEASE
+#define BRICKS_ENV_RELEASE 1
+#endif
+#if !BRICKS_ENV_RELEASE
+#define BRICKS_ENV_DEBUG 1
 #endif
 
-#ifdef BRICKS_FEATURE_EXCEPTIONS
+/* Features */
+#if BRICKS_ENV_EXCEPTIONS
 #define BRICKS_FEATURE_THROW(ext) throw ext
 #define BRICKS_FEATURE_TRY try
 #define BRICKS_FEATURE_CATCH(ext) catch(ext)
@@ -111,7 +105,7 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_CATCH_ALL while(false)
 #endif
 
-#ifdef BRICKS_FEATURE_RELEASE
+#if BRICKS_ENV_RELEASE
 #define BRICKS_FEATURE_RELEASE_THROW(ex) (void)0
 #define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) abort()
 #else
@@ -120,7 +114,7 @@ typedef volatile double		vf64;
 #endif
 
 /* Attributes */
-#ifdef BRICKS_FEATURE_GCC
+#if BRICKS_ENV_GCC
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
 #define BRICKS_FEATURE_CONSTRUCTOR(function) __attribute__((constructor))
 #define BRICKS_FEATURE_DESTRUCTOR(function) __attribute__((destructor))
@@ -130,7 +124,7 @@ struct BRICKS_FEATURE_CONSTRUCTOR { BRICKS_FEATURE_CONSTRUCTOR(void (*function)(
 struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR(void (*function)()) : function(function) { } ~BRICKS_FEATURE_DESTRUCTOR() { function(); } };
 #define BRICKS_FEATURE_CONSTRUCTOR(function) void function(); static BRICKS_FEATURE_CONSTRUCTOR constructor_##function(function);
 #define BRICKS_FEATURE_DESTRUCTOR(function) void function(); static BRICKS_FEATURE_DESTRUCTOR destructor_##function(function);
-#ifdef BRICKS_FEATURE_VCPP
+#if BRICKS_ENV_VCPP
 #define BRICKS_FEATURE_NORETURN __declspec(noreturn)
 #else
 #define BRICKS_FEATURE_NORETURN
@@ -138,60 +132,24 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #endif
 
 /* Logging */
-#ifdef BRICKS_CONFIG_LOGGING
+#if BRICKS_CONFIG_LOGGING
 #include <stdio.h>
 #define BRICKS_FEATURE_LOG(...) do { fprintf(stderr, "[BRICKS] " __VA_ARGS__); fprintf(stderr, "\n"); fflush(stderr); } while (false)
 #else
 #define BRICKS_FEATURE_LOG(...)
 #endif
-#ifdef BRICKS_CONFIG_LOGGING_HEAVY
+#if BRICKS_CONFIG_LOGGING_HEAVY
 #define BRICKS_FEATURE_LOG_HEAVY BRICKS_FEATURE_LOG
 #else
 #define BRICKS_FEATURE_LOG_HEAVY(...)
 #endif
 
-#ifdef BRICKS_FEATURE_RELEASE
+#if BRICKS_ENV_RELEASE
 #define BRICKS_FEATURE_ASSERT(cond) ((void)0)
 #else
 #define BRICKS_FEATURE_ASSERT(cond) if (cond) (void)0; else BRICKS_FEATURE_THROW(InternalInconsistencyException("Assert failed: " # cond))
 #endif
 
-/* Missing Features */
-#ifdef BRICKS_FEATURE_MINGW
-#define S_IRWXG	00070
-#define S_IRGRP	00040
-#define S_IWGRP	00020
-#define S_IXGRP	00100
-#define S_IRWXO	00007
-#define S_IROTH	00004
-#define S_IWOTH	00002
-#define S_IXOTH	00001
-#define S_ISVTX	0001000
-#define S_ISUID	0004000
-#define S_ISGID	0002000
-
-#define S_ISLNK(m)	0
-#define S_ISSOCK(m)	0
-
-#define DT_UNKNOWN	0
-#define DT_FIFO		1
-#define DT_CHR		2
-#define DT_DIR		4
-#define DT_BLK		6
-#define DT_REG		8
-#define DT_LNK		10
-#define DT_SOCK		12
-#define DT_WHT		14
-
-typedef short nlink_t;
-typedef short uid_t;
-typedef short gid_t;
-typedef short blksize_t;
-typedef short blkcnt_t;
-
-#include <errno.h>
-static inline int fsync(int fd) { errno = ENOSYS; return -1; }
-
+#if BRICKS_ENV_MINGW
 #undef _GNU_SOURCE
-
 #endif

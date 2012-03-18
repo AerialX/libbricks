@@ -6,14 +6,14 @@
 #define tempnew Bricks::Internal::TemporaryPointer() *
 
 namespace Bricks {
-#ifdef BRICKS_CONFIG_RTTI
+#if BRICKS_CONFIG_RTTI
 	template<typename T, typename U> static inline typename SFINAE::EnableIf<SFINAE::IsCompatibleType<T, U>::Value, T*>::Type CastToDynamic(U* u) { return static_cast<T*>(u); }
 	template<typename T, typename U> static inline typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<T, U>::Value, T*>::Type CastToDynamic(U* u) { return dynamic_cast<T*>(u); }
 	template<typename T, typename U> static inline bool IsTypeOf(U* u) { return dynamic_cast<T*>(u); }
 
 	// CastTo<>() uses static_cast where possible, and dynamic_cast otherwise.
 	// In debug mode it also prefers dynamic_cast for base -> derived, while static_cast is used in release mode.
-#ifdef BRICKS_FEATURE_RELEASE
+#if BRICKS_ENV_RELEASE
 	template<typename T, typename U> static inline typename SFINAE::EnableIf<SFINAE::IsCompatibleType<T, U>::Value || SFINAE::IsCompatibleType<U, T>::Value, T*>::Type CastTo(U* u) { return static_cast<T*>(u); }
 	template<typename T, typename U> static inline typename SFINAE::EnableIf<!SFINAE::IsCompatibleType<T, U>::Value && !SFINAE::IsCompatibleType<U, T>::Value, T*>::Type CastTo(U* u) { return dynamic_cast<T*>(u); }
 #else

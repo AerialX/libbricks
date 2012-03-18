@@ -5,8 +5,8 @@
 #include <errno.h>
 #include <unistd.h>
 
-#if (defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L) || defined(BRICKS_FEATURE_ANDROID)
-#define BRICKS_FEATURE_THREADING_INTERNAL_TIMEDTRY
+#if (defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L) || BRICKS_ENV_ANDROID
+#define BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY
 #endif
 
 namespace Bricks { namespace Threading { namespace Internal {

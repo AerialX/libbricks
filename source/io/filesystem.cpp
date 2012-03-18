@@ -8,12 +8,12 @@
 #include <errno.h>
 #include <limits.h>
 
-#ifdef BRICKS_FEATURE_APPLE
+#if BRICKS_ENV_APPLE
 #define off64_t off_t
 #define lseek64 lseek
 #define ftruncate64 ftruncate
 #endif
-#if defined(BRICKS_FEATURE_MINGW) || defined(BRICKS_FEATURE_ANDROID)
+#if BRICKS_ENV_MINGW || BRICKS_ENV_ANDROID
 #define ftruncate64 ftruncate
 #endif
 
@@ -22,7 +22,7 @@ namespace Bricks { namespace IO {
 	const String& FilePath::GetDirectorySeparators()
 	{
 		if (!directorySeparators)
-			directorySeparators = autonew (Internal::Global)String("/\\");
+			directorySeparators = autonew String("/\\");
 		return *directorySeparators;
 	}
 
@@ -31,8 +31,8 @@ namespace Bricks { namespace IO {
 	Filesystem* Filesystem::GetDefault()
 	{
 		if (!defaultFilesystem) {
-			//defaultFilesystem = autonew (Internal::Global)C89Filesystem();
-			defaultFilesystem = autonew (Internal::Global)PosixFilesystem();
+			//defaultFilesystem = autonew C89Filesystem();
+			defaultFilesystem = autonew PosixFilesystem();
 		}
 		return defaultFilesystem;
 	}
@@ -236,7 +236,7 @@ namespace Bricks { namespace IO {
 
 	size_t PosixFilesystem::TellDirectory(FileHandle fd)
 	{
-#ifdef BRICKS_FEATURE_ANDROID
+#if BRICKS_ENV_ANDROID
 		BRICKS_FEATURE_THROW(NotSupportedException());
 #else
 		long ret = telldir((DIR*)fd);
@@ -248,7 +248,7 @@ namespace Bricks { namespace IO {
 
 	void PosixFilesystem::SeekDirectory(FileHandle fd, size_t offset)
 	{
-#ifdef BRICKS_FEATURE_ANDROID
+#if BRICKS_ENV_ANDROID
 		BRICKS_FEATURE_THROW(NotSupportedException());
 #else
 		seekdir((DIR*)fd, offset);

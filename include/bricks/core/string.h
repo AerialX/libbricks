@@ -6,8 +6,8 @@
 #include <string.h>
 #include <stdarg.h>
 
-#ifdef BRICKS_FEATURE_OBJC
-#include <Foundation/Foundation.h>
+#if BRICKS_ENV_OBJC
+#include <Foundation/NSString.h>
 #endif
 
 namespace Bricks {
@@ -52,7 +52,7 @@ namespace Bricks {
 			String(const String& string, size_t off = 0, size_t len = npos) : buffer(NULL) { Construct(string.CString() + off, len); }
 			String(const char* string, size_t len = npos) : buffer(NULL) { Construct(string, len); }
 			String(char character, size_t repeat = 1) : buffer(NULL) { Construct(NULL, repeat); for (size_t i = 0; i < repeat; i++) buffer[i] = character; }
-#ifdef BRICKS_FEATURE_OBJC
+#if BRICKS_ENV_OBJC
 			String(NSString* string, size_t len = npos) : buffer(NULL) { Construct([string UTF8String], len); }
 #endif
 

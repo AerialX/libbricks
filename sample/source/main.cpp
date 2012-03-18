@@ -10,7 +10,7 @@ static void testFilesystem()
 {
 	Console::GetDefault()->Out->WriteLine(" ==== Filesystem Tests ==== ");
 
-#ifdef BRICKS_FEATURE_EXCEPTIONS
+#if BRICKS_ENV_EXCEPTIONS
 	BRICKS_FEATURE_TRY {
 		Console::GetDefault()->Out->WriteLine("Trying to open nonexistent file...");
 		FileStream stream("lolnonexistent", FileOpenMode::Open, FileMode::ReadOnly);
@@ -55,7 +55,7 @@ static void testFilesystem()
 	FilePath path("lol");
 	path = path.Combine("sup");
 	path = path.RootPath("/test");
-#ifndef BRICKS_FEATURE_WINDOWS
+#if !BRICKS_ENV_WINDOWS
 	BRICKS_FEATURE_ASSERT(!path.Compare("/test/lol/sup"));
 #endif
 	Console::GetDefault()->Out->WriteLine(String::Format("Result: %s, filename is %s", path.CString(), path.GetFileName().CString()));
@@ -64,7 +64,7 @@ static void testFilesystem()
 	Console::GetDefault()->Out->WriteLine(" --- Directory Iteration Test --- ");
 	Console::GetDefault()->Out->WriteLine("Listing contents of current directory...");
 	AutoPointer<FileNode> node = autonew FilesystemNode("."); // current dir
-#ifdef BRICKS_CONFIG_CPP0X
+#if BRICKS_CONFIG_CPP0X
 	node->Iterate([](FileNode* subnode) -> bool {
 		Console::GetDefault()->Out->WriteLine(String::Format("Subfile: %s", subnode->GetName().CString()));
 		return true; // returning false is like break;ing out of the loop.
@@ -97,19 +97,6 @@ static void testCollections()
 		Console::GetDefault()->Out->WriteLine(String::Format("%d - %s", item.GetKey(), item.GetValue().CString()));
 	Console::GetDefault()->Out->WriteLine(String::Format("Item at key 1: %s", dict->GetItem(1).CString()));
 	dict->Release();
-}
-
-static void testObjects()
-{
-	Console::GetDefault()->Out->WriteLine(" ==== Object Tests ==== ");
-
-	// Here we are creating an object, then retaining it and never letting go.
-	// This is a memory leak.
-	Console::GetDefault()->Out->WriteLine(" --- Memory Leak Test --- ");
-	Console::GetDefault()->Out->WriteLine("#define BRICKS_CONFIG_LOGGING and BRICKS_CONFIG_LOGGING_MEMLEAK in config.h to see the leak report.");
-	Object* object = new Object();
-	object->Retain();
-	object->Release();
 }
 
 static void testDelegate()
@@ -169,9 +156,6 @@ int main(int argc, const char* argv[])
 	Console::GetDefault()->Out->WriteLine();
 
 	testCollections();
-	Console::GetDefault()->Out->WriteLine();
-
-	testObjects();
 	Console::GetDefault()->Out->WriteLine();
 
 	testDelegates();

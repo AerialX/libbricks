@@ -1,5 +1,6 @@
 #pragma once
 
+#include "bricks/core/math.h"
 #include "bricks/io/stream.h"
 
 #include <stdlib.h>
@@ -27,12 +28,12 @@ namespace Bricks { namespace IO {
 		MemoryStream& operator =(const MemoryStream& stream) { length = stream.length; Allocate(length); memcpy(data, stream.data, length); return *this; }
 
 		void Allocate(unsigned long size) {
-			allocated = BRICKS_FEATURE_ROUND_UP(size, BlockSize);
+			allocated = Math::RoundUp(size, BlockSize);
 			data = (u8*)realloc(data, allocated);
 		}
 
 		size_t Read(void* buffer, size_t size) {
-			size = BRICKS_FEATURE_MIN(size, length - position);
+			size = Math::Min(size, length - position);
 			memcpy(buffer, data + position, size);
 			position += size;
 			return size;

@@ -2,7 +2,7 @@
 #error Use delegate.h
 #endif
 
-#ifdef BRICKS_FEATURE_OBJC_BLOCKS
+#if BRICKS_ENV_OBJC_BLOCKS
 #include <Block.h>
 #endif
 
@@ -114,7 +114,7 @@ namespace Bricks {
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
 		};
 
-#ifdef BRICKS_FEATURE_OBJC_BLOCKS
+#if BRICKS_ENV_OBJC_BLOCKS
 		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class ObjCBlock<R(BRICKS_ARGLIST_TYPES)> : public BaseDelegate<R(BRICKS_ARGLIST_TYPES)>
 		{
 		protected:
@@ -151,7 +151,7 @@ namespace Bricks {
 		template<typename T> Delegate(T* function) : function(autonew Internal::FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
 		template<typename T> Delegate(T* object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
 		template<typename T> Delegate(const Pointer<T>& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
-#ifdef BRICKS_FEATURE_OBJC_BLOCKS
+#if BRICKS_ENV_OBJC_BLOCKS
 		Delegate(typename Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>(function)) { }
 #endif
 

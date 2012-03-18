@@ -55,7 +55,7 @@ namespace Bricks { namespace Threading {
 
 	bool Mutex::Lock(const Time& timeout)
 	{
-#ifdef BRICKS_FEATURE_THREADING_INTERNAL_TIMEDTRY
+#if BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY
 		return !Internal::ThreadingTimedTryBusy(Internal::MutexTimedTry(BRICKS_PTHREAD_MUTEX), timeout);
 #else
 		return !pthread_mutex_timedlock(BRICKS_PTHREAD_MUTEX, tempnew timeout.GetTimespec());

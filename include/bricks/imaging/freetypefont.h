@@ -2,7 +2,7 @@
 
 #include "bricks/config.h"
 
-#ifdef BRICKS_CONFIG_IMAGING_FREETYPE
+#if BRICKS_CONFIG_IMAGING_FREETYPE
 
 struct FT_LibraryRec_;
 struct FT_FaceRec_;
