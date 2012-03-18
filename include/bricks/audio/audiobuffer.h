@@ -78,7 +78,7 @@ namespace Bricks { namespace Audio {
 		int CopyTo(AudioBuffer<AudioSample>& dest, u32 sourcechannel = 0, u32 sourceindex = 0, u32 destchannel = 0, u32 destindex = 0, s32 count = -1) const {
 			if (count < 0)
 				count = size;
-			count = Math::Min(Math::Min(count, size - sourceindex), dest.GetSize() - destindex);
+			count = Math::Min(Math::Min((u32)count, size - sourceindex), dest.GetSize() - destindex);
 			for (u32 i = sourcechannel; i < channels; i++)
 				memcpy(dest[destchannel + i - sourcechannel] + destindex, buffer[i] + sourceindex, count * sizeof(AudioSample));
 			return count;
@@ -88,7 +88,7 @@ namespace Bricks { namespace Audio {
 		int CopyTo(AudioBuffer<Tsrc>& dest, u32 sourcechannel = 0, u32 sourceindex = 0, u32 destchannel = 0, u32 destindex = 0, s32 count = -1) const {
 			if (count < 0)
 				count = size;
-			count = Math::Min(Math::Min(count, size - sourceindex), dest.GetSize() - destindex);
+			count = Math::Min(Math::Min((u32)count, size - sourceindex), dest.GetSize() - destindex);
 			for (u32 i = sourcechannel; i < channels; i++) {
 				for (u32 k = 0; k < count; k++)
 					dest[destchannel + i - sourcechannel][destindex + k] = ConvertSample(buffer[i][sourceindex + k]);
