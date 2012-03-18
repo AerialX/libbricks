@@ -118,7 +118,7 @@ set(BRICKS_CORE_SOURCE_FILES
 set(BRICKS_IO_LINK_LIBRARIES bricks-core)
 set(BRICKS_IO_SOURCE_FILES
 	"source/io/console.cpp" "source/io/filesystem.cpp"
-	"source/io/substream.cpp" "source/io/cachestream.cpp"
+	"source/io/substream.cpp" "source/io/cachestream.cpp" "source/io/memorystream.cpp"
 )
 
 if (NOT APPLE AND NOT ANDROID)
