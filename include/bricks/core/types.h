@@ -86,7 +86,11 @@ typedef volatile double		vf64;
 #ifdef NDEBUG
 #define BRICKS_ENV_RELEASE 1
 #endif
-#if !BRICKS_ENV_RELEASE
+#ifdef DEBUG
+#define BRICKS_ENV_DEBUG 1
+#endif
+
+#if !BRICKS_ENV_DEBUG && !BRICKS_ENV_RELEASE
 #define BRICKS_ENV_DEBUG 1
 #endif
 
