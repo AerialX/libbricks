@@ -2,7 +2,7 @@
 
 #include "bricks/config.h"
 
-#ifdef BRICKS_CONFIG_AUDIO_FFMPEG
+#if BRICKS_CONFIG_AUDIO_FFMPEG
 
 #include "bricks/core/copypointer.h"
 #include "bricks/collections/array.h"

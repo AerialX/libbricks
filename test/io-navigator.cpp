@@ -1,7 +1,8 @@
 #include "brickstest.hpp"
 
 #include <bricks/io/filestream.h>
-#include <bricks/io/navigator.h>
+#include <bricks/io/streamreader.h>
+#include <bricks/io/streamwriter.h>
 
 using namespace Bricks;
 using namespace Bricks::IO;
@@ -19,10 +20,10 @@ TEST(BricksIoNavigatorTest, WriteReadTest) {
 	const u16 testValue2 = 0xF33D;
 	{ FileStream stream(path, FileOpenMode::Create, FileMode::WriteOnly, FilePermissions::OwnerReadWrite);
 	StreamWriter writer(tempnew stream, Endian::BigEndian);
-	writer.WriteInt32(testValue1);
+	writer.WriteInt(testValue1);
 	writer.WriteString(testString);
 	writer.WriteByte('\0');
-	writer.WriteInt16(testValue2, Endian::LittleEndian);
+	writer.WriteInt(testValue2, Endian::LittleEndian);
 	EXPECT_EQ(sizeof(testValue1) + sizeof(testValue2) + testString.GetLength() + 1, stream.GetLength()) << "Written file size does not match"; }
 
 	{ FileStream rstream(path, FileOpenMode::Open, FileMode::ReadOnly);

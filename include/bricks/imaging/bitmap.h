@@ -2,6 +2,7 @@
 
 #include "bricks/core/copypointer.h"
 #include "bricks/core/returnpointer.h"
+#include "bricks/core/math.h"
 #include "bricks/imaging/image.h"
 
 namespace Bricks { namespace Imaging {
@@ -38,7 +39,7 @@ namespace Bricks { namespace Imaging {
 
 		void CopyTo(Image* image, u32 x, u32 y, u32 width, u32 height) const;
 
-		static size_t CalculateImageDataSize(u32 width, u32 height, const PixelDescription& description) { return BRICKS_FEATURE_ROUND_UP((size_t)description.GetPixelDepth() * width * height, 8) / 8; }
-		static size_t CalculateImageDataStride(u32 width, const PixelDescription& description) { return BRICKS_FEATURE_ROUND_UP((size_t)description.GetPixelDepth() * width, 8) / 8; }
+		static size_t CalculateImageDataSize(u32 width, u32 height, const PixelDescription& description) { return Math::RoundUp((size_t)description.GetPixelDepth() * width * height, 8) / 8; }
+		static size_t CalculateImageDataStride(u32 width, const PixelDescription& description) { return Math::RoundUp((size_t)description.GetPixelDepth() * width, 8) / 8; }
 	};
 } }

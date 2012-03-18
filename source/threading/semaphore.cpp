@@ -48,7 +48,7 @@ namespace Bricks { namespace Threading {
 
 	bool Semaphore::Wait(const Time& timeout)
 	{
-#ifdef BRICKS_FEATURE_THREADING_INTERNAL_TIMEDTRY
+#if BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY
 		return !Internal::ThreadingTimedTryAgain(Internal::SemaphoreTimedTry(BRICKS_SEMAPHORE), timeout);
 #else
 		return !sem_timedwait(BRICKS_SEMAPHORE, tempnew timeout.GetTimespec());

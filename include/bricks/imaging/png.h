@@ -2,7 +2,7 @@
 
 #include "bricks/config.h"
 
-#ifdef BRICKS_CONFIG_IMAGING_LIBPNG
+#if BRICKS_CONFIG_IMAGING_LIBPNG
 
 #include "bricks/core/returnpointer.h"
 

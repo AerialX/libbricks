@@ -23,7 +23,6 @@ set(BRICKS_VERSION "0.1")
 
 option(BRICKS_CONFIG_LOGGING "Logs various information about libbricks to stderr" OFF)
 option(BRICKS_CONFIG_LOGGING_HEAVY "A lot more logging. Requires BRICKS_CONFIG_LOGGING" OFF)
-option(BRICKS_CONFIG_LOGGING_MEMLEAK "Report any unreleased objects at program termination. Requires BRICKS_CONFIG_LOGGING" OFF)
 option(BRICKS_CONFIG_LOGGING_ZOMBIES "Released objects become zombies and will terminate gracefully if used" OFF)
 
 option(BRICKS_CONFIG_RTTI "Enabled RTTI typeinfo for object.GetClass() and a more helpful GetDebugString()" ON)
@@ -99,24 +98,36 @@ endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
-set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall")
+set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall -Wno-empty-body")
+
+if (BRICKS_CONFIG_RTTI)
+	set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-frtti")
+endif()
+
+if (ANDROID)
+	set(BRICKS_CORE_LINK_LIBRARIES gnustl_static)
+endif()
 
 set(BRICKS_CORE_SOURCE_FILES
 	"source/core/object.cpp"
 	"source/core/exception.cpp"
 	"source/core/string.cpp" "source/core/value.cpp"
 	"source/core/time.cpp" "source/core/timespan.cpp"
+	"source/core/data.cpp"
 )
 
 set(BRICKS_IO_LINK_LIBRARIES bricks-core)
 set(BRICKS_IO_SOURCE_FILES
 	"source/io/console.cpp" "source/io/filesystem.cpp"
-	"source/io/substream.cpp" "source/io/cachestream.cpp"
+	"source/io/substream.cpp" "source/io/cachestream.cpp" "source/io/memorystream.cpp"
+	"source/io/streamnavigator.cpp" "source/io/streamreader.cpp" "source/io/streamwriter.cpp"
 )
 
-set(BRICKS_THREADING_LINK_LIBRARIES bricks-core pthread)
-if (NOT APPLE)
+if (NOT APPLE AND NOT ANDROID)
 	set(BRICKS_THREADING_LINK_LIBRARIES ${BRICKS_THREADING_LINK_LIBRARIES} rt)
+endif()
+if (NOT ANDROID)
+	set(BRICKS_THREADING_LINK_LIBRARIES ${BRICKS_THREADING_LINK_LIBRARIES} pthread)
 endif()
 set(BRICKS_THREADING_SOURCE_FILES
 	"source/threading/thread.cpp" "source/threading/threadlocalstorage.cpp"
@@ -193,6 +204,7 @@ if(BRICKS_CONFIG_AUDIO_FFMPEG)
 endif()
 
 if(NOT CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+	set(CMAKE_FIND_ROOT_PATH ${CMAKE_FIND_ROOT_PATH} PARENT_SCOPE)
 	set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} PARENT_SCOPE)
 	set(BRICKS_LINK_DIRS ${BRICKS_LINK_DIRECTORIES} PARENT_SCOPE)
 	set(BRICKS_INCLUDE_DIRS ${BRICKS_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}/include" "${CMAKE_CURRENT_BINARY_DIR}/include" PARENT_SCOPE)
@@ -203,6 +215,7 @@ link_directories(${BRICKS_LINK_DIRECTORIES})
 include_directories("include" "source" "${CMAKE_CURRENT_BINARY_DIR}/include" ${BRICKS_INCLUDE_DIRS})
 
 add_library(bricks-core ${BRICKS_CORE_SOURCE_FILES})
+target_link_libraries(bricks-core ${BRICKS_CORE_LINK_LIBRARIES})
 set(BRICKS_TARGETS ${BRICKS_TARGETS} bricks-core)
 
 add_library(bricks-io ${BRICKS_IO_SOURCE_FILES})

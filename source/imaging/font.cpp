@@ -1,6 +1,7 @@
 #include "bricks/imaging/font.h"
 #include "bricks/imaging/bitmap.h"
 #include "bricks/collections/array.h"
+#include "bricks/core/math.h"
 
 using namespace Bricks::Collections;
 
@@ -53,12 +54,12 @@ namespace Bricks { namespace Imaging {
 		foreach (const RenderedGlyph& glyph, glyphs) {
 			s32 h1 = glyph.y - font->GetDescender();
 			s32 h2 = glyph.y - glyph.glyph->GetBearingY() + glyph.glyph->GetHeight();
-			s32 h = BRICKS_FEATURE_MAX(h1, h2);
+			s32 h = Math::Max(h1, h2);
 			if (h > height)
 				height = h;
 			s32 w1 = glyph.x + glyph.glyph->GetAdvance();
 			s32 w2 = glyph.x + glyph.glyph->GetBearingX() + glyph.glyph->GetWidth();
-			s32 w = BRICKS_FEATURE_MAX(w1, w2);
+			s32 w = Math::Max(w1, w2);
 			if (w > width)
 				width = w;
 		}

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "bricks/core/types.h"
 #include "bricks/core/object.h"
-#include "bricks/core/returnpointer.h"
 #include "bricks/core/string.h"
 
 namespace Bricks {
+	template<typename T> class ReturnPointer;
+
 	class Data : public Object
 	{
 	protected:
@@ -13,20 +13,22 @@ namespace Bricks {
 		size_t length;
 		bool owned;
 
-		void Construct() { if (data && owned) delete[] data; data = new u8[length]; owned = true; }
+		void Construct();
 
 	public:
-		Data(size_t length) : data(NULL), length(length), owned(true) { Construct(); }
-		Data(const void* data, size_t length, bool copy = true) : data(copy ? NULL : (u8*)data), length(length), owned(copy) { if (copy) { Construct(); CopyFrom(data, length); } }
-		Data(const String& string, bool copy = true) : data(copy ? NULL : (u8*)string.GetBuffer()), length(string.GetSize()), owned(copy) { if (copy) { Construct(); CopyFrom(string.GetBuffer(), string.GetSize()); } }
-		Data(const Data& data, bool copy = true) : data(copy ? NULL : (u8*)data.GetData()), length(data.GetLength()), owned(copy) { if (copy) { Construct(); CopyFrom(data); } }
+		Data(size_t length);
+		Data(const void* data, size_t length, bool copy = true);
+		Data(const String& string, bool copy = true);
+		Data(const Data& data, bool copy = true);
 
-		~Data() { if (data && owned) delete[] data; }
+		~Data();
 
-		void CopyFrom(const void* value, size_t len, size_t offset = 0) { memcpy(data + offset, value, BRICKS_FEATURE_MIN(len, length - offset)); }
-		void CopyFrom(const Data& value, size_t offset = 0) { memcpy(data + offset, value.GetData(), BRICKS_FEATURE_MIN(value.GetLength(), length - offset)); }
+		void CopyFrom(const void* value, size_t len, size_t offset = 0);
+		void CopyFrom(const Data& value, size_t offset = 0);
 
-		Data& operator=(const Data& rhs) { length = rhs.GetLength(); Construct(); CopyFrom(rhs); return *this; }
+		Data& operator=(const Data& rhs);
+
+		ReturnPointer<Data> Subdata(size_t offset = 0, size_t length = String::npos) const;
 
 		size_t GetLength() const { return length; }
 		size_t GetSize() const { return length; }
@@ -36,7 +38,5 @@ namespace Bricks {
 		operator void*() { return data; }
 		u8& operator[](size_t index) { return data[index]; }
 		const u8& operator[](size_t index) const { return data[index]; }
-
-		ReturnPointer<Data> Subdata(size_t offset = 0, size_t length = String::npos) const { return autonew Data(data + offset, length == String::npos ? this->length : length); }
 	};
 }

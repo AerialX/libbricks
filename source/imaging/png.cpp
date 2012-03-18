@@ -1,7 +1,9 @@
+#include "bricks/imaging/png.h"
+
+#if BRICKS_CONFIG_IMAGING_LIBPNG
+#include "bricks/imaging/bitmap.h"
 #include "bricks/core/exception.h"
 #include "bricks/io/filestream.h"
-#include "bricks/imaging/png.h"
-#include "bricks/imaging/bitmap.h"
 
 #include <png.h>
 
@@ -114,3 +116,4 @@ namespace Bricks { namespace Imaging {
 		return LoadImage(autonew FileStream(path, FileOpenMode::Open, FileMode::ReadOnly, FilePermissions::OwnerReadWrite, filesystem), transform);
 	}
 } }
+#endif

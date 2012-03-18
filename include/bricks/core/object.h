@@ -9,9 +9,6 @@ namespace Bricks {
 	class String;
 
 	namespace Internal {
-		struct ObjectGlobalAlloc { };
-		extern ObjectGlobalAlloc Global;
-
 		class ReferenceCounter
 		{
 		private:
@@ -33,29 +30,17 @@ namespace Bricks {
 	private:
 		Internal::ReferenceCounter referenceCount;
 
-#ifdef BRICKS_CONFIG_LOGGING_MEMLEAK
-		static void ReportObject(Object* object, bool status);
-		static void ReportObject(bool status);
-#define BRICKS_FEATURE_LOGGING_MEMLEAK() ReportObject(this, true)
-#define BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY() do { if (referenceCount == 1) ReportObject(this, false); } while (false)
-#define BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE() ReportObject(true)
-#else
-#define BRICKS_FEATURE_LOGGING_MEMLEAK()
-#define BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY()
-#define BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE()
-#endif
-
 	protected:
 		Object(const Object& object) : referenceCount(object.referenceCount) { }
 		Object& operator =(const Object& object) { referenceCount = object.referenceCount; return *this; }
 
 	public:
-		Object() { BRICKS_FEATURE_LOGGING_MEMLEAK(); BRICKS_FEATURE_LOG_HEAVY("> %p [%d]", this, GetReferenceCount());}
+		Object() { BRICKS_FEATURE_LOG_HEAVY("> %p [%d]", this, GetReferenceCount());}
 		virtual ~Object() { BRICKS_FEATURE_LOG_HEAVY("< %p [%d]", this, GetReferenceCount()); }
 
-#ifdef BRICKS_FEATURE_RELEASE
+#if BRICKS_ENV_RELEASE
 		void Retain() { referenceCount++; BRICKS_FEATURE_LOG_HEAVY("+ %p [%d]", this, GetReferenceCount()); }
-		void Release() { BRICKS_FEATURE_LOG_HEAVY("- %p [%d]", this, GetReferenceCount() - 1); if (!--referenceCount) delete this; BRICKS_FEATURE_LOGGING_MEMLEAK_DESTROY(); }
+		void Release() { BRICKS_FEATURE_LOG_HEAVY("- %p [%d]", this, GetReferenceCount() - 1); if (!--referenceCount) delete this; }
 #else
 		void Retain();
 		void Release();
@@ -66,8 +51,7 @@ namespace Bricks {
 		virtual bool operator ==(const Object& rhs) const { return this == &rhs; }
 		virtual bool operator !=(const Object& rhs) const { return this != &rhs; }
 
-		void* operator new(size_t size, const Internal::ObjectGlobalAlloc& dummy) { return malloc(size); }
-		void* operator new(size_t size) { BRICKS_FEATURE_LOGGING_MEMLEAK_CREATE(); return malloc(size); }
+		void* operator new(size_t size) { return malloc(size); }
 		void operator delete(void* data) { free(data); }
 
 		virtual String GetDebugString() const;

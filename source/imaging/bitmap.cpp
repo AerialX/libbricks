@@ -51,7 +51,7 @@ namespace Bricks { namespace Imaging {
 				break;
 			default:
 				offset *= pixelDescription.GetPixelDepth();
-				for (int i = BRICKS_FEATURE_ROUND_UP(pixelDescription.GetPixelDepth(), 8) / 8 - 1; i >= 0; i--) {
+				for (int i = Math::RoundUp(pixelDescription.GetPixelDepth(), 8) / 8 - 1; i >= 0; i--) {
 					pixel <<= 8;
 					pixel |= ((u8*)pixelData)[offset / 8 + i];
 				}

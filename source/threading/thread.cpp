@@ -110,8 +110,12 @@ namespace Bricks { namespace Threading {
 
 	void Thread::Stop()
 	{
+#if BRICKS_ENV_ANDROID
+		BRICKS_FEATURE_THROW(NotSupportedException());
+#else
 		if (GetStatus() == ThreadStatus::Started)
 			pthread_cancel(BRICKS_PTHREAD_THREAD);
+#endif
 	}
 
 	void Thread::Detach()
@@ -133,25 +137,6 @@ namespace Bricks { namespace Threading {
 		Cleanup();
 	}
 
-#ifdef _GNU_SOURCE
-	bool Thread::Wait(const Time& timeout)
-	{
-		if (!pthread_timedjoin_np(BRICKS_PTHREAD_THREAD, NULL, tempnew timeout.GetTimespec())) {
-			Cleanup();
-			return true;
-		}
-		return false;
-	}
-
-	bool Thread::TryWait()
-	{
-		if (!pthread_tryjoin_np(BRICKS_PTHREAD_THREAD, NULL)) {
-			Cleanup();
-			return true;
-		}
-		return false;
-	}
-#else
 	bool Thread::Wait(const Time& timeout)
 	{
 		if (!OwnsThread())
@@ -175,7 +160,6 @@ namespace Bricks { namespace Threading {
 		}
 		return false;
 	}
-#endif
 
 	void Thread::Signal(int signal)
 	{
@@ -222,7 +206,9 @@ namespace Bricks { namespace Threading {
 
 	void Thread::YieldStop()
 	{
+#if !BRICKS_ENV_ANDROID
 		pthread_testcancel();
+#endif
 	}
 
 	void Thread::Sleep(const Time& timeout)

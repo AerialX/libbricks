@@ -1,5 +1,6 @@
 #include "bricks/io/cachestream.h"
 #include "bricks/core/exception.h"
+#include "bricks/core/math.h"
 
 namespace Bricks { namespace IO {
 	CacheStream::CacheStream(Stream* stream, u32 cacheSize) :
@@ -64,7 +65,7 @@ namespace Bricks { namespace IO {
 			FlushCache();
 
 		if (position >= cachePosition && position < cachePosition + cacheLength) {
-			length = BRICKS_FEATURE_MIN(size, cacheLength - cacheOffset);
+			length = Math::Min(size, cacheLength - cacheOffset);
 			if (length) {
 				memcpy(buffer, cache + cacheOffset, length);
 				cacheOffset += length;
@@ -84,7 +85,7 @@ namespace Bricks { namespace IO {
 		if (!cacheDirty)
 			DirtyCache();
 
-		size_t length = BRICKS_FEATURE_MIN(size, cacheSize - cacheOffset);
+		size_t length = Math::Min(size, cacheSize - cacheOffset);
 		if (length) {
 			memcpy(cache + cacheOffset, buffer, length);
 			cacheOffset += length;

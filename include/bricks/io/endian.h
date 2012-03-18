@@ -2,18 +2,22 @@
 
 #include "bricks/core/types.h"
 #include "bricks/core/pointer.h"
+#include "bricks/core/exception.h"
 
 #ifdef __GLIBC__
 #include <endian.h>
-#if __BYTE_ORDER == __LITTLE_ENDIAN
-#define BRICKS_FEATURE_ENDIAN_LITTLE
-#elif __BYTE_ORDER == __BIG_ENDIAN
-#define BRICKS_FEATURE_ENDIAN_BIG
 #endif
-#elif defined(_BIG_ENDIAN)
-#define BRICKS_FEATURE_ENDIAN_BIG
-#elif defined(_LITTLE_ENDIAN)
-#define BRICKS_FEATURE_ENDIAN_LITTLE
+
+#if defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN
+#define BRICKS_ENV_ENDIAN_LITTLE 1
+#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN
+#define BRICKS_ENV_ENDIAN_BIG 1
+#elif defined(_BYTE_ORDER) && _BYTE_ORDER == _LITTLE_ENDIAN
+#define BRICKS_ENV_ENDIAN_LITTLE 1
+#elif defined(_BYTE_ORDER) && _BYTE_ORDER == _BIG_ENDIAN
+#define BRICKS_ENV_ENDIAN_BIG 1
+#else
+#warn "Cannot autodetect endianness"
 #endif
 
 namespace Bricks { namespace IO {
@@ -24,7 +28,7 @@ namespace Bricks { namespace IO {
 		LittleEndian,
 	}; }
 
-#ifdef BRICKS_FEATURE_VCPP
+#if BRICKS_ENV_VCPP
 #define BRICKS_ENDIAN_SWAP16(num) \
 	_byteswap_ushort(num)
 #define BRICKS_ENDIAN_SWAP32(num) \
@@ -34,7 +38,7 @@ namespace Bricks { namespace IO {
 #else
 #define BRICKS_ENDIAN_SWAP16(num) \
 	((num << 8) | (num >> 8))
-#ifdef BRICKS_FEATURE_GCC_4_3
+#if __GNUC__ >= 4 && __GNUC_MINOR__ >= 3
 #define BRICKS_ENDIAN_SWAP32(num) \
 	__builtin_bswap32(num)
 #define BRICKS_ENDIAN_SWAP64(num) \
@@ -49,12 +53,12 @@ namespace Bricks { namespace IO {
 
 	static inline bool IsLittleEndian()
 	{
-#ifdef BRICKS_FEATURE_ENDIAN_LITTLE
+#if BRICKS_ENV_ENDIAN_LITTLE
 		return true;
-#elif defined(BRICKS_FEATURE_ENDIAN_BIG)
+#elif BRICKS_ENV_ENDIAN_BIG
 		return false;
 #else
-		union { u16 num; char buf[sizeof(u16)]; } endianness;
+		union { u16 num; u8 buf[sizeof(u16)]; } endianness;
 		endianness.num = 1;
 		return endianness.buf[0];
 #endif

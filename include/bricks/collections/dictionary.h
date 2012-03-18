@@ -2,7 +2,7 @@
 
 #include "bricks/config.h"
 
-#ifndef BRICKS_CONFIG_STL
+#if !BRICKS_CONFIG_STL
 #error libbricks must be configured to use the STL
 #endif
 

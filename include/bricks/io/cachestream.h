@@ -26,7 +26,7 @@ namespace Bricks { namespace IO {
 		~CacheStream();
 
 		u32 GetCacheSize() { return cacheSize; }
-		ReturnPointer<Stream> GetStream() { return stream; }
+		Stream* GetStream() { return stream; }
 
 		u64 GetLength() const { return length; }
 		void SetLength(u64 value) { length = value; }

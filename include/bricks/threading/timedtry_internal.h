@@ -5,13 +5,13 @@
 #include <errno.h>
 #include <unistd.h>
 
-#if defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L
-#define BRICKS_FEATURE_THREADING_INTERNAL_TIMEDTRY
+#if (defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L) || BRICKS_ENV_ANDROID
+#define BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY
 #endif
 
 namespace Bricks { namespace Threading { namespace Internal {
 	#define BRICKS_THREADING_INTERNAL_TIMEDTRY_RESOLUTION 10000000 // 10 milliseconds timing resolution
-	static void ThreadingTimedNanoDelay()
+	static inline void ThreadingTimedNanoDelay()
 	{
 		timespec ts;
 		ts.tv_sec = 0;
@@ -21,7 +21,7 @@ namespace Bricks { namespace Threading { namespace Internal {
 	}
 	#undef BRICKS_THREADING_INTERNAL_TIMEDTRY_RESOLUTION
 
-	template<typename T> static int ThreadingTimedTryBusy(const T& attempt, const Time& timeout)
+	template<typename T> static inline int ThreadingTimedTryBusy(const T& attempt, const Time& timeout)
 	{
 		int result;
 
@@ -34,7 +34,7 @@ namespace Bricks { namespace Threading { namespace Internal {
 		return result;
 	}
 
-	template<typename T> static int ThreadingTimedTryAgain(const T& attempt, const Time& timeout)
+	template<typename T> static inline int ThreadingTimedTryAgain(const T& attempt, const Time& timeout)
 	{
 		int result;
 

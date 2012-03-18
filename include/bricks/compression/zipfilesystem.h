@@ -12,7 +12,7 @@ namespace Bricks { namespace IO { class Stream; } }
 
 namespace Bricks { namespace Compression {
 
-#ifdef BRICKS_CONFIG_COMPRESSION_LIBZIP
+#if BRICKS_CONFIG_COMPRESSION_LIBZIP
 	class LibZipException : public Exception
 	{
 	protected:

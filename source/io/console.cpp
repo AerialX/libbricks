@@ -1,6 +1,8 @@
 #include "bricks/io/console.h"
 #include "bricks/io/stream.h"
 #include "bricks/io/filestream.h"
+#include "bricks/io/streamreader.h"
+#include "bricks/io/streamwriter.h"
 
 #include <unistd.h>
 
@@ -10,12 +12,17 @@ namespace Bricks { namespace IO {
 	Console* Console::GetDefault()
 	{
 		if (!defaultConsole)
-			defaultConsole = autonew (Internal::Global)StandardConsole();
+			defaultConsole = autonew StandardConsole();
 		return defaultConsole;
 	}
 
 	Console::Console(Stream* in, Stream* out, Stream* error) :
 		In(autonew StreamReader(in)), Out(autonew StreamWriter(out)), Error(autonew StreamWriter(error))
+	{
+
+	}
+
+	Console::~Console()
 	{
 
 	}
