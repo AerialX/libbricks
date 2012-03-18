@@ -8,13 +8,9 @@
 #include <endian.h>
 #endif
 
-#if defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(_BYTE_ORDER) && _BYTE_ORDER == _LITTLE_ENDIAN) || __LITTLE_ENDIAN__
 #define BRICKS_ENV_ENDIAN_LITTLE 1
-#elif defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN
-#define BRICKS_ENV_ENDIAN_BIG 1
-#elif defined(_BYTE_ORDER) && _BYTE_ORDER == _LITTLE_ENDIAN
-#define BRICKS_ENV_ENDIAN_LITTLE 1
-#elif defined(_BYTE_ORDER) && _BYTE_ORDER == _BIG_ENDIAN
+#elif (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(_BYTE_ORDER) && _BYTE_ORDER == _BIG_ENDIAN) || __BIG_ENDIAN__
 #define BRICKS_ENV_ENDIAN_BIG 1
 #else
 #warn "Cannot autodetect endianness"
