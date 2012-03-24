@@ -1,6 +1,9 @@
 #include <bricks.hpp>
 #include <bricks/collections.hpp>
 #include <bricks/io.hpp>
+#if BRICKS_CONFIG_JAVA_JNI
+#include <bricks/java.hpp>
+#endif
 
 using namespace Bricks;
 using namespace Bricks::IO;
@@ -145,6 +148,38 @@ static void testDelegates()
 	delegate->Release();
 }
 
+#if BRICKS_CONFIG_JAVA_JNI && !BRICKS_ENV_ANDROID
+using namespace Bricks::Java;
+
+static void testJava()
+{
+	Console::GetDefault()->Out->WriteLine(" ==== Java Tests ==== ");
+
+	Console::GetDefault()->Out->WriteLine(" --- JVM Test --- ");
+	AutoPointer<JVM> jvm = autonew JVM();
+	BRICKS_FEATURE_ASSERT(jvm->GetClass("java/lang/String"));
+
+	Console::GetDefault()->Out->WriteLine(" --- String Test --- ");
+	AutoPointer<Lang::String> str = autonew Lang::String(jvm, "ohai");
+	BRICKS_FEATURE_ASSERT(str->GetString() == "ohai");
+	BRICKS_FEATURE_ASSERT(str->length() == 4);
+	Console::GetDefault()->Out->WriteLine(String::Format("Created string \"%s\"", str->GetString().CString()));
+
+	Console::GetDefault()->Out->WriteLine(" --- Method Test --- ");
+	str = str->GetClass()->GetMethod<Lang::String(int)>("substring")(str, 2);
+	BRICKS_FEATURE_ASSERT(str->GetString() == "ai");
+	Console::GetDefault()->Out->WriteLine(String::Format("Created substring \"%s\"", str->GetString().CString()));
+	Console::GetDefault()->Out->WriteLine(String::Format("Creating string from value: \"%s\"", str->GetClass()->GetStaticMethod<String(float)>("valueOf")(5.5f).CString()));
+	Console::GetDefault()->Out->WriteLine(String::Format("Generating JNI signature from String(int, Array<int>, bool): \"%s\"", Java::Internal::JSignature<String(int, Array<int>, bool)>::Signature().CString()));
+
+	Console::GetDefault()->Out->WriteLine(" --- Array Test --- ");
+	Array<s8> arr; arr.AddItem('j'); arr.AddItem('n'); arr.AddItem('i');
+	Console::GetDefault()->Out->WriteLine(String::Format("Created string from array: \"%s\"", str->GetClass()->Construct<String(Array<s8>*)>(tempnew arr).CString()));
+
+	jvm.Release();
+}
+#endif
+
 int main(int argc, const char* argv[])
 {
 	// The console is really shitty.
@@ -160,6 +195,11 @@ int main(int argc, const char* argv[])
 
 	testDelegates();
 	Console::GetDefault()->Out->WriteLine();
+
+#if BRICKS_CONFIG_JAVA_JNI && !BRICKS_ENV_ANDROID
+	testJava();
+	Console::GetDefault()->Out->WriteLine();
+#endif
 
 	return 0;
 }
