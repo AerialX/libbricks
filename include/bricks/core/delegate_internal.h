@@ -145,10 +145,14 @@ namespace Bricks {
 	public:
 		Delegate() { }
 		Delegate(const Delegate<R(BRICKS_ARGLIST_TYPES)>& delegate) : function(delegate.function) { }
-		Delegate(Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>* function) : function(function) { }
 		Delegate(typename Internal::Function<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::Function<R(BRICKS_ARGLIST_TYPES)>(function)) { }
-		template<typename T> Delegate(const T& function) : function(autonew Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
-		template<typename T> Delegate(T* function) : function(autonew Internal::FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
+
+		template<typename T> Delegate(const T& function, typename SFINAE::DisableIf<SFINAE::IsCompatibleType<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>, T>::Value>::Type* dummy = NULL) : function(autonew Internal::Functor<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
+		template<typename T> Delegate(T* function, typename SFINAE::DisableIf<SFINAE::IsCompatibleType<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>, T>::Value>::Type* dummy = NULL) : function(autonew Internal::FunctorPointer<T, R(BRICKS_ARGLIST_TYPES)>(function)) { }
+
+		template<typename T> Delegate(const T& function, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>, T>::Value>::Type* dummy = NULL) : function(autonew T(function)) { }
+		template<typename T> Delegate(T* function, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>, T>::Value>::Type* dummy = NULL) : function(function) { }
+
 		template<typename T> Delegate(T* object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
 		template<typename T> Delegate(const Pointer<T>& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
 #if BRICKS_ENV_OBJC_BLOCKS
