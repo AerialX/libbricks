@@ -137,4 +137,6 @@ namespace Bricks {
 				return found ? firstindex : npos;
 			}
 	};
+
+	static inline String operator +(const char* lhs, const String& rhs) { return String(lhs) + String(rhs); }
 }
