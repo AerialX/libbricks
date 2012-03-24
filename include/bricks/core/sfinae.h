@@ -7,12 +7,9 @@
 
 namespace Bricks {
 	namespace SFINAE {
+		class IncompleteType;
 		typedef struct { u8 value[3]; } True;
 		typedef struct { u8 value[5]; } False;
-		template<typename T> T* MakePointer();
-		template<typename T> T MakeValue();
-		template<typename T> T& MakeReference();
-		template<typename T> const T& MakeConstReference();
 
 		struct AnyType { template<typename T> AnyType(const T&); };
 
@@ -27,6 +24,16 @@ namespace Bricks {
 		template<typename T> struct IsConst { static const bool Value = false; };
 		template<typename T> struct IsConst<const T> { static const bool Value = true; };
 		template<typename T> struct IsConst<const T&> { static const bool Value = true; };
+
+		template<typename T> struct IsReference { static const bool Value = false; };
+		template<typename T> struct IsReference<T&> { static const bool Value = true; };
+
+		template<typename T, typename E = void> struct MakePointerType { typedef T* Type; };
+		template<typename T> struct MakePointerType<T, typename EnableIf<IsReference<T>::Value>::Type> { typedef IncompleteType* Type; };
+		template<typename T> typename MakePointerType<T>::Type MakePointer();
+		template<typename T> T MakeValue();
+		template<typename T> T& MakeReference();
+		template<typename T> const T& MakeConstReference();
 
 		template<typename T, typename U> struct IsSameType {
 			static True ConditionT(U*);
