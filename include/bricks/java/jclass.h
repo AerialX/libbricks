@@ -49,16 +49,10 @@ namespace Bricks { namespace Java {
 
 		template<typename T> ReturnPointer<T> Allocate() { return Internal::TypeConversion<T>::Convert(Allocate()); }
 
-		template<typename T> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct();
-		template<typename T, typename T1> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1);
-		template<typename T, typename T1, typename T2> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2);
-		template<typename T, typename T1, typename T2, typename T3> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3);
-		template<typename T, typename T1, typename T2, typename T3, typename T4> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3, T4 arg4);
-		template<typename T, typename T1, typename T2, typename T3, typename T4, typename T5> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
-		template<typename T, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6);
-		template<typename T, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7);
-		template<typename T, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8);
-		template<typename T, typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8, typename T9> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9);
+#define BRICKS_ARGLIST_DEFINITION(count) \
+		template<typename T BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES> typename Internal::TypeConversion<typename Internal::JConstructorMethodDelegateTransform<T>::Type>::Type Construct(BRICKS_ARGLIST_TYPES);
+#include "bricks/core/arglist.h"
+#undef BRICKS_ARGLIST_DEFINITION
 
 		template<typename T> ReturnPointer<JField> GetField(const String& name);
 		template<typename T> ReturnPointer<JStaticField> GetStaticField(const String& name);
