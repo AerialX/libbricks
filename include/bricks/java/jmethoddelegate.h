@@ -58,7 +58,11 @@ namespace Bricks { namespace Java { namespace Internal {
 #undef BRICKS_ARGLIST_HEADER
 
 #undef BRICKS_JAVA_JMETHODDELEGATE
+#undef BRICKS_JAVA_JMETHODDELEGATE_
 #undef BRICKS_JAVA_JMETHODDELEGATE_VALUE
+#undef BRICKS_JAVA_JSIGNATURE
+#undef BRICKS_JAVA_JSIGNATURE_
+#undef BRICKS_JAVA_JSIGNATURE_VALUE
 
 namespace Bricks { namespace Java {
 	template<typename T> inline ReturnPointer<JField> JClass::GetField(const String& name) { return GetField(name, Internal::JSignature<T>::Signature()); }
