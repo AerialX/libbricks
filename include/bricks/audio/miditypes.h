@@ -163,5 +163,10 @@ namespace Bricks { namespace Audio {
 	struct MidiTimeSignatureEvent : public MidiMetaEvent
 	{
 		MidiTimeSignatureEvent(const MidiMetaEvent& event) : MidiMetaEvent(event) { }
+
+		u8 GetNumerator() const { return data[0]; }
+		u8 GetDenominator() const { return data[1]; }
+		u8 GetMetronome() const { return data[2]; }
+		u8 Get32ndNotesPerQuarterNote() const { return data[3]; }
 	};
 } }
