@@ -123,6 +123,7 @@ set(BRICKS_CORE_SOURCE_FILES
 	"source/core/string.cpp" "source/core/value.cpp"
 	"source/core/time.cpp" "source/core/timespan.cpp"
 	"source/core/data.cpp"
+	"source/core/random.cpp"
 )
 
 set(BRICKS_IO_LINK_LIBRARIES bricks-core)
