@@ -23,4 +23,6 @@
 
 #include "bricks/io/console.h"
 
+#include "bricks/io/serializer.h"
+
 #endif

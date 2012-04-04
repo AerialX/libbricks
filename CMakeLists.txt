@@ -131,6 +131,7 @@ set(BRICKS_IO_SOURCE_FILES
 	"source/io/console.cpp" "source/io/filesystem.cpp"
 	"source/io/substream.cpp" "source/io/cachestream.cpp" "source/io/memorystream.cpp"
 	"source/io/streamnavigator.cpp" "source/io/streamreader.cpp" "source/io/streamwriter.cpp"
+	"source/io/serializer.cpp"
 )
 
 if (NOT APPLE AND NOT ANDROID)
