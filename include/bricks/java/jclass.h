@@ -105,7 +105,7 @@ namespace Bricks { namespace Java {
 
 		JQualifiedClass(JVM* vm = JVM::GetCurrentVM()) : JClass(vm->GetClass(QualifiedName)) { }
 		JQualifiedClass(JVM* vm, jclass clazz, bool global = false) : JClass(vm, clazz, global) { }
-		JQualifiedClass(JVM* vm, jobject object, bool global = false) : JClass(vm, object, global) { }
+		JQualifiedClass(JVM* vm, jobject object) : JClass(vm, object) { }
 		JQualifiedClass(JReference* reference) : JClass(reference) { }
 		~JQualifiedClass() { }
 	};
