@@ -37,7 +37,13 @@ namespace Bricks { namespace IO {
 
 		String GetExtension() const { String name = GetFileName(); return name.Substring(NposOrAdd(name.FirstIndexOf(ExtensionSeparator), 1)); }
 		String GetFileNameWithoutExtension() const { String name = GetFileName(); return name.Substring(0, name.FirstIndexOf(ExtensionSeparator)); }
-		String Combine(const String& leaf) const { return *this + DirectorySeparator + leaf; }
+		String Combine(const String& leaf) const {
+			if (!leaf.GetLength())
+				return *this;
+			if (!GetLength() || FilePath(leaf).IsPathRooted())
+				return leaf;
+			return *this + DirectorySeparator + leaf;
+		}
 
 #if BRICKS_ENV_WINDOWS
 		bool IsPathRooted() const { return FirstIndexOf(GetDirectorySeparators()) == 2; } // TODO: Fixit.
