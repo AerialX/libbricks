@@ -252,7 +252,7 @@ namespace Bricks { namespace Compression {
 	{
 		struct zip_stat zst;
 		bool exists = zip_stat(zipfile, TransformPath(path).CString(), 0, &zst) >= 0;
-		if (!exists && path[path.GetLength() - 1] != '/')
+		if (!exists && path.GetLength() && path[path.GetLength() - 1] != '/')
 			return Exists(path + "/");
 		return exists;
 	}
