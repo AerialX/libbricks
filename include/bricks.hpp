@@ -19,6 +19,8 @@
 #include "bricks/core/autopointer.h"
 #include "bricks/core/copypointer.h"
 #include "bricks/core/returnpointer.h"
+#include "bricks/core/loosepointer.h"
+#include "bricks/core/loosedynamicpointer.h"
 #include "bricks/core/typeinfo.h"
 
 #include "bricks/core/delegate.h"
