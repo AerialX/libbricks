@@ -22,7 +22,7 @@ namespace Bricks {
 		AutoPointer<T>& operator=(T* t) { Swap(t); return *this; }
 		template<typename U> AutoPointer<T>& operator=(const Pointer<U>& t) { Swap(t); return *this; }
 
-		void Swap(const Pointer<T>& t, bool retain = true) { if (this->GetValue() == t.GetValue()) return; Release(*this); Pointer<T>::Swap(t); if (retain) Retain(*this); }
+		void Swap(const Pointer<T>& t, bool retain = true) { if (retain) Retain(t); Release(*this); Pointer<T>::Swap(t); }
 		void Release() { Release(*this); Pointer<T>::Swap(NULL); }
 
 		template<typename U> static void Retain(U* ptr) { if (ptr) CastTo<Object>(ptr)->Retain(); }
