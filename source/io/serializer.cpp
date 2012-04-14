@@ -100,6 +100,27 @@ namespace Bricks { namespace IO { namespace Internal {
 			return autonew Data(reader->ReadBytes(size));
 		}
 	};
+
+	struct NullObject { };
+	class NullSerializer : public Bricks::IO::Internal::ObjectSerializer
+	{
+	public:
+		NullSerializer() :
+			ObjectSerializer(TypeInfo::OfType<NullObject>(), 0)
+		{
+
+		}
+
+		void Serialize(StreamWriter* writer, Object* object) const
+		{
+
+		}
+
+		Bricks::ReturnPointer<Bricks::Object> Deserialize(StreamReader* reader) const
+		{
+			return NULL;
+		}
+	};
 } } }
 
 namespace Bricks { namespace IO {
@@ -110,6 +131,7 @@ namespace Bricks { namespace IO {
 		RegisterSerializer(autonew Internal::StringSerializer());
 		RegisterSerializer(autonew Internal::ValueSerializer());
 		RegisterSerializer(autonew Internal::DataSerializer());
+		RegisterSerializer(autonew Internal::NullSerializer());
 	}
 
 	void Serializer::RegisterSerializer(Internal::ObjectSerializer* serializer)
@@ -125,7 +147,7 @@ namespace Bricks { namespace IO {
 
 	void Serializer::Serialize(StreamWriter* writer, Object* object) const
 	{
-		TypeInfo type = TypeOf(object);
+		TypeInfo type = object ? TypeOf(object) : TypeInfo::OfType<Internal::NullObject>();
 		Internal::ObjectSerializer* serializer = serializers.GetItem(type);
 		writer->WriteInt32(serializer->GetIdentifier());
 		serializer->Serialize(writer, object);
