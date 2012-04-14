@@ -20,7 +20,7 @@ namespace Bricks { namespace IO {
 		{
 			size_t size = GetLength();
 			if (size && LastIndexOf(GetDirectorySeparators()) == size - 1)
-				(*this)[size - 1] = '\0';
+				Truncate(size - 1);
 		}
 
 		static size_t NposOrAdd(size_t num, size_t add) { return num + ((num == npos) ? 0 : add); }

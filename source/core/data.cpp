@@ -1,6 +1,7 @@
 #include "bricks/core/data.h"
-#include "bricks/core/returnpointer.h"
 #include "bricks/core/math.h"
+#include "bricks/core/string.h"
+#include "bricks/core/returnpointer.h"
 
 namespace Bricks {
 	Data::Data(size_t length) :
@@ -19,7 +20,7 @@ namespace Bricks {
 	}
 
 	Data::Data(const String& string, bool copy) :
-		data(copy ? NULL : (u8*)string.GetBuffer()), length(string.GetSize()), owned(copy)
+		data(copy ? NULL : (u8*)string.GetBuffer()->GetData()), length(string.GetSize()), owned(copy)
 	{
 		if (copy) {
 			Construct();
