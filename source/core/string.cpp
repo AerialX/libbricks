@@ -161,13 +161,6 @@ namespace Bricks {
 		strncpy((char*)buffer->GetData(), string, len);
 	}
 
-	size_t String::ConvertStrChr(const char* ptr) const
-	{
-		if (!ptr)
-			return npos;
-		return ptr - CString();
-	}
-
 	String::String() :
 		dataLength(0)
 	{
@@ -334,17 +327,34 @@ namespace Bricks {
 
 	String String::Substring(size_t off, size_t len) const
 	{
-		return String(CString() + (off == npos ? 0 : off), len);
+		return String(CString() + (off == npos ? 0 : UTF8GetStringOffset(CString(), off)), len);
 	}
 
-	size_t String::FirstIndexOf(char chr, size_t off) const
+	size_t String::FirstIndexOf(String::Character chr, size_t off) const
 	{
-		return ConvertStrChr(strchr(CString() + off, chr));
+		const u8* charData = (const u8*)CString() + UTF8GetStringOffset(CString(), off);
+		size_t index = off;
+		while (*charData) {
+			if (UTF8DecodeCharacter(charData) == chr)
+				return index;
+			charData += UTF8GetCharacterSize(charData);
+			index++;
+		}
+		return npos;
 	}
 
-	size_t String::LastIndexOf(char chr, size_t off) const
+	size_t String::LastIndexOf(String::Character chr, size_t off) const
 	{
-		return ConvertStrChr(strrchr(CString() + off, chr));
+		const u8* charData = (const u8*)CString() + UTF8GetStringOffset(CString(), off);
+		size_t index = off;
+		size_t lastIndex = npos;
+		while (*charData) {
+			if (UTF8DecodeCharacter(charData) == chr)
+				lastIndex = index;
+			charData += UTF8GetCharacterSize(charData);
+			index++;
+		}
+		return lastIndex;
 	}
 
 	size_t String::FirstIndexOf(const String& string, size_t off) const

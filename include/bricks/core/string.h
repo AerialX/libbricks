@@ -83,8 +83,8 @@ namespace Bricks {
 
 		String Substring(size_t off = 0, size_t len = npos) const;
 
-		size_t FirstIndexOf(char chr, size_t off = 0) const;
-		size_t LastIndexOf(char chr, size_t off = 0) const;
+		size_t FirstIndexOf(Character chr, size_t off = 0) const;
+		size_t LastIndexOf(Character chr, size_t off = 0) const;
 
 		size_t FirstIndexOf(const String& string, size_t off = 0) const;
 		size_t LastIndexOf(const String& string, size_t off = 0) const;
