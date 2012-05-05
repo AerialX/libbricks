@@ -117,6 +117,8 @@ typedef volatile double		vf64;
 #define BRICKS_FEATURE_RELEASE_THROW_FATAL(ex) BRICKS_FEATURE_THROW(ex)
 #endif
 
+#define BRICKS_ARRAY_COUNT(array) (sizeof(array) / sizeof(0[array]))
+
 /* Attributes */
 #if BRICKS_ENV_GCC
 #define BRICKS_FEATURE_NORETURN __attribute__((noreturn))
