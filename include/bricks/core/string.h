@@ -77,6 +77,8 @@ namespace Bricks {
 		bool operator!=(const String& rhs) const { return !operator==(rhs); }
 		bool operator>(const String& rhs) const { return Compare(rhs) > 0; }
 		bool operator<(const String& rhs) const { return Compare(rhs) < 0; }
+		bool operator>=(const String& rhs) const { return Compare(rhs) >= 0; }
+		bool operator<=(const String& rhs) const { return Compare(rhs) <= 0; }
 
 		void Truncate(size_t len);
 		void TruncateSize(size_t len);

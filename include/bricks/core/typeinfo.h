@@ -30,6 +30,8 @@ namespace Bricks {
 		bool operator !=(const TypeInfo& rhs) const { return !type || !rhs.type || *type != *rhs.type; }
 		bool operator >(const TypeInfo& rhs) const { return type && rhs.type && rhs.type->before(*type); }
 		bool operator <(const TypeInfo& rhs) const { return type && rhs.type && type->before(*rhs.type); }
+		bool operator >=(const TypeInfo& rhs) const { return operator>(rhs) || operator==(rhs); }
+		bool operator <=(const TypeInfo& rhs) const { return operator<(rhs) || operator==(rhs); }
 	};
 
 	template<typename T> static inline TypeInfo TypeOf(T* t) { return TypeInfo(t); }
