@@ -8,4 +8,7 @@
 #include "bricks/collections/array.h"
 #include "bricks/collections/dictionary.h"
 #include "bricks/collections/stack.h"
+#include "bricks/collections/queue.h"
 #include "bricks/collections/autoarray.h"
+
+#include "bricks/collections/listguard.h"
