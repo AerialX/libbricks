@@ -64,8 +64,11 @@ clang-run: clang
 debug: all
 	@gdb $(CURDIR)/build-$(OSTYPE)/$(EXECUTABLE_NAME) -ex run
 
-clang-debug: all
+clang-debug: clang
 	@gdb $(CURDIR)/build-$(OSTYPE)-clang/$(EXECUTABLE_NAME) -ex run
+
+clang-test: clang
+	@$(CTEST) $(CURDIR)/build-$(OSTYPE)-clang
 endif
 
 .PHONY: all xcode clean test run debug clang clang-run clang-debug android android-armv5 android-armv7 android-x86 ios ios-xcode
