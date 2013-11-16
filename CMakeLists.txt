@@ -161,6 +161,7 @@ set(BRICKS_IMAGING_SOURCE_FILES
 set(BRICKS_CRYPTOGRAPHY_LINK_LIBRARIES bricks-io)
 set(BRICKS_CRYPTOGRAPHY_SOURCE_FILES
 	"source/cryptography/hash.cpp"
+	"source/cryptography/crc32.cpp"
 )
 
 set(BRICKS_COMPRESSION_LINK_LIBRARIES bricks-io)
