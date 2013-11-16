@@ -87,10 +87,10 @@ namespace Bricks {
 		template<typename R BRICKS_ARGLIST_COMMA BRICKS_ARGLIST_TYPENAMES > class MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)> : public BaseDelegate<R(BRICKS_ARGLIST_TYPES)>
 		{
 		protected:
-			void* pointer;
+			AutoPointer<Object> pointer;
 
 		public:
-			MethodFunctionBase(void* pointer) : pointer(pointer) { }
+			MethodFunctionBase(Object* pointer) : pointer(pointer) { }
 
 			friend class Event<R(BRICKS_ARGLIST_TYPES)>;
 
@@ -106,12 +106,18 @@ namespace Bricks {
 			Function function;
 
 		public:
-			MethodFunction(void* pointer, Function function = NULL) : MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)>(pointer), function(function) { }
+			MethodFunction(T* pointer, Function function = NULL) : MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)>(CastTo<Object>(pointer)), function(function) { }
+			MethodFunction(const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>& copy) : MethodFunctionBase<R(BRICKS_ARGLIST_TYPES)>(copy), function(copy.function) { this->pointer = copy.pointer; }
+			~MethodFunction() { }
 
-			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return (static_cast<T*>(this->pointer)->*function)(BRICKS_ARGLIST_ARGS); }
+			R operator ()(BRICKS_ARGLIST_TYPES_NAMES) { return (GetPointer()->*function)(BRICKS_ARGLIST_ARGS); }
 
 			virtual bool operator==(const Object& rhs) const { const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>* delegate = CastToDynamic<const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)> >(&rhs); if (delegate) return this->pointer == delegate->pointer && function == delegate->function; return Object::operator==(rhs); }
 			virtual bool operator!=(const Object& rhs) const { return !operator==(rhs); }
+
+			MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>& operator=(const MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>& rhs) { this->function = rhs.function; this->pointer = rhs.pointer; }
+
+			T* GetPointer() const { return CastTo<T>(this->pointer); }
 		};
 
 #if BRICKS_ENV_OBJC_BLOCKS
@@ -153,8 +159,8 @@ namespace Bricks {
 		template<typename T> Delegate(const T& function, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>, T>::Value>::Type* dummy = NULL) : function(autonew T(function)) { }
 		template<typename T> Delegate(T* function, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Internal::BaseDelegate<R(BRICKS_ARGLIST_TYPES)>, T>::Value>::Type* dummy = NULL) : function(function) { }
 
-		template<typename T> Delegate(T* object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
-		template<typename T> Delegate(const Pointer<T>& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(static_cast<void*>(object), function)) { }
+		template<typename T> Delegate(T* object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(object, function)) { }
+		template<typename T> Delegate(const Pointer<T>& object, typename Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>::Function function) : function(autonew Internal::MethodFunction<T, R(BRICKS_ARGLIST_TYPES)>(object, function)) { }
 #if BRICKS_ENV_OBJC_BLOCKS
 		Delegate(typename Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>::FunctionType function) : function(autonew Internal::ObjCBlock<R(BRICKS_ARGLIST_TYPES)>(function)) { }
 #endif
