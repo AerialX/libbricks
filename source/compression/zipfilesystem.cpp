@@ -94,7 +94,7 @@ namespace Bricks { namespace Compression {
 
 		int index = zip_name_locate(zipfile, TransformPath(path).CString(), 0);
 		if (index < 0)
-			BRICKS_FEATURE_THROW(FileNotFoundException());
+			BRICKS_FEATURE_THROW(FileNotFoundException(path));
 		struct zip_file* file = zip_fopen_index(zipfile, index, 0);
 		if (!file)
 			BRICKS_FEATURE_THROW(LibZipException(zipfile));
@@ -223,7 +223,7 @@ namespace Bricks { namespace Compression {
 		if (ret < 0) {
 			if (path[path.GetLength() - 1] != '/')
 				return Stat(path + "/");
-			BRICKS_FEATURE_THROW(FileNotFoundException());
+			BRICKS_FEATURE_THROW(FileNotFoundException(path));
 		}
 		return FileInfo(StatFromZipStat(zipfile, zst), TransformPathReverse(zst.name), this);
 	}
@@ -234,7 +234,7 @@ namespace Bricks { namespace Compression {
 		struct zip_stat zst;
 		int ret = zip_stat_index(zipfile, file->index, 0, &zst);
 		if (ret < 0)
-			BRICKS_FEATURE_THROW(FileNotFoundException());
+			BRICKS_FEATURE_THROW(FileNotFoundException(String::Format("Zip file index %d", file->index)));
 		return FileInfo(StatFromZipStat(zipfile, zst), TransformPathReverse(zst.name), this);
 	}
 
@@ -271,11 +271,11 @@ namespace Bricks { namespace Compression {
 			zippath += "/";
 		int index = zip_name_locate(zipfile, zippath.CString(), 0);
 		if (index < 0)
-			BRICKS_FEATURE_THROW(FileNotFoundException());
+			BRICKS_FEATURE_THROW(FileNotFoundException(path));
 		const char* dirname = zip_get_name(zipfile, index, 0);
 		char lastchar = dirname[strlen(dirname) - 1];
 		if (lastchar != '/' && lastchar != '\\')
-			BRICKS_FEATURE_THROW(FileNotFoundException());
+			BRICKS_FEATURE_THROW(FileNotFoundException(path));
 		ZipFilesystemDir* dir = new ZipFilesystemDir(index);
 		return (FileHandle)dir;
 	}

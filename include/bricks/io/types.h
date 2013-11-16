@@ -90,6 +90,6 @@ namespace Bricks { namespace IO {
 	class FileNotFoundException : public Exception
 	{
 	public:
-		FileNotFoundException(const String& message = String::Empty) : Exception(message) { }
+		FileNotFoundException(const String& path) : Exception(path) { }
 	};
 } }
