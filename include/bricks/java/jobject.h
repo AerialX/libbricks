@@ -27,7 +27,6 @@ namespace Bricks { namespace Java {
 	public:
 		JObject(JClass* clazz, jobject object, bool global = false);
 		JObject(JVM* vm, jobject object, bool global = false);
-		JObject(jobject object, bool global = false);
 		JObject(JReference* reference);
 		~JObject();
 

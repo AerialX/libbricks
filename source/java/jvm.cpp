@@ -3,7 +3,6 @@
 
 #include "bricks/core/exception.h"
 
-#include <stdio.h>
 namespace Bricks { namespace Java {
 #if !BRICKS_ENV_ANDROID
 	JVM::JVM(JniVersion::Enum version) :
@@ -16,6 +15,7 @@ namespace Bricks { namespace Java {
 		args.nOptions = 0;
 		JNI_GetDefaultJavaVMInitArgs(&args);
 		JNI_CreateJavaVM(&vm, (void**)&env, &args);
+		environments.SetValue(env);
 	}
 #endif
 

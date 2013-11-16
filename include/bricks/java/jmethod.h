@@ -8,7 +8,7 @@ namespace Bricks { namespace Java {
 	class JMethod : public Object
 	{
 	protected:
-		JClass* clazz;
+		AutoPointer<JClass> clazz;
 		jmethodID method;
 
 		virtual ReturnPointer<JObject> CallObjectVariadic(JReference* object, va_list args);
@@ -29,7 +29,7 @@ namespace Bricks { namespace Java {
 
 		ReturnPointer<JObject> GetReflection();
 
-		template<typename T> typename Internal::TypeConversion<T>::Type Call(JReference* object, ...);
+		template<typename T> typename Internal::TypeConversion<T>::Type Call(JReference* object, ...) { va_list args; va_start(args, object); typename Internal::TypeConversion<T>::Type ret = Internal::TypeConversion<T>::Convert(CallObjectVariadic(object, args)); va_end(args); return ret; }
 		template<typename T> typename Internal::TypeConversion<T>::Type CallVariadic(JReference* object, va_list args) { return Internal::TypeConversion<T>::Convert(CallObjectVariadic(object, args)); }
 		template<typename T> typename Internal::TypeConversion<T>::Type CallArray(JReference* object, jvalue* args) { return Internal::TypeConversion<T>::Convert(CallObjectArray(object, args)); }
 	};
