@@ -35,6 +35,9 @@ namespace Bricks {
 		template<typename T> T& MakeReference();
 		template<typename T> const T& MakeConstReference();
 
+		template<typename T> struct MakeValueType { typedef T Type; };
+		template<typename T> struct MakeValueType<T*> { typedef T Type; };
+
 		template<typename T, typename U> struct IsSameType {
 			static True ConditionT(U*);
 			static False ConditionT(...);
@@ -62,7 +65,7 @@ namespace Bricks {
 			template<typename U> static True Condition(void (U::*)());
 			template<typename U> static False Condition(...);
 
-			static const bool Value = BRICKS_SFINAE_TRUE(Condition<T>(0));
+			static const bool Value = BRICKS_SFINAE_TRUE(Condition<T>(NULL));
 		};
 
 		namespace Internal {
@@ -102,6 +105,14 @@ namespace Bricks {
 
 		template<typename T, typename U = T> struct HasLessThanOperator {
 			static const bool Value = Internal::HasLessThanOperator<T, U>::Value;
+		};
+
+		template<typename T> struct HasConstructor {
+			template<int U> struct DummySize { };
+			template<typename U> static True Condition(DummySize<sizeof U()>* dummy);
+			template<typename U> static False Condition(...);
+
+			static const bool Value = BRICKS_SFINAE_TRUE(Condition<T>(NULL));
 		};
 
 		template<typename T> struct IsIntegerNumber { static const bool Value = false; };
