@@ -69,7 +69,7 @@ if(EXISTS "${ANDROID_NDK}")
 	endif()
 
 	if (NOT DEFINED ANDROID_TOOLCHAIN_VERSION)
-		set(SUPPORTED_TOOLCHAIN_VERSIONS 4.4.0 4.4.3 4.6.0 4.6.1 4.6.2 4.6.3)
+		set(SUPPORTED_TOOLCHAIN_VERSIONS 4.4.0 4.4.3 4.6.0 4.6.1 4.6.2 4.6.3 4.7.0 4.8)
 		foreach(gcc_version ${SUPPORTED_TOOLCHAIN_VERSIONS})
 			if (EXISTS "${ANDROID_NDK}/toolchains/${ANDROID_TOOLCHAIN_NAME}-${gcc_version}")
 				set(ANDROID_TOOLCHAIN_VERSION ${gcc_version})
@@ -118,7 +118,7 @@ endif()
 
 set(CMAKE_FIND_ROOT_PATH "${ANDROID_NDK_TOOLCHAIN_ROOT}/bin" "${ANDROID_NDK_TOOLCHAIN_ROOT}/${ANDROID_TOOLCHAIN_PREFIX}" "${ANDROID_NDK_SYSROOT}" "${CMAKE_INSTALL_PREFIX}" "${CMAKE_INSTALL_PREFIX}/share")
 
-set(STL_PATH "${ANDROID_NDK}/sources/cxx-stl/gnu-libstdc++")
+set(STL_PATH "${ANDROID_NDK}/sources/cxx-stl/gnu-libstdc++/${ANDROID_TOOLCHAIN_VERSION}")
 set(STL_LIBRARIES_PATH "${STL_PATH}/libs/${ANDROID_NDK_CPU_NAME}")
 include_directories(SYSTEM "${STL_PATH}/include" "${STL_LIBRARIES_PATH}/include")
 link_directories("${ANDROID_NDK_SYSROOT}/usr/lib")
