@@ -28,6 +28,7 @@ namespace Bricks {
 		{
 		public:
 			typedef R(Signature)(BRICKS_ARGLIST_TYPES);
+			typedef R ReturnType;
 
 			virtual R operator ()(BRICKS_ARGLIST_TYPES) = 0;
 			R Call(BRICKS_ARGLIST_TYPES_NAMES) const { return const_cast<BaseDelegate<R(BRICKS_ARGLIST_TYPES)>&>(*this)(BRICKS_ARGLIST_ARGS); }
