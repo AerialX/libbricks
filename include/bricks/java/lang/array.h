@@ -53,7 +53,7 @@ namespace Bricks { namespace Java { namespace Lang {
 			CreateArray(NULL, array->GetCount());
 			Type* items = Internal::JArrayType<T>::GetItems(vm, GetJArray());
 			Type* itemsIter = items;
-			foreach (const T item, array)
+			BRICKS_FOR_EACH (const T item, array)
 				*(itemsIter++) = item;
 			Internal::JArrayType<T>::ReleaseItems(vm, GetJArray(), items);
 		}
@@ -168,7 +168,7 @@ namespace Bricks { namespace Java { namespace Lang {
 		void CreateArray(const Collections::List<U>* array, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<JReference, U>::Value>::Type* dummy = NULL)
 		{
 			int index = 0;
-			foreach (const U& item, array)
+			BRICKS_FOR_EACH (const U& item, array)
 				vm->GetEnv()->SetObjectArrayElement(GetJArray(), index++, item->GetReference());
 		}
 
@@ -176,7 +176,7 @@ namespace Bricks { namespace Java { namespace Lang {
 		void CreateArray(const Collections::List<U*>* array, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<JReference, U>::Value>::Type* dummy = NULL)
 		{
 			int index = 0;
-			foreach (const U* item, array)
+			BRICKS_FOR_EACH (const U* item, array)
 				vm->GetEnv()->SetObjectArrayElement(GetJArray(), index++, item->GetReference());
 		}
 

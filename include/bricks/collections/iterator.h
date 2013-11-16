@@ -103,18 +103,20 @@ namespace Bricks { namespace Collections { namespace Internal {
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const T* t);
 	template<typename T> static typename SFINAE::EnableIf<SFINAE::IsCompatibleType<IterableFastBase, T>::Value, IteratorFastType<typename T::IteratorFastType> >::Type IteratorContainerType(const Pointer<T>& t);
 } } }
-#define foreach(val, list) for (typeof(Bricks::Collections::Internal::IteratorContainerType(list)) __bricks_iter(list); __bricks_iter.MoveNext() && __bricks_iter.state;) if (!(__bricks_iter.state = false)) for (val = __bricks_iter.GetCurrent(); !__bricks_iter.state; __bricks_iter.state = true)
+#define BRICKS_FOR_EACH(val, list) for (typeof(Bricks::Collections::Internal::IteratorContainerType(list)) __bricks_iter(list); __bricks_iter.MoveNext() && __bricks_iter.state;) if (!(__bricks_iter.state = false)) for (val = __bricks_iter.GetCurrent(); !__bricks_iter.state; __bricks_iter.state = true)
 
 namespace Bricks { namespace Collections {
 	template<typename T> inline void Iterable<T>::Iterate(const Delegate<bool(Iterable<T>::IteratorType&)>& delegate) const {
-		foreach (IteratorType& t, *this) {
+		BRICKS_FOR_EACH (IteratorType& t, *this) {
 			if (!delegate.Call(t))
 				break;
 		}
 	}
 
 	template<typename T> inline void Iterable<T>::Iterate(const Delegate<void(Iterable<T>::IteratorType&)>& delegate) const {
-		foreach (IteratorType& t, *this)
+		BRICKS_FOR_EACH (IteratorType& t, *this)
 			delegate.Call(t);
 	}
 } }
+
+#define foreach BRICKS_FOR_EACH

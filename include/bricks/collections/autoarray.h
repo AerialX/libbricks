@@ -9,8 +9,8 @@ namespace Bricks { namespace Collections {
 	protected:
 		static void Retain(T* value) { AutoPointer<>::Retain(value); }
 		static void Release(T* value) { AutoPointer<>::Release(value); }
-		void RetainAll() { foreach (T*const& item, this) Retain(item); }
-		void ReleaseAll() { foreach (T*const& item, this) Release(item); }
+		void RetainAll() { BRICKS_FOR_EACH (T*const& item, this) Retain(item); }
+		void ReleaseAll() { BRICKS_FOR_EACH (T*const& item, this) Release(item); }
 
 	public:
 		AutoArray(const AutoArray<T>& array, ValueComparison<T*>* comparison = NULL) : Array<T*>(array, comparison) { RetainAll(); }
@@ -19,7 +19,7 @@ namespace Bricks { namespace Collections {
 
 		~AutoArray() { ReleaseAll(); }
 
-		AutoArray& operator =(const AutoArray<T>& array) { Array<T*> toRelease(*this); Array<T*>::operator=(array); RetainAll(); foreach (T*const& item, toRelease) Release(item); return *this; }
+		AutoArray& operator =(const AutoArray<T>& array) { Array<T*> toRelease(*this); Array<T*>::operator=(array); RetainAll(); BRICKS_FOR_EACH (T*const& item, toRelease) Release(item); return *this; }
 
 		void AddItem(T*const& value) { Array<T*>::AddItem(value); Retain(value); }
 		bool RemoveItem(T*const& value) { long index = Array<T*>::IndexOfItem(value); if (index >= 0) { T* item = Array<T*>::GetItem(index); Array<T*>::RemoveItemAt(index); Release(item); return true; } return false; }

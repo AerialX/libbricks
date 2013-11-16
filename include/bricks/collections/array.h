@@ -79,7 +79,7 @@ namespace Bricks { namespace Collections {
 		virtual bool ContainsItem(const T& value) const { return IteratorOfItem(value) != vector.end(); }
 
 		virtual void AddItem(const T& value) { vector.push_back(value); }
-		virtual void AddItems(Iterable<T>* values) { foreach (const T& item, values) AddItem(item); }
+		virtual void AddItems(Iterable<T>* values) { BRICKS_FOR_EACH (const T& item, values) AddItem(item); }
 		virtual bool RemoveItem(const T& value)
 		{
 			iterator iter = IteratorOfItem(value);
