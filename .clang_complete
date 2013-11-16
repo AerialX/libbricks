@@ -1,2 +1,4 @@
--I include
--I source
+-Iinclude
+-Ibuild-*/include
+-DDEBUG
+-Wall
