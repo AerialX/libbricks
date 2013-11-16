@@ -93,4 +93,8 @@ namespace Bricks {
 	};
 
 	static inline String operator +(const char* lhs, const String& rhs) { return String(lhs) + rhs; }
+	static inline bool operator==(const String& lhs, const char* rhs) { return !lhs.Compare(rhs); }
+	static inline bool operator!=(const String& lhs, const char* rhs) { return lhs.Compare(rhs); }
+	static inline bool operator==(const char* lhs, const String& rhs) { return !rhs.Compare(lhs); }
+	static inline bool operator!=(const char* lhs, const String& rhs) { return rhs.Compare(lhs); }
 }
