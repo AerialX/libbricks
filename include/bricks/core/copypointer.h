@@ -5,7 +5,7 @@
 namespace Bricks {
 	template<typename T> class CopyPointer : public AutoPointer<T>
 	{
-#define BRICKS_COPY_POINTER(t) ((t) ? autonew T(t) : NULL)
+#define BRICKS_COPY_POINTER(t) ((t) ? autonew T(*t) : NULL)
 	public:
 		CopyPointer() { }
 		CopyPointer(const CopyPointer<T>& t) : AutoPointer<T>(BRICKS_COPY_POINTER(t)) { }
