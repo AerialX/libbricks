@@ -15,23 +15,25 @@
 namespace Bricks { namespace Collections {
 	template<typename T> class Array;
 
+	namespace Internal {
+		template<typename T>
+		class ArrayIterator : public Iterator<T>
+		{
+			private:
+				typename Array<T>::iterator position;
+				typename Array<T>::iterator end;
+
+				friend class Array<T>;
+
+			public:
+				ArrayIterator(Array<T>& array) : position(array.vector.begin() - 1), end(array.vector.end()) { }
+				T& GetCurrent() const { return *position; }
+				bool MoveNext() { return ++position < end; }
+		};
+	}
+
 	template<typename T>
-	class ArrayIterator : public Iterator<T>
-	{
-	private:
-		typename Array<T>::iterator position;
-		typename Array<T>::iterator end;
-
-		friend class Array<T>;
-
-	public:
-		ArrayIterator(Array<T>& array) : position(array.vector.begin() - 1), end(array.vector.end()) { }
-		T& GetCurrent() const { return *position; }
-		bool MoveNext() { return ++position < end; }
-	};
-
-	template<typename T>
-	class Array : public Object, public List<T>, public IterableFast<ArrayIterator<T> >
+	class Array : public Object, public List<T>, public IterableFast<Internal::ArrayIterator<T> >
 	{
 	private:
 		AutoPointer<ValueComparison<T> > comparison;
@@ -40,7 +42,7 @@ namespace Bricks { namespace Collections {
 		typedef typename std::vector<T>::iterator iterator;
 		typedef typename std::vector<T>::const_iterator const_iterator;
 
-		friend class ArrayIterator<T>;
+		friend class Internal::ArrayIterator<T>;
 
 		struct StlCompare {
 			AutoPointer<ValueComparison<T> > comparison;
@@ -70,8 +72,8 @@ namespace Bricks { namespace Collections {
 		Array(Iterable<T>* iterable, ValueComparison<T>* comparison = autonew OperatorValueComparison<T>()) : comparison(comparison) { AddItems(iterable); }
 
 		// Iterator
-		virtual ReturnPointer<Iterator<T> > GetIterator() const { return autonew ArrayIterator<T>(const_cast<Array<T>&>(*this)); }
-		ArrayIterator<T> GetIteratorFast() const { return ArrayIterator<T>(const_cast<Array<T>&>(*this)); }
+		virtual ReturnPointer<Iterator<T> > GetIterator() const { return autonew Internal::ArrayIterator<T>(const_cast<Array<T>&>(*this)); }
+		Internal::ArrayIterator<T> GetIteratorFast() const { return Internal::ArrayIterator<T>(const_cast<Array<T>&>(*this)); }
 
 		// Collection
 		virtual long GetCount() const { return vector.size(); }
