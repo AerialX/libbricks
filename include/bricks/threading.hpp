@@ -10,5 +10,6 @@
 #include "bricks/threading/semaphore.h"
 
 #include "bricks/threading/mutexlock.h"
+#include "bricks/threading/monitor.h"
 
 #endif
