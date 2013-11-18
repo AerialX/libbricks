@@ -11,6 +11,10 @@
 #define BRICKS_PTHREAD_THREAD_REF CastToRaw<pthread_t>(threadHandle)
 #define BRICKS_PTHREAD_THREAD (*CastToRaw<pthread_t>(threadHandle))
 
+#if BRICKS_CONFIG_CPP0X
+#include <thread>
+#endif
+
 namespace Bricks { namespace Threading {
 	static AutoThreadLocalStorage<Thread> localThreads;
 
