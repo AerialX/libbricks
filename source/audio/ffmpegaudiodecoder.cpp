@@ -48,7 +48,7 @@ namespace Bricks { namespace Audio {
 		else
 			samples = stream->time_base.num * stream->duration * samplerate / stream->time_base.den;
 
-		bufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
+		bufferSize = 129000;
 		buffer = av_malloc(bufferSize);
 
 		cache = av_malloc(bufferSize);
