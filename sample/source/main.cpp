@@ -106,17 +106,19 @@ static void testDelegate()
 	Console::GetDefault()->Out->WriteLine("ohai, call from static test delegate.");
 }
 
-class TestDelegateClass
+class TestDelegateClass : public Object
 {
 protected:
 	int value;
+	Event<void()>* event;
 
 public:
-	TestDelegateClass() : value(0) { }
+	TestDelegateClass(Event<void()>* event) : value(0), event(event) { }
 
 	void testDelegateFunction()
 	{
 		Console::GetDefault()->Out->WriteLine(String::Format("ohai, call #%d from test delegate class", ++value));
+		*event -= this;
 	}
 };
 
@@ -127,7 +129,7 @@ static void testDelegates()
 	Console::GetDefault()->Out->WriteLine(" --- Events Test --- ");
 	Delegate<void()>* delegate = new Delegate<void()>(testDelegate);
 	Event<void()>* event = new Event<void()>();
-	TestDelegateClass test;
+	TestDelegateClass test(event);
 	*event += delegate;
 	*event += Delegate<void()>(testDelegate);
 	*event += testDelegate;
@@ -138,7 +140,7 @@ static void testDelegates()
 
 	// Remove the delegate (as many times as it's been added), and make sure the event is empty.
 	*event -= delegate;
-	*event -= test;
+	*event -= tempnew test;
 	BRICKS_FEATURE_ASSERT(!*event);
 	(*event)();
 
