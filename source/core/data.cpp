@@ -24,7 +24,7 @@ namespace Bricks {
 	{
 		if (copy) {
 			Construct();
-			CopyFrom(string.GetBuffer(), string.GetSize());
+			CopyFrom(string.GetBuffer()->GetData(), string.GetSize());
 		}
 	}
 
