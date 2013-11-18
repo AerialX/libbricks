@@ -59,7 +59,7 @@ static void testFilesystem()
 	path = path.Combine("sup");
 	path = path.RootPath("/test");
 #if !BRICKS_ENV_WINDOWS
-	BRICKS_FEATURE_ASSERT(!path.Compare("/test/lol/sup"));
+	BRICKS_FEATURE_ASSERT(path == "/test/lol/sup");
 #endif
 	Console::GetDefault()->Out->WriteLine(String::Format("Result: %s, filename is %s", path.CString(), path.GetFileName().CString()));
 	Console::GetDefault()->Out->WriteLine(String::Format("Directory is: %s", path.GetDirectory().CString()));
