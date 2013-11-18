@@ -236,4 +236,41 @@ namespace Bricks { namespace Threading {
 
 		return localThreads.GetValue();
 	}
+
+	int Thread::GetHardwareConcurrency()
+	{
+#if BRICKS_CONFIG_CPP0X
+		return std::thread::hardware_concurrency();
+#elif BRICKS_ENV_WINDOWS
+		SYSTEM_INFO sysinfo;
+		GetSystemInfo(&sysinfo);
+		return sysinfo.dwNumberOfProcessors;
+/*#elif BRICKS_ENV_APPLE
+		return [[[NSProcessInfo processInfo] activeProcessorCount] intValue];*/
+#else
+		return sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+	}
+
+	namespace Internal {
+		ThreadID::ThreadID() : handle(NULL) { }
+		ThreadID::ThreadID(void* handle) : handle(new pthread_t()) { SetHandle(handle); }
+		ThreadID::ThreadID(const ThreadID& threadID) : handle(new pthread_t()) { SetHandle(threadID.handle); }
+		ThreadID::~ThreadID() { SetHandle(NULL); }
+
+		void* ThreadID::GetHandle() { return handle; }
+
+		void ThreadID::SetHandle(void* handle)
+		{
+			if (handle) {
+				if (!this->handle)
+					this->handle = CastToRaw(new pthread_t());
+				*CastToRaw<pthread_t>(this->handle) = *CastToRaw<pthread_t>(handle);
+			} else {
+				if (this->handle)
+					delete CastToRaw<pthread_t>(handle);
+				this->handle = NULL;
+			}
+		}
+	}
 } }

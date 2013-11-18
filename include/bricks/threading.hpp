@@ -12,4 +12,7 @@
 #include "bricks/threading/mutexlock.h"
 #include "bricks/threading/monitor.h"
 
+#include "bricks/threading/task.h"
+#include "bricks/threading/taskqueue.h"
+
 #endif

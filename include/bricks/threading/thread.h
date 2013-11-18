@@ -72,6 +72,7 @@ namespace Bricks { namespace Threading {
 
 		void Signal(int signal);
 
+		static int GetHardwareConcurrency();
 		static Thread* GetCurrentThread();
 
 		static void Sleep(const Time& timeout);
