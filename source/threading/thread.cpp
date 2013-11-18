@@ -8,8 +8,8 @@
 #include <unistd.h>
 #include <sched.h>
 
-#define BRICKS_PTHREAD_THREAD_REF CastToRaw<pthread_t>(threadHandle)
-#define BRICKS_PTHREAD_THREAD (*CastToRaw<pthread_t>(threadHandle))
+#define BRICKS_PTHREAD_THREAD_REF CastToRaw<pthread_t>(threadHandle.handle)
+#define BRICKS_PTHREAD_THREAD (*CastToRaw<pthread_t>(threadHandle.handle))
 
 #if BRICKS_CONFIG_CPP0X
 #include <thread>
@@ -19,7 +19,6 @@ namespace Bricks { namespace Threading {
 	static AutoThreadLocalStorage<Thread> localThreads;
 
 	Thread::Thread() :
-		threadHandle(NULL),
 		stackSize(0), priority(0),
 		owned(true)
 	{
@@ -27,31 +26,21 @@ namespace Bricks { namespace Threading {
 	}
 
 	Thread::Thread(Thread* thread) :
-		threadHandle(NULL),
+		threadHandle(thread->threadHandle),
 		delegate(thread->delegate),
 		status(thread->GetStatusLock()),
 		stackSize(thread->GetStackSize()), priority(thread->GetPriority()),
 		owned(thread->OwnsThread())
 	{
-		if (thread->threadHandle)
-			threadHandle = CastToRaw(new pthread_t(*CastToRaw<pthread_t>(thread->threadHandle)));
+
 	}
 
 	Thread::Thread(const ThreadDelegate& delegate) :
-		threadHandle(NULL),
 		delegate(delegate),
 		stackSize(0), priority(0),
 		owned(true)
 	{
 
-	}
-
-	Thread::Thread(ThreadID thread) :
-		stackSize(0), priority(0),
-		owned(false)
-	{
-		threadHandle = CastToRaw(new pthread_t());
-		BRICKS_PTHREAD_THREAD = (pthread_t)thread;
 	}
 
 	Thread::~Thread()
@@ -80,7 +69,7 @@ namespace Bricks { namespace Threading {
 
 	void Thread::Start()
 	{
-		if (threadHandle)
+		if (BRICKS_PTHREAD_THREAD_REF)
 			BRICKS_FEATURE_THROW(InvalidOperationException());
 
 		pthread_attr_t attributes;
@@ -92,9 +81,11 @@ namespace Bricks { namespace Threading {
 		status = autonew ConditionLock(ThreadStatus::Started);
 		status->Lock();
 		Retain();
-		threadHandle = CastToRaw(new pthread_t());
-		if (pthread_create(BRICKS_PTHREAD_THREAD_REF, &attributes, &Thread::StaticMain, CastToRaw(this)))
+		pthread_t handle;
+		if (pthread_create(&handle, &attributes, &Thread::StaticMain, CastToRaw(this)))
 			Release();
+		else
+			SetThreadID(CastToRaw(tempnew handle));
 
 		pthread_attr_destroy(&attributes);
 	}
@@ -107,8 +98,7 @@ namespace Bricks { namespace Threading {
 	void Thread::Cleanup()
 	{
 		if (BRICKS_PTHREAD_THREAD_REF) {
-			delete BRICKS_PTHREAD_THREAD_REF;
-			threadHandle = NULL;
+			threadHandle.SetHandle(NULL);
 		}
 	}
 
@@ -230,10 +220,17 @@ namespace Bricks { namespace Threading {
 			usleep(microseconds);
 	}
 
+	void Thread::SetThreadID(void* handle)
+	{
+		threadHandle.SetHandle(handle);
+	}
+
 	Thread* Thread::GetCurrentThread()
 	{
 		if (!localThreads.HasValue()) {
-			AutoPointer<Thread> thread = autonew Thread((ThreadID)pthread_self());
+			AutoPointer<Thread> thread = autonew Thread();
+			thread->SetOwned(false);
+			thread->SetThreadID(CastToRaw(tempnew pthread_self()));
 			localThreads.SetValue(thread);
 			return thread;
 		}

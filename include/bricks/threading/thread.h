@@ -9,7 +9,21 @@
 namespace Bricks { namespace Threading {
 	class ConditionLock;
 
-	typedef long ThreadID;
+	namespace Internal {
+		class ThreadID
+		{
+		public:
+			void* handle;
+
+			ThreadID();
+			ThreadID(void*);
+			ThreadID(const ThreadID&);
+			~ThreadID();
+
+			void SetHandle(void*);
+			void* GetHandle();
+		};
+	}
 
 	namespace ThreadStatus {
 		enum Enum {
@@ -26,7 +40,7 @@ namespace Bricks { namespace Threading {
 		typedef Delegate<void()> ThreadDelegate;
 
 	protected:
-		void* threadHandle;
+		Internal::ThreadID threadHandle;
 		ThreadDelegate delegate;
 		AutoPointer<ConditionLock> status;
 		int stackSize;
@@ -38,10 +52,11 @@ namespace Bricks { namespace Threading {
 		void Detach();
 		void Cleanup();
 
-		Thread(ThreadID thread);
 		Thread(Thread* thread);
 
 		ConditionLock* GetStatusLock() const { return status; }
+		void SetOwned(bool value) { owned = value; }
+		void SetThreadID(void* handle);
 
 	public:
 		Thread();

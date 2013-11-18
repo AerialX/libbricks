@@ -33,6 +33,7 @@ namespace Bricks { namespace Threading {
 
 		ThreadLocalStorage::~ThreadLocalStorage()
 		{
+			// TODO: Call Destroy somehow? On all threads... Ugh.
 			pthread_key_delete(BRICKS_PTHREAD_KEY);
 			delete BRICKS_PTHREAD_KEY_REF;
 		}
