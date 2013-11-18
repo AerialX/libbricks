@@ -150,6 +150,12 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #define BRICKS_FEATURE_LOG_HEAVY(...)
 #endif
 
+#if BRICKS_CONFIG_LOGGING_ZOMBIES
+#define BRICKS_FEATURE_LOG_ZOMBIE(obj) do { Bricks::Object::__BricksZombie(obj); } while(false)
+#else
+#define BRICKS_FEATURE_LOG_ZOMBIE(...)
+#endif
+
 #if BRICKS_ENV_RELEASE
 #define BRICKS_FEATURE_ASSERT(cond) ((void)0)
 #else
@@ -159,3 +165,6 @@ struct BRICKS_FEATURE_DESTRUCTOR { void (*function)(); BRICKS_FEATURE_DESTRUCTOR
 #if BRICKS_ENV_MINGW
 #undef _GNU_SOURCE
 #endif
+
+// Move this
+#define BRICKS_TYPE(...) __VA_ARGS__

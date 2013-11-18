@@ -2,6 +2,10 @@
 
 #include "bricks/core/types.h"
 
+#if BRICKS_CONFIG_LOGGING_ZOMBIES
+#include "bricks/core/sfinae.h"
+#endif
+
 #include <stdlib.h>
 
 namespace Bricks {
@@ -44,6 +48,12 @@ namespace Bricks {
 #else
 		void Retain();
 		void Release();
+#endif
+
+#if BRICKS_CONFIG_LOGGING_ZOMBIES
+		void __BricksZombie();
+		template<typename T> static void __BricksZombie(T* value, typename SFINAE::EnableIf<SFINAE::IsCompatibleType<Object, T>::Value>::Type* dummy = NULL) { Object* obj = value; if (obj && !obj->GetReferenceCount()) obj->__BricksZombie(); }
+		template<typename T> static void __BricksZombie(T* value, typename SFINAE::DisableIf<SFINAE::IsCompatibleType<Object, T>::Value>::Type* dummy = NULL) { }
 #endif
 
 		int GetReferenceCount() const { return referenceCount; }

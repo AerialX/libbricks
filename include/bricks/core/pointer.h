@@ -47,10 +47,10 @@ namespace Bricks {
 		Pointer<T>& operator=(T* t) { value = t; return *this; }
 		template<typename U> Pointer<T>& operator=(const Pointer<U>& t) { Swap(t); return *this; }
 
-		T* operator->() const { return value; }
-		T& operator*() const { return *value; }
-		T* GetValue() const { return value; }
-		operator T*() const { return value; }
+		T* operator->() const { BRICKS_FEATURE_LOG_ZOMBIE(value); return value; }
+		T& operator*() const { BRICKS_FEATURE_LOG_ZOMBIE(value); return *value; }
+		T* GetValue() const { BRICKS_FEATURE_LOG_ZOMBIE(value); return value; }
+		operator T*() const { BRICKS_FEATURE_LOG_ZOMBIE(value); return value; }
 
 		void Swap(const Pointer<T>& t) { value = t.value; }
 	};

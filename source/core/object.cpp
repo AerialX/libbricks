@@ -2,12 +2,6 @@
 #include "bricks/core/typeinfo.h"
 #include "bricks/core/exception.h"
 
-#if BRICKS_CONFIG_LOGGING_MEMLEAK
-#include "bricks/collections/array.h"
-
-using namespace Bricks::Collections;
-#endif
-
 namespace Bricks {
 #if BRICKS_CONFIG_RTTI
 	String Object::GetDebugString() const
@@ -24,16 +18,30 @@ namespace Bricks {
 #if BRICKS_ENV_DEBUG
 	void Object::Retain()
 	{
+		BRICKS_FEATURE_LOG_ZOMBIE(this);
 		referenceCount++;
 		BRICKS_FEATURE_LOG_HEAVY("+ %p [%d]", this, GetReferenceCount());
 	}
 
 	void Object::Release()
 	{
+		BRICKS_FEATURE_LOG_ZOMBIE(this);
 		BRICKS_FEATURE_LOG_HEAVY("- %p [%d]", this, GetReferenceCount() - 1);
 		BRICKS_FEATURE_ASSERT(referenceCount > 0);
 		if (!--referenceCount)
+#if BRICKS_CONFIG_LOGGING_ZOMBIES
+			this->~Object();
+#else
 			delete this;
+#endif
+	}
+#endif
+
+#if BRICKS_CONFIG_LOGGING_ZOMBIES
+	void Object::__BricksZombie()
+	{
+		BRICKS_FEATURE_LOG("[ZOMBIE] %s", GetDebugString().CString());
+		BRICKS_FEATURE_ASSERT(0);
 	}
 #endif
 }
