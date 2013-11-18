@@ -1,6 +1,11 @@
 #include "bricks/core/time.h"
 #include "bricks/core/timespan.h"
 
+#if BRICKS_ENV_MINGW
+#include <pthread.h>
+#undef GetCurrentTime
+#endif
+
 #include <time.h>
 #include <errno.h>
 #include <unistd.h>
@@ -13,11 +18,15 @@ namespace Bricks { namespace Threading { namespace Internal {
 	#define BRICKS_THREADING_INTERNAL_TIMEDTRY_RESOLUTION 10000000 // 10 milliseconds timing resolution
 	static inline void ThreadingTimedNanoDelay()
 	{
+#if BRICKS_ENV_MINGW
+		Sleep(BRICKS_THREADING_INTERNAL_TIMEDTRY_RESOLUTION / 1000000);
+#else
 		timespec ts;
 		ts.tv_sec = 0;
 		ts.tv_nsec = BRICKS_THREADING_INTERNAL_TIMEDTRY_RESOLUTION;
 		while (nanosleep(&ts, &ts) != 0)
 			;
+#endif
 	}
 	#undef BRICKS_THREADING_INTERNAL_TIMEDTRY_RESOLUTION
 

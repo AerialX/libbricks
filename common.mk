@@ -5,6 +5,7 @@ MAKEIT				:=	$(MAKE) --no-print-directory
 TOOLCHAIN_ANDROID	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.android.cmake
 TOOLCHAIN_IOS		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.ios.cmake
 TOOLCHAIN_CLANG		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.clang.cmake
+TOOLCHAIN_MINGW32	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.mingw32.cmake
 
 all:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)
@@ -13,6 +14,10 @@ all:
 clang:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)-clang $(TOOLCHAIN_CLANG)
 	@+$(MAKEIT) -C $(CURDIR)/build-$(OSTYPE)-clang
+
+mingw32:
+	@$(CMAKE) $(CURDIR) $(CURDIR)/build-mingw32 $(TOOLCHAIN_MINGW32)
+	@+$(MAKEIT) -C $(CURDIR)/build-mingw32
 
 android: android-armv5 android-armv7 android-x86
 

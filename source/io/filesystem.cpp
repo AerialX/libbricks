@@ -16,6 +16,9 @@
 #if BRICKS_ENV_MINGW || BRICKS_ENV_ANDROID
 #define ftruncate64 ftruncate
 #endif
+#if BRICKS_ENV_MINGW
+#define mkdir(x, y) mkdir(x)
+#endif
 
 namespace Bricks { namespace IO {
 	static AutoPointer<String> directorySeparators;

@@ -4,7 +4,11 @@
 #include "bricks/io/streamreader.h"
 #include "bricks/io/streamwriter.h"
 
+#if BRICKS_ENV_MINGW
+#include <stdio.h>
+#else
 #include <unistd.h>
+#endif
 
 namespace Bricks { namespace IO {
 	AutoPointer<Console> defaultConsole;

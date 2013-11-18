@@ -11,6 +11,13 @@
 #define BRICKS_PTHREAD_THREAD_REF CastToRaw<pthread_t>(threadHandle.handle)
 #define BRICKS_PTHREAD_THREAD (*CastToRaw<pthread_t>(threadHandle.handle))
 
+#if BRICKS_ENV_WINDOWS
+#include <windows.h>
+#define sleep(x) Sleep(x * 1000)
+#undef GetCurrentTime
+#undef Yield
+#endif
+
 #if BRICKS_CONFIG_CPP0X
 #include <thread>
 #endif

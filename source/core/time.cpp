@@ -1,6 +1,11 @@
 #include "bricks/core/time.h"
 #include "bricks/core/timespan.h"
 
+#if BRICKS_ENV_MINGW
+#include <pthread.h>
+#undef GetCurrentTime
+#endif
+
 #include <time.h>
 #include <sys/time.h>
 #include <string.h>

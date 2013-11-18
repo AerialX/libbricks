@@ -51,6 +51,8 @@ elseif(ANDROID)
 	else()
 		set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/android-armv5")
 	endif()
+elseif(WINDOWS)
+	set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/mingw32")
 else()
 	execute_process(COMMAND echo "echo -n $OSTYPE"
 		COMMAND bash

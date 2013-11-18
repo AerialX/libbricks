@@ -4,16 +4,20 @@
 #include "bricks/core/pointer.h"
 #include "bricks/core/exception.h"
 
+#if BRICKS_ENV_MINGW
+#include <sys/param.h>
+#endif
+
 #ifdef __GLIBC__
 #include <endian.h>
 #endif
 
-#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(_BYTE_ORDER) && _BYTE_ORDER == _LITTLE_ENDIAN) || __LITTLE_ENDIAN__
+#if (defined(__BYTE_ORDER) && __BYTE_ORDER == __LITTLE_ENDIAN) || (defined(_BYTE_ORDER) && _BYTE_ORDER == _LITTLE_ENDIAN) || (defined(BYTE_ORDER) && BYTE_ORDER == LITTLE_ENDIAN) || __LITTLE_ENDIAN__
 #define BRICKS_ENV_ENDIAN_LITTLE 1
-#elif (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(_BYTE_ORDER) && _BYTE_ORDER == _BIG_ENDIAN) || __BIG_ENDIAN__
+#elif (defined(__BYTE_ORDER) && __BYTE_ORDER == __BIG_ENDIAN) || (defined(_BYTE_ORDER) && _BYTE_ORDER == _BIG_ENDIAN) || (defined(BYTE_ORDER) && BYTE_ORDER == BIG_ENDIAN) || __BIG_ENDIAN__
 #define BRICKS_ENV_ENDIAN_BIG 1
 #else
-#warn "Cannot autodetect endianness"
+#warning "Cannot autodetect endianness"
 #endif
 
 namespace Bricks { namespace IO {

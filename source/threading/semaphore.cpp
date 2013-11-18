@@ -2,6 +2,10 @@
 #include "bricks/threading/mutex.h"
 #include "bricks/threading/timedtry_internal.h"
 
+#if BRICKS_ENV_MINGW
+#include <pthread.h>
+#endif
+
 #include <semaphore.h>
 
 #define BRICKS_SEMAPHORE CastToRaw<sem_t>(semaphoreHandle)

@@ -9,6 +9,7 @@
 	#define __STDC_CONSTANT_MACROS 1
 #endif
 #include <stdint.h>
+#include <stddef.h>
 
 typedef int8_t		s8;
 typedef uint8_t		u8;

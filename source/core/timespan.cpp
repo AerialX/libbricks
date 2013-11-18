@@ -1,5 +1,9 @@
 #include "bricks/core/timespan.h"
 
+#if BRICKS_ENV_MINGW
+#include <pthread.h>
+#endif
+
 #include <time.h>
 #include <string.h>
 
