@@ -3,6 +3,10 @@
 #include "bricks/config.h"
 #include "bricks/core/sfinae.h"
 
+#if BRICKS_CONFIG_LOGGING_ZOMBIES
+#include "bricks/core/object.h"
+#endif
+
 #define tempnew Bricks::Internal::TemporaryPointer() *
 
 namespace Bricks {
