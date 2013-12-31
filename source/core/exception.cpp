@@ -8,11 +8,14 @@ namespace Bricks {
 		int err = errno;
 		if (!err)
 			return;
-		switch (err) {
-/*			case E2BIG:
-				break;*/
-			default:
-				BRICKS_FEATURE_THROW(ErrnoException(String::Format("errno %d: %s", err, strerror(err)), err));
-		}
+		BRICKS_FEATURE_THROW(ErrnoException(String::Format("errno %d: %s", err, strerror(err)), err));
+	}
+
+	void ThrowErrno(const String& message)
+	{
+		int err = errno;
+		if (!err)
+			return;
+		BRICKS_FEATURE_THROW(ErrnoException(String::Format("errno %d: %s (%s)", err, strerror(err), message.CString()), err));
 	}
 }

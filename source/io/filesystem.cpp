@@ -150,7 +150,7 @@ namespace Bricks { namespace IO {
 		int oflag = createmode | mode;
 		int ret = open(path.CString(), oflag, permissions); // FIXME: On Windows, oflag | O_BINARY
 		if (ret < 0)
-			ThrowErrno();
+			ThrowErrno(path);
 		return (FileHandle)ret;
 	}
 
@@ -220,7 +220,7 @@ namespace Bricks { namespace IO {
 	{
 		DIR* dir = opendir(path.CString());
 		if (!dir)
-			ThrowErrno();
+			ThrowErrno(path);
 		return (FileHandle)dir;
 	}
 
@@ -268,7 +268,7 @@ namespace Bricks { namespace IO {
 	{
 		struct stat st;
 		if (stat(path.CString(), &st))
-			ThrowErrno();
+			ThrowErrno(path);
 		return FileInfo(st, FilePath(path).RootPath(GetCurrentDirectory()), this);
 	}
 
@@ -309,13 +309,13 @@ namespace Bricks { namespace IO {
 	void PosixFilesystem::ChangeCurrentDirectory(const String& path)
 	{
 		if (chdir(path.CString()))
-			ThrowErrno();
+			ThrowErrno(path);
 	}
 
 	void PosixFilesystem::DeleteFile(const String& path)
 	{
 		if (unlink(path.CString()))
-			ThrowErrno();
+			ThrowErrno(path);
 	}
 
 	void PosixFilesystem::DeleteDirectory(const String& path, bool recursive)
@@ -330,14 +330,14 @@ namespace Bricks { namespace IO {
 			}
 		}
 		if (rmdir(path.CString()))
-			ThrowErrno();
+			ThrowErrno(path);
 	}
 
 	void PosixFilesystem::CreateFile(const String& path, FilePermissions::Enum permissions)
 	{
 		int fd = open(path.CString(), O_CREAT, permissions);
 		if (fd < 0)
-			ThrowErrno();
+			ThrowErrno(path);
 		else
 			close(fd);
 	}
@@ -345,7 +345,7 @@ namespace Bricks { namespace IO {
 	void PosixFilesystem::CreateDirectory(const String& path, FilePermissions::Enum permissions)
 	{
 		if (mkdir(path.CString(), permissions))
-			ThrowErrno();
+			ThrowErrno(path);
 	}
 
 	ReturnPointer<Stream> FilesystemNode::OpenStream(FileOpenMode::Enum createmode, FileMode::Enum mode, FilePermissions::Enum permissions)

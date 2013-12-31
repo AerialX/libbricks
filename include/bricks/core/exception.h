@@ -5,6 +5,7 @@
 
 namespace Bricks {
 	void ThrowErrno();
+	void ThrowErrno(const String& message = String::Empty);
 
 	class Exception : public Object
 	{
