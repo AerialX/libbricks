@@ -16,7 +16,7 @@ namespace Bricks {
 		void Construct();
 
 	public:
-		Data(size_t length);
+		Data(size_t length = 0);
 		Data(const void* data, size_t length, bool copy = true);
 		Data(const String& string, bool copy = true);
 		Data(const Data& data, bool copy = true);
