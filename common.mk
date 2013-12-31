@@ -6,6 +6,7 @@ TOOLCHAIN_ANDROID	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.android
 TOOLCHAIN_IOS		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.ios.cmake
 TOOLCHAIN_CLANG		:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.clang.cmake
 TOOLCHAIN_MINGW32	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.mingw32.cmake
+TOOLCHAIN_ASM_JS	:=	-DCMAKE_TOOLCHAIN_FILE=$(BRICKSDIR)/cmake/toolchain.emscripten.cmake -DEMSCRIPTEN_ROOT_PATH=/usr/lib/emscripten
 
 all:
 	@$(CMAKE) $(CURDIR) $(CURDIR)/build-$(OSTYPE)
@@ -53,6 +54,10 @@ ios: ios-xcode
 all: xcode
 endif
 
+asm.js:
+	@$(CMAKE) $(CURDIR) $(CURDIR)/build-asm.js $(TOOLCHAIN_ASM_JS)
+	@+$(MAKEIT) -C $(CURDIR)/build-asm.js
+
 clean:
 	@rm -rf build-*
 
@@ -74,6 +79,9 @@ clang-debug: clang
 
 clang-test: clang
 	@$(CTEST) $(CURDIR)/build-$(OSTYPE)-clang
+
+asm.js-test: asm.js
+	@$(CTEST) $(CURDIR)/build-asm.js
 endif
 
 .PHONY: all xcode clean test run debug clang clang-run clang-debug android android-armv5 android-armv7 android-x86 ios ios-xcode

@@ -8,7 +8,7 @@
 #include <errno.h>
 #include <limits.h>
 
-#if BRICKS_ENV_APPLE
+#if BRICKS_ENV_APPLE || BRICKS_ENV_EMSCRIPTEN
 #define off64_t off_t
 #define lseek64 lseek
 #define ftruncate64 ftruncate

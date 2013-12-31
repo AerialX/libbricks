@@ -11,7 +11,9 @@ namespace Bricks { namespace Threading {
 	{
 		pthread_mutexattr_t attributes;
 		pthread_mutexattr_init(&attributes);
+#if !BRICKS_ENV_EMSCRIPTEN
 		pthread_mutexattr_setpshared(&attributes, PTHREAD_PROCESS_PRIVATE);
+#endif
 		int pthreadType;
 		switch (type) {
 			case MutexType::Lock:

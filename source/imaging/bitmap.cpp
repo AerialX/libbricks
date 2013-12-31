@@ -1,6 +1,8 @@
 #include "bricks/imaging/bitmap.h"
 #include "bricks/io/endian.h"
 
+#define BRICKS_IMAGING_PIXEL_DEPTH 32
+
 using namespace Bricks::IO;
 
 namespace Bricks { namespace Imaging {
@@ -34,7 +36,11 @@ namespace Bricks { namespace Imaging {
 		if (x >= width || y >= height)
 			BRICKS_FEATURE_THROW(InvalidArgumentException());
 
+#if BRICKS_IMAGING_PIXEL_DEPTH > 32
 		u64 pixel = 0;
+#else
+		u32 pixel = 0;
+#endif
 		size_t offset = (size_t)y * width + x;
 		switch (pixelDescription.GetPixelDepth()) {
 			case 8:
@@ -46,9 +52,11 @@ namespace Bricks { namespace Imaging {
 			case 32:
 				pixel = EndianConvertLE32((u32*)pixelData + offset);
 				break;
+#if BRICKS_IMAGING_PIXEL_DEPTH > 32
 			case 64:
 				pixel = EndianConvertLE64((u64*)pixelData + offset);
 				break;
+#endif
 			default:
 				offset *= pixelDescription.GetPixelDepth();
 				for (int i = Math::RoundUp(pixelDescription.GetPixelDepth(), 8) / 8 - 1; i >= 0; i--) {
@@ -101,7 +109,11 @@ namespace Bricks { namespace Imaging {
 		if (x >= width || y >= height)
 			BRICKS_FEATURE_THROW(InvalidArgumentException());
 		
+#if BRICKS_IMAGING_PIXEL_DEPTH > 32
 		u64 pixel = 0;
+#else
+		u32 pixel = 0;
+#endif
 
 		for (int i = 0; i < ColourType::Count; i++) {
 			u8 bitDepth = pixelDescription.GetBitDepth((ColourType::Enum)i);
@@ -148,9 +160,11 @@ namespace Bricks { namespace Imaging {
 			case 32:
 				EndianConvertBE32((u32*)pixelData + offset, pixel);
 				break;
+#if BRICKS_IMAGING_PIXEL_DEPTH > 32
 			case 64:
 				EndianConvertBE64((u64*)pixelData + offset, pixel);
 				break;
+#endif
 			default:
 				if (pixelDescription.GetPixelDepth() < 8)
 					BRICKS_FEATURE_THROW(NotSupportedException());

@@ -53,6 +53,8 @@ elseif(ANDROID)
 	endif()
 elseif(WINDOWS)
 	set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/mingw32")
+elseif(EMSCRIPTEN)
+	set(BRICKSLIB_DIR "${BRICKSLIB_ROOT}/emscripten")
 else()
 	execute_process(COMMAND echo "echo -n $OSTYPE"
 		COMMAND bash
@@ -62,7 +64,7 @@ endif()
 foreach(lib ${BRICKSLIB_DIR})
 	link_directories(${lib}/lib)
 endforeach()
-set(CMAKE_FIND_ROOT_PATH ${BRICKSLIB_DIR} "${CMAKE_FIND_ROOT_PATH}")
+set(CMAKE_FIND_ROOT_PATH "${CMAKE_FIND_ROOT_PATH}" "${BRICKSLIB_DIR}")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if(IOS)
@@ -106,11 +108,17 @@ if(JNI_FOUND)
 	if (JAVA_INCLUDE_PATH2)
 		include_directories(${JAVA_INCLUDE_PATH2})
 	endif()
+else()
+	set(BRICKS_CONFIG_JAVA_JNI false)
 endif()
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY_DIR}/include/bricks/config.h" ESCAPE_QUOTES)
 
 set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wall -Wno-empty-body")
+
+if (EMSCRIPTEN)
+	set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-Wno-warn-absolute-paths")
+endif()
 
 if (BRICKS_CONFIG_RTTI)
 	set(BRICKS_DEFINITIONS ${BRICKS_DEFINITIONS} "-frtti")

@@ -1,11 +1,26 @@
 enable_testing()
 include_directories(${GTEST_INCLUDE_DIRS})
-add_definitions(-DTEST_PATH=\"${CMAKE_CURRENT_SOURCE_DIR}\") 
+
+if (EMSCRIPTEN)
+	set(BRICKS_TEST_PATH "/")
+else()
+	set(BRICKS_TEST_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+add_definitions(-DTEST_PATH=\"${BRICKS_TEST_PATH}\") 
 
 macro(test_project target source)
 	add_executable(${target} ${source})
 	target_link_libraries(${target} ${ARGN} bricks-core bricks-io ${GTEST_BOTH_LIBRARIES} pthread)
-	add_test(${target} ${target})
+
+	if (EMSCRIPTEN)
+		set_target_properties(${target} PROPERTIES LINK_FLAGS
+			"--embed-file ${CMAKE_CURRENT_SOURCE_DIR}/data@data"
+			)
+		add_test(NAME ${target} COMMAND node ${target}.js)
+	else()
+		add_test(${target} ${target})
+	endif()
 endmacro()
 
 test_project(bricks-test-core-value core-value.cpp)

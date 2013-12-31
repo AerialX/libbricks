@@ -62,9 +62,13 @@ namespace Bricks { namespace Threading {
 		originalThread->Release();
 		localThreads.SetValue(thread);
 //		thread->SetPriority(thread->GetPriority()); // TODO: Actually obey thread priority
+#if !BRICKS_ENV_EMSCRIPTEN
 		pthread_cleanup_push(&Thread::StaticCleanup, CastToRaw(thread));
+#endif
 		thread->Main();
+#if !BRICKS_ENV_EMSCRIPTEN
 		pthread_cleanup_pop(true);
+#endif
 		return NULL;
 	}
 
@@ -79,6 +83,9 @@ namespace Bricks { namespace Threading {
 		if (BRICKS_PTHREAD_THREAD_REF)
 			BRICKS_FEATURE_THROW(InvalidOperationException());
 
+#if BRICKS_ENV_EMSCRIPTEN
+		BRICKS_FEATURE_THROW(NotSupportedException());
+#else
 		pthread_attr_t attributes;
 		pthread_attr_init(&attributes);
 		pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_JOINABLE);
@@ -95,6 +102,7 @@ namespace Bricks { namespace Threading {
 			SetThreadID(CastToRaw(tempnew handle));
 
 		pthread_attr_destroy(&attributes);
+#endif
 	}
 
 	void Thread::Main()
@@ -111,7 +119,7 @@ namespace Bricks { namespace Threading {
 
 	void Thread::Stop()
 	{
-#if BRICKS_ENV_ANDROID
+#if BRICKS_ENV_ANDROID || BRICKS_ENV_EMSCRIPTEN
 		BRICKS_FEATURE_THROW(NotSupportedException());
 #else
 		if (GetStatus() == ThreadStatus::Started)
@@ -176,6 +184,9 @@ namespace Bricks { namespace Threading {
 
 	void Thread::SetPriority(int value)
 	{
+#if BRICKS_ENV_EMSCRIPTEN
+		BRICKS_FEATURE_THROW(NotSupportedException());
+#else
 		priority = value;
 		if (GetStatus() == ThreadStatus::Started) {
 			int policy;
@@ -186,6 +197,7 @@ namespace Bricks { namespace Threading {
 
 			pthread_setschedparam(BRICKS_PTHREAD_THREAD, policy, &params);
 		}
+#endif
 	}
 
 	ThreadStatus::Enum Thread::GetStatus() const

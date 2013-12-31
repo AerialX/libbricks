@@ -10,7 +10,7 @@ namespace Bricks { namespace Threading {
 		Mutex(MutexType::Lock)
 	{
 		pthread_condattr_t attributes;
-#if !BRICKS_ENV_ANDROID
+#if !BRICKS_ENV_ANDROID && !BRICKS_ENV_EMSCRIPTEN
 		pthread_condattr_init(&attributes);
 		pthread_condattr_setpshared(&attributes, PTHREAD_PROCESS_PRIVATE);
 #endif
@@ -18,7 +18,7 @@ namespace Bricks { namespace Threading {
 		conditionHandle = CastToRaw(new pthread_cond_t());
 		pthread_cond_init(BRICKS_PTHREAD_COND, &attributes);
 
-#if !BRICKS_ENV_ANDROID
+#if !BRICKS_ENV_ANDROID && !BRICKS_ENV_EMSCRIPTEN
 		pthread_condattr_destroy(&attributes);
 #endif
 	}

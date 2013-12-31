@@ -10,7 +10,7 @@
 #include <errno.h>
 #include <unistd.h>
 
-#if (defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L) || BRICKS_ENV_ANDROID
+#if (defined(_POSIX_TIMEOUTS) && (_POSIX_TIMEOUTS - 200112L) < 0L) || BRICKS_ENV_ANDROID || BRICKS_ENV_EMSCRIPTEN
 #define BRICKS_ENV_THREADING_INTERNAL_TIMEDTRY 1
 #endif
 

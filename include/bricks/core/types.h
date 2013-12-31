@@ -57,6 +57,9 @@ typedef volatile double		vf64;
 #ifdef __BSD__
 #define BRICKS_ENV_BSD 1
 #endif
+#ifdef EMSCRIPTEN
+#define BRICKS_ENV_EMSCRIPTEN 1
+#endif
 #ifdef __OBJC__
 #define BRICKS_ENV_OBJC 1
 #if BRICKS_ENV_APPLE || BRICKS_ENV_CLANG
